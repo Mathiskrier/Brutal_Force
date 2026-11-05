@@ -1,15 +1,12 @@
 {%- doc -%}
-  Brutalforce: free shipping box with checkbox add-ons (sits above the buy buttons).
+  Brutalforce: free shipping invitation with checkbox add-ons (sits above the buy buttons).
+  The text is STATIC (block settings: heading + subtext) and never depends on the cart.
+  No free shipping calculation happens here; the live status lives in the cart bar
+  (snippets/free-shipping-bar.liquid).
   Ticking a row adds NOTHING to the cart. Ticked mugs are added together with the viewed
   product when the main Add to cart button is pressed (see assets/product-form.js).
-  Text only (no progress bar). Message rule (mirrored in assets/free-shipping-upsell.js):
-  - nothing chosen (no tick, quantity 1): amount = live cart subtotal only, exactly what the
-    cart bar (snippets/free-shipping-bar.liquid) shows, so the two can never contradict.
-  - something chosen (tick or quantity > 1): amount = cart + viewed x quantity + ticked mugs,
-    i.e. what the cart will hold after pressing the main button.
-  Threshold: Theme settings > Free shipping (settings.free_shipping_threshold).
 
-  @param {block} block - The free_shipping_upsell block (settings: collection, heading_away, heading_unlocked)
+  @param {block} block - The free_shipping_upsell block (settings: collection, heading, subtext)
   @param {product} product - The product currently being viewed (always excluded from the rows)
   @param {string} section_id - The main-product section id (to find its quantity input and buy buttons)
 {%- enddoc -%}
@@ -19,18 +16,11 @@
     assign upsell_collection = collections['ceramic-mugs']
   endif
 
-  assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
-  # First render: nothing is ticked and quantity is 1, so the message reflects the real cart only.
+  # Viewed product price: only used for the main button label ("Add 2 to cart · €39,00")
   assign seed_cents = product.selected_or_first_available_variant.price | default: 0
-  assign projected_cents = cart.items_subtotal_price
 
-  assign remaining_cents = threshold_cents | minus: projected_cents
-  if remaining_cents < 0
-    assign remaining_cents = 0
-  endif
-
-  assign heading_away = block.settings.heading_away | default: 'Add one for your crew and your whole order ships free'
-  assign heading_unlocked = block.settings.heading_unlocked | default: 'Free shipping unlocked — your order ships free'
+  assign heading = block.settings.heading | default: 'Add a 2nd mug — unlock free shipping'
+  assign subtext = block.settings.subtext | default: 'Two mugs ship free. Grab one for your crew.'
 -%}
 
 {%- capture upsell_rows -%}
@@ -102,25 +92,21 @@
   <script src="{{ 'free-shipping-upsell.js' | asset_url }}" defer="defer"></script>
 
   <free-shipping-upsell
-    class="fs-upsell{% if remaining_cents == 0 %} is-unlocked{% endif %}"
+    class="fs-upsell"
     id="FreeShippingUpsell-{{ section_id }}"
     data-section-id="{{ section_id }}"
-    data-threshold="{{ threshold_cents }}"
     data-seed="{{ seed_cents }}"
     data-money-format="{{ shop.money_format | escape }}"
-    data-text-away="{{ heading_away | escape }}"
-    data-text-unlocked="{{ heading_unlocked | escape }}"
     {{ block.shopify_attributes }}
   >
     <div class="fs-upsell__header">
       <span class="fs-upsell__icon">{{ 'icon-lucide-truck.svg' | inline_asset_content }}</span>
-      <p class="fs-upsell__heading" data-fs-heading aria-live="polite">
-        {%- if remaining_cents == 0 -%}
-          {{- heading_unlocked | escape -}}
-        {%- else -%}
-          {{- heading_away | escape -}}
+      <div class="fs-upsell__text">
+        <p class="fs-upsell__heading">{{ heading | escape }}</p>
+        {%- if subtext != blank -%}
+          <p class="fs-upsell__sub">{{ subtext | escape }}</p>
         {%- endif -%}
-      </p>
+      </div>
     </div>
     <ul class="fs-upsell__list" role="list">
       {{ upsell_rows }}

@@ -1,30 +1,22 @@
 /*
- * Brutalforce: free shipping box with checkbox add-ons (snippets/free-shipping-upsell.liquid)
+ * Brutalforce: free shipping invitation with checkbox add-ons (snippets/free-shipping-upsell.liquid)
  *
+ * - The box text is STATIC ("Add a 2nd mug — unlock free shipping"). This box does no cart
+ *   calculation at all; the live free shipping status lives in the cart bar
+ *   (snippets/free-shipping-bar.liquid).
  * - Ticking a row adds NOTHING to the cart. It only marks that mug for the main Add to cart.
+ * - The only dynamic element: the main button label/total ("Add 2 to cart · €39,00").
  * - assets/product-form.js asks this element for the ticked mugs (getSelections) when the
  *   main button is pressed, and adds viewed product + ticked mugs in one /cart/add request.
- * - Text only, no progress bar. Message rule:
- *     nothing chosen (no tick, quantity 1) -> live cart subtotal only, the exact number the cart
- *       bar (snippets/free-shipping-bar.liquid) uses, so the two can never contradict;
- *     something chosen (tick or quantity > 1) -> cart + viewed x quantity + ticked mugs,
- *       i.e. what the cart will hold after pressing the main button.
- * - Re-reads the live cart on cart updates, when the page is restored with the Back button
- *   (bfcache) and when the tab becomes visible again (cart changed in another tab).
- * - Threshold: Theme settings > Free shipping (settings.free_shipping_threshold), passed in as cents.
  */
 if (!customElements.get('free-shipping-upsell')) {
   customElements.define(
     'free-shipping-upsell',
     class FreeShippingUpsell extends HTMLElement {
       connectedCallback() {
-        const rate = Number(window.Shopify?.currency?.rate) || 1;
         this.sectionId = this.dataset.sectionId;
-        this.threshold = Math.round(Number(this.dataset.threshold) * rate);
         this.seed = Number(this.dataset.seed) || 0;
-        this.cartSubtotal = null;
 
-        this.heading = this.querySelector('[data-fs-heading]');
         this.note = this.querySelector('[data-fs-note]');
         this.checkboxes = Array.from(this.querySelectorAll('.fs-upsell__checkbox'));
 
@@ -33,21 +25,12 @@ if (!customElements.get('free-shipping-upsell')) {
         this.paymentButton = this.submitButton?.closest('form')?.querySelector('.shopify-payment-button');
 
         this.onQuantityChange = () => this.update();
-        this.onPageShow = (event) => {
-          if (event.persisted) this.refreshCart();
-        };
-        this.onVisibility = () => {
-          if (document.visibilityState === 'visible') this.refreshCart();
-        };
         this.checkboxes.forEach((checkbox) => checkbox.addEventListener('change', () => this.update()));
         document.addEventListener('change', this.onQuantityChange);
         document.addEventListener('input', this.onQuantityChange);
-        window.addEventListener('pageshow', this.onPageShow);
-        document.addEventListener('visibilitychange', this.onVisibility);
 
         this.unsubscribers = [];
         if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
-          this.unsubscribers.push(subscribe(PUB_SUB_EVENTS.cartUpdate, () => this.refreshCart()));
           this.unsubscribers.push(
             subscribe(PUB_SUB_EVENTS.variantChange, (event) => {
               if (event?.data?.sectionId !== this.sectionId) return;
@@ -59,14 +42,11 @@ if (!customElements.get('free-shipping-upsell')) {
         }
 
         this.update();
-        this.refreshCart();
       }
 
       disconnectedCallback() {
         document.removeEventListener('change', this.onQuantityChange);
         document.removeEventListener('input', this.onQuantityChange);
-        window.removeEventListener('pageshow', this.onPageShow);
-        document.removeEventListener('visibilitychange', this.onVisibility);
         (this.unsubscribers || []).forEach((unsubscribe) => unsubscribe && unsubscribe());
       }
 
@@ -79,20 +59,7 @@ if (!customElements.get('free-shipping-upsell')) {
         return this.checkboxes.filter((checkbox) => checkbox.checked && !checkbox.disabled);
       }
 
-      async refreshCart() {
-        try {
-          const response = await fetch(`${window.routes?.cart_url || '/cart'}.js`, {
-            headers: { Accept: 'application/json' },
-          });
-          if (!response.ok) return;
-          const cart = await response.json();
-          this.cartSubtotal = cart.items_subtotal_price || 0;
-          this.update();
-        } catch (e) {
-          // Keep the last known state if the cart can't be read
-        }
-      }
-
+      // Updates only the main button label/total and the PayPal button visibility
       update() {
         const ticked = this.ticked;
         const tickedTotal = ticked.reduce((sum, checkbox) => sum + Number(checkbox.dataset.price || 0), 0);
@@ -101,19 +68,6 @@ if (!customElements.get('free-shipping-upsell')) {
 
         this.updateButton(addCount, addTotal);
         if (this.paymentButton) this.paymentButton.hidden = ticked.length > 0;
-
-        if (this.cartSubtotal === null || !this.threshold) return;
-        // Nothing chosen -> real cart only (same number as the cart bar).
-        // Something chosen -> what the cart will hold after pressing the main button.
-        const hasChoice = ticked.length > 0 || this.quantity > 1;
-        const projected = hasChoice ? this.cartSubtotal + addTotal : this.cartSubtotal;
-        const remaining = Math.max(0, this.threshold - projected);
-        const unlocked = remaining === 0;
-
-        this.classList.toggle('is-unlocked', unlocked);
-        this.heading.textContent = unlocked
-          ? this.dataset.textUnlocked
-          : this.dataset.textAway.replace('[amount]', this.formatMoney(remaining));
       }
 
       updateButton(count, total) {
@@ -184,7 +138,6 @@ if (!customElements.get('free-shipping-upsell')) {
       afterAdd() {
         this.checkboxes.forEach((checkbox) => (checkbox.checked = false));
         this.update();
-        this.refreshCart();
       }
 
       showNote(text) {

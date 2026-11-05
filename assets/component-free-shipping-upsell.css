@@ -1,4 +1,4 @@
-/* Brutalforce: free shipping box with checkbox add-ons (snippets/free-shipping-upsell.liquid) */
+/* Brutalforce: free shipping invitation with checkbox add-ons (snippets/free-shipping-upsell.liquid) */
 .fs-upsell {
   display: block;
   margin: 2rem 0;
@@ -6,21 +6,26 @@
   border: 1px solid rgba(var(--color-foreground), 0.12);
   border-radius: 1rem;
   background: rgb(var(--color-background));
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-/* Free shipping reached: green frame so a ticked 2nd mug visibly "applies" */
-.fs-upsell.is-unlocked {
-  border-color: #2f8f57;
-  box-shadow: 0 0 0 1px #2f8f57;
 }
 
 .fs-upsell__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.8rem;
   padding: 0 0.4rem;
   margin-bottom: 0.6rem;
+}
+
+.fs-upsell__text {
+  min-width: 0;
+}
+
+.fs-upsell__sub {
+  margin: 0.2rem 0 0;
+  font-size: 1.3rem;
+  line-height: 1.45;
+  letter-spacing: 0.04rem;
+  color: rgba(var(--color-foreground), 0.7);
 }
 
 .fs-upsell__icon {
@@ -46,11 +51,6 @@
   line-height: 1.4;
   letter-spacing: 0.04rem;
   color: rgb(var(--color-foreground));
-}
-
-/* Free shipping reached: calm green truck as a small confirmation */
-.fs-upsell.is-unlocked .fs-upsell__icon {
-  color: #2f8f57;
 }
 
 /* Rows: the whole row is the tap target */
