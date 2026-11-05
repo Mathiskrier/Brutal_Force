@@ -19,8 +19,8 @@
   # Viewed product price: only used for the main button label ("Add 2 to cart · €39,00")
   assign seed_cents = product.selected_or_first_available_variant.price | default: 0
 
-  assign heading = block.settings.heading | default: 'Noch einen für deine Crew?'
-  assign subtext = block.settings.subtext | default: 'Ab [threshold] ist der Versand gratis.'
+  assign heading = block.settings.heading | default: 'Another one for your crew?'
+  assign subtext = block.settings.subtext | default: 'Free shipping on orders from [threshold].'
 
   # [threshold] = Theme settings > Free shipping (same value the cart bar uses), e.g. "€30"
   assign threshold_money = settings.free_shipping_threshold | default: 30 | times: 100 | money_without_trailing_zeros
