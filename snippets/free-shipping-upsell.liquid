@@ -1,0 +1,158 @@
+{%- doc -%}
+  Brutalforce: "free shipping upsell" box for the product information area.
+  Shows up to 2 OTHER available products from a collection, a live free-shipping
+  progress bar, and AJAX "Add" buttons. Logic is mirrored in assets/free-shipping-upsell.js.
+
+  @param {block} block - The free_shipping_upsell block (settings: collection, threshold, texts)
+  @param {product} product - The product currently being viewed (always excluded)
+{%- enddoc -%}
+{%- liquid
+  assign upsell_collection = block.settings.collection
+  if upsell_collection == blank
+    assign upsell_collection = collections['ceramic-mugs']
+  endif
+
+  assign threshold_cents = block.settings.threshold | default: 30 | times: 100
+
+  # Projected order = live cart subtotal + the viewed product (if not already in the cart)
+  assign seed_cents = product.selected_or_first_available_variant.price | default: 0
+  assign viewed_in_cart = false
+  for item in cart.items
+    if item.product_id == product.id
+      assign viewed_in_cart = true
+      break
+    endif
+  endfor
+  assign projected_cents = cart.items_subtotal_price
+  unless viewed_in_cart
+    assign projected_cents = projected_cents | plus: seed_cents
+  endunless
+
+  assign remaining_cents = threshold_cents | minus: projected_cents
+  if remaining_cents < 0
+    assign remaining_cents = 0
+  endif
+
+  assign progress = 100
+  if threshold_cents > 0
+    assign progress = projected_cents | times: 100 | divided_by: threshold_cents
+  endif
+  if progress > 100
+    assign progress = 100
+  endif
+
+  assign heading_away = block.settings.heading_away | default: "You're [amount] away from free shipping"
+  assign heading_unlocked = block.settings.heading_unlocked | default: 'Free shipping unlocked'
+  assign button_label = block.settings.button_label | default: 'Add'
+-%}
+
+{%- capture upsell_items -%}
+  {%- assign shown = 0 -%}
+  {%- for upsell_product in upsell_collection.products limit: 24 -%}
+    {%- if shown >= 2 -%}{%- break -%}{%- endif -%}
+    {%- if upsell_product.id == product.id or upsell_product.available == false -%}{%- continue -%}{%- endif -%}
+    {%- assign upsell_variant = upsell_product.first_available_variant -%}
+    {%- if upsell_variant == blank or upsell_variant.available == false -%}{%- continue -%}{%- endif -%}
+    {%- assign shown = shown | plus: 1 -%}
+    {%- assign upsell_alt = upsell_product.featured_image.alt | default: upsell_product.title | escape -%}
+    <li class="fs-upsell__item">
+      <a href="{{ upsell_product.url }}" class="fs-upsell__media" tabindex="-1" aria-hidden="true">
+        {%- if upsell_product.featured_image != blank -%}
+          {{
+            upsell_product.featured_image
+            | image_url: width: 168
+            | image_tag:
+              loading: 'lazy',
+              width: 56,
+              height: 56,
+              sizes: '56px',
+              widths: '56, 112, 168',
+              class: 'fs-upsell__img',
+              alt: upsell_alt
+          }}
+        {%- endif -%}
+      </a>
+      <div class="fs-upsell__info">
+        <a href="{{ upsell_product.url }}" class="fs-upsell__title">{{ upsell_product.title | escape }}</a>
+        <span class="fs-upsell__price">
+          {%- if upsell_variant.compare_at_price > upsell_variant.price -%}
+            <s class="fs-upsell__compare">
+              {%- if settings.currency_code_enabled -%}
+                {{- upsell_variant.compare_at_price | money_with_currency -}}
+              {%- else -%}
+                {{- upsell_variant.compare_at_price | money -}}
+              {%- endif -%}
+            </s>
+          {%- endif -%}
+          {%- if settings.currency_code_enabled -%}
+            {{- upsell_variant.price | money_with_currency -}}
+          {%- else -%}
+            {{- upsell_variant.price | money -}}
+          {%- endif -%}
+        </span>
+      </div>
+      <button
+        type="button"
+        class="fs-upsell__add"
+        data-variant-id="{{ upsell_variant.id }}"
+        aria-label="{{ button_label | escape }}: {{ upsell_product.title | escape }}"
+      >
+        <span class="fs-upsell__add-state fs-upsell__add-default">
+          {{- 'icon-lucide-plus.svg' | inline_asset_content -}}
+          <span>{{ button_label | escape }}</span>
+        </span>
+        <span class="fs-upsell__add-state fs-upsell__add-done">
+          {{- 'icon-lucide-check.svg' | inline_asset_content -}}
+          <span>Added</span>
+        </span>
+        <span class="fs-upsell__add-state fs-upsell__add-error">
+          <span>Unavailable</span>
+        </span>
+      </button>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if shown > 0 -%}
+  {{ 'component-free-shipping-upsell.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'free-shipping-upsell.js' | asset_url }}" defer="defer"></script>
+
+  <free-shipping-upsell
+    class="fs-upsell{% if remaining_cents == 0 %} is-unlocked{% endif %}"
+    data-threshold="{{ threshold_cents }}"
+    data-seed="{{ seed_cents }}"
+    data-product-id="{{ product.id }}"
+    data-money-format="{{ shop.money_format | escape }}"
+    data-text-away="{{ heading_away | escape }}"
+    data-text-unlocked="{{ heading_unlocked | escape }}"
+    {{ block.shopify_attributes }}
+  >
+    <div class="fs-upsell__header">
+      <span class="fs-upsell__icon">{{ 'icon-lucide-truck.svg' | inline_asset_content }}</span>
+      <p class="fs-upsell__heading" data-fs-heading aria-live="polite">
+        {%- if remaining_cents == 0 -%}
+          {{- heading_unlocked | escape -}}
+        {%- else -%}
+          {%- assign remaining_money = remaining_cents | money -%}
+          {{- heading_away | escape | replace: '[amount]', remaining_money -}}
+        {%- endif -%}
+      </p>
+    </div>
+    <div
+      class="fs-upsell__bar"
+      role="progressbar"
+      aria-label="{{ heading_unlocked | escape }}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="{{ progress }}"
+    >
+      <span class="fs-upsell__bar-fill" style="width: {{ progress }}%;"></span>
+    </div>
+    {%- if block.settings.subtext != blank -%}
+      <p class="fs-upsell__sub">{{ block.settings.subtext | escape }}</p>
+    {%- endif -%}
+    <ul class="fs-upsell__list" role="list">
+      {{ upsell_items }}
+    </ul>
+  </free-shipping-upsell>
+{%- endif -%}

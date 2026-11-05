@@ -490,6 +490,8 @@
                     block: block,
                     product_form_id: product_form_id
                   %}
+                {%- when 'free_shipping_upsell' -%}
+                  {%- render 'free-shipping-upsell', block: block, product: product -%}
                 {%- when 'buy_buttons' -%}
                   {%- render 'buy-buttons',
                     block: block,
@@ -957,6 +959,51 @@
           "id": "share_label",
           "label": "t:sections.main-product.blocks.share.settings.text.label",
           "default": "t:sections.main-product.blocks.share.settings.text.default"
+        }
+      ]
+    },
+    {
+      "type": "free_shipping_upsell",
+      "name": "Free shipping upsell",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Products from collection",
+          "info": "Shows up to 2 available products from this collection. The product being viewed is always left out. Empty = collection with handle \"ceramic-mugs\"."
+        },
+        {
+          "type": "number",
+          "id": "threshold",
+          "label": "Free shipping threshold",
+          "default": 30,
+          "info": "In store currency. Must match your free shipping discount (Discounts > FreeShipping)."
+        },
+        {
+          "type": "text",
+          "id": "heading_away",
+          "label": "Heading (not reached yet)",
+          "default": "You're [amount] away from free shipping",
+          "info": "[amount] is replaced with the remaining amount."
+        },
+        {
+          "type": "text",
+          "id": "heading_unlocked",
+          "label": "Heading (free shipping reached)",
+          "default": "Free shipping unlocked"
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "label": "Sub-line",
+          "default": "Add one for your crew — and your whole order ships free."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Add"
         }
       ]
     },

@@ -1,0 +1,221 @@
+/* Brutalforce: free shipping upsell box (snippets/free-shipping-upsell.liquid) */
+.fs-upsell {
+  display: block;
+  margin: 2rem 0;
+  padding: 1.4rem 1.6rem 1.6rem;
+  border: 1px solid rgba(var(--color-foreground), 0.12);
+  border-radius: 1rem;
+  background: rgb(var(--color-background));
+}
+
+.fs-upsell__header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.fs-upsell__icon {
+  display: inline-flex;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  color: rgb(var(--color-foreground));
+}
+
+.fs-upsell__icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.fs-upsell__heading {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.04rem;
+  color: rgb(var(--color-foreground));
+}
+
+.fs-upsell__bar {
+  height: 0.6rem;
+  margin: 1rem 0 0.8rem;
+  border-radius: 99rem;
+  background: rgba(var(--color-foreground), 0.1);
+  overflow: hidden;
+}
+
+.fs-upsell__bar-fill {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: rgb(var(--color-foreground));
+  transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+.fs-upsell.is-unlocked .fs-upsell__bar-fill {
+  background: #2f8f57;
+}
+
+.fs-upsell__sub {
+  margin: 0 0 1.2rem;
+  font-size: 1.3rem;
+  line-height: 1.45;
+  letter-spacing: 0.04rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.fs-upsell.is-unlocked .fs-upsell__sub {
+  display: none;
+}
+
+.fs-upsell.is-unlocked .fs-upsell__bar {
+  margin-bottom: 1.2rem;
+}
+
+.fs-upsell__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fs-upsell__item {
+  display: grid;
+  grid-template-columns: 5.6rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.fs-upsell__media {
+  display: block;
+  width: 5.6rem;
+  height: 5.6rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+.fs-upsell__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fs-upsell__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.fs-upsell__title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.02rem;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.fs-upsell__title:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.fs-upsell__price {
+  font-size: 1.3rem;
+  letter-spacing: 0.04rem;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.fs-upsell__compare {
+  margin-right: 0.5rem;
+  opacity: 0.7;
+}
+
+.fs-upsell__add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 8rem;
+  min-height: 3.6rem;
+  padding: 0 1.2rem;
+  border: 1px solid rgba(var(--color-foreground), 0.75);
+  border-radius: var(--buttons-radius, 0.4rem);
+  background: transparent;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  letter-spacing: 0.06rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.fs-upsell__add:hover,
+.fs-upsell__add.is-added {
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.fs-upsell__add:focus-visible {
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
+  outline-offset: 0.2rem;
+}
+
+.fs-upsell__add.is-loading {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.fs-upsell__add-state {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fs-upsell__add-default,
+.fs-upsell__add.is-added .fs-upsell__add-done,
+.fs-upsell__add.is-error .fs-upsell__add-error {
+  display: inline-flex;
+}
+
+.fs-upsell__add.is-added .fs-upsell__add-default,
+.fs-upsell__add.is-error .fs-upsell__add-default {
+  display: none;
+}
+
+.fs-upsell__add svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+@media screen and (max-width: 360px) {
+  .fs-upsell {
+    padding: 1.2rem;
+  }
+
+  .fs-upsell__item {
+    grid-template-columns: 4.8rem minmax(0, 1fr) auto;
+    gap: 1rem;
+  }
+
+  .fs-upsell__media {
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+
+  .fs-upsell__add {
+    min-width: 0;
+  }
+}
