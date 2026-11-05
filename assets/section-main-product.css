@@ -1574,6 +1574,8 @@ a.product__text {
 
 /* Brutalforce: "SSL-encrypted checkout" left of the payment logos under the buy button */
 .product__info-container .payment-trust {
+  /* sit close under the buy button: 25px theme spacing - 15px = ~10px */
+  margin-top: -1.5rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1584,7 +1586,6 @@ a.product__text {
 .payment-trust__ssl {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
   margin: 0;
   font-size: 1.25rem;
   font-weight: 400;
@@ -1592,15 +1593,6 @@ a.product__text {
   letter-spacing: 0.04rem;
   white-space: nowrap;
   color: rgba(var(--color-foreground), 0.6);
-}
-
-.payment-trust__ssl svg {
-  flex: none;
-  width: 1.4rem;
-  height: 1.4rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
 }
 
 .product__info-container .payment-trust .list-payment {
