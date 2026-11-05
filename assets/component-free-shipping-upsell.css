@@ -225,8 +225,15 @@
   color: rgba(var(--color-foreground), 0.6);
 }
 
+/* Tablet: the info column is narrow - keep 64px images, tighter gaps */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .fs-upsell__row {
+    gap: 0.8rem;
+  }
+}
+
 /* Desktop: a bit more room, slightly larger thumbnails */
-@media screen and (min-width: 750px) {
+@media screen and (min-width: 990px) {
   .fs-upsell__row {
     grid-template-columns: 2.2rem 7.2rem minmax(0, 1fr) auto;
     min-height: 8rem;
