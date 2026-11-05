@@ -1,0 +1,73 @@
+/* Brutalforce: free shipping progress bar in the cart drawer and on the cart page (snippets/free-shipping-bar.liquid) */
+.fs-bar {
+  margin: 0 0 1.6rem;
+  padding: 1.2rem 1.4rem 1.4rem;
+  border: 1px solid rgba(var(--color-foreground), 0.12);
+  border-radius: 1rem;
+  background: rgba(var(--color-foreground), 0.03);
+}
+
+.fs-bar__message {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  letter-spacing: 0.04rem;
+  color: rgb(var(--color-foreground));
+}
+
+.fs-bar__message strong {
+  font-weight: 700;
+}
+
+.fs-bar__icon {
+  display: inline-flex;
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  color: rgb(var(--color-foreground));
+}
+
+.fs-bar__icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.fs-bar__track {
+  height: 0.6rem;
+  border-radius: 99rem;
+  background: rgba(var(--color-foreground), 0.1);
+  overflow: hidden;
+}
+
+.fs-bar__fill {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: rgb(var(--color-foreground));
+}
+
+.fs-bar.is-unlocked .fs-bar__icon {
+  color: #2f8f57;
+}
+
+.fs-bar.is-unlocked .fs-bar__fill {
+  background: #2f8f57;
+}
+
+/* Cart drawer: sits under the "Your cart" header */
+.drawer__inner .fs-bar {
+  margin: 0 0 1.2rem;
+}
+
+/* Cart page: keep it the width of a readable line */
+#main-cart-items .fs-bar {
+  max-width: 60rem;
+  margin-bottom: 2.4rem;
+}

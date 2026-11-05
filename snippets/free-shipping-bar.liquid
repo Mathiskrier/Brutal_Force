@@ -1,0 +1,57 @@
+{%- doc -%}
+  Brutalforce: free shipping progress bar for the cart drawer and the cart page.
+  Server-rendered from the live cart, so it refreshes whenever the theme re-renders the
+  cart (add, quantity change, remove). Reads the SAME values as the product page box
+  (snippets/free-shipping-upsell.liquid): cart.items_subtotal_price (= /cart.js
+  items_subtotal_price) and Theme settings > Free shipping (settings.free_shipping_threshold).
+  Hidden when the cart is empty.
+
+  @example
+  {% render 'free-shipping-bar' %}
+{%- enddoc -%}
+{%- liquid
+  assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+  assign subtotal_cents = cart.items_subtotal_price
+
+  assign remaining_cents = threshold_cents | minus: subtotal_cents
+  if remaining_cents < 0
+    assign remaining_cents = 0
+  endif
+
+  assign progress = 100
+  if threshold_cents > 0
+    assign progress = subtotal_cents | times: 100 | divided_by: threshold_cents
+  endif
+  if progress > 100
+    assign progress = 100
+  endif
+
+  assign text_away = settings.free_shipping_bar_text_away | default: "You're [amount] away from free shipping"
+  assign text_unlocked = settings.free_shipping_bar_text_unlocked | default: 'Free shipping unlocked — your order ships free'
+-%}
+
+{%- if cart != empty and threshold_cents > 0 -%}
+  <div class="fs-bar{% if remaining_cents == 0 %} is-unlocked{% endif %}">
+    <p class="fs-bar__message">
+      <span class="fs-bar__icon" aria-hidden="true">{{ 'icon-lucide-truck.svg' | inline_asset_content }}</span>
+      <span>
+        {%- if remaining_cents == 0 -%}
+          {{- text_unlocked | escape -}}
+        {%- else -%}
+          {%- capture remaining_money -%}<strong>{{ remaining_cents | money }}</strong>{%- endcapture -%}
+          {{- text_away | escape | replace: '[amount]', remaining_money -}}
+        {%- endif -%}
+      </span>
+    </p>
+    <div
+      class="fs-bar__track"
+      role="progressbar"
+      aria-label="{{ text_unlocked | escape }}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="{{ progress }}"
+    >
+      <span class="fs-bar__fill" style="width: {{ progress }}%;"></span>
+    </div>
+  </div>
+{%- endif -%}

@@ -1280,7 +1280,24 @@
         "id": "free_shipping_threshold",
         "label": "Free shipping threshold",
         "default": 30,
-        "info": "In store currency. Must match your free shipping discount (Discounts > FreeShipping). Read by the product page free shipping box and any cart free shipping bar."
+        "info": "In store currency. Must match your free shipping discount (Discounts > FreeShipping). Read by the product page free shipping box and the cart free shipping bar."
+      },
+      {
+        "type": "header",
+        "content": "Cart bar (cart drawer and cart page)"
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_bar_text_away",
+        "label": "Message (below threshold)",
+        "default": "You're [amount] away from free shipping",
+        "info": "[amount] is replaced with the remaining amount."
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_bar_text_unlocked",
+        "label": "Message (free shipping reached)",
+        "default": "Free shipping unlocked — your order ships free"
       }
     ]
   },
