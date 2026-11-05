@@ -136,6 +136,7 @@
   color: rgba(var(--color-foreground), 0.75);
 }
 
+/* Compare-at and sale price wrap as whole units on very narrow screens */
 .fs-upsell__price {
   display: flex;
   flex-wrap: wrap;
