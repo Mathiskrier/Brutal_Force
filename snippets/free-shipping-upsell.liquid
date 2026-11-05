@@ -19,8 +19,9 @@
   # Viewed product price: only used for the main button label ("Add 2 to cart · €39,00")
   assign seed_cents = product.selected_or_first_available_variant.price | default: 0
 
-  assign heading = block.settings.heading | default: 'Another one for your crew?'
-  assign subtext = block.settings.subtext | default: 'Free shipping on orders from [threshold].'
+  assign heading = block.settings.heading | default: 'FREE shipping over [threshold]'
+  assign heading_emphasis = block.settings.heading_emphasis | default: 'FREE'
+  assign subtext = block.settings.subtext | default: 'Add another mug and skip the delivery fee.'
 
   # [threshold] = Theme settings > Free shipping (same value the cart bar uses), e.g. "€30"
   assign threshold_money = settings.free_shipping_threshold | default: 30 | times: 100 | money_without_trailing_zeros
@@ -105,7 +106,16 @@
     <div class="fs-upsell__header">
       <span class="fs-upsell__icon">{{ 'icon-lucide-truck.svg' | inline_asset_content }}</span>
       <div class="fs-upsell__text">
-        <p class="fs-upsell__heading">{{ heading | escape }}</p>
+        {%- liquid
+          # Heading: [threshold] -> e.g. "€30"; the "Emphasised word" (e.g. FREE) is wrapped in <strong>
+          assign heading_html = heading | escape | replace: '[threshold]', threshold_money
+          if heading_emphasis != blank
+            assign emphasis_escaped = heading_emphasis | escape
+            assign emphasis_html = '<strong class="fs-upsell__accent">' | append: emphasis_escaped | append: '</strong>'
+            assign heading_html = heading_html | replace_first: emphasis_escaped, emphasis_html
+          endif
+        -%}
+        <p class="fs-upsell__heading">{{ heading_html }}</p>
         {%- if subtext != blank -%}
           <p class="fs-upsell__sub">{{ subtext | escape | replace: '[threshold]', threshold_money }}</p>
         {%- endif -%}

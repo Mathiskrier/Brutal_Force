@@ -993,15 +993,22 @@
           "type": "text",
           "id": "heading",
           "label": "Heading",
-          "default": "Another one for your crew?",
-          "info": "Static text. It does not change with the cart; the live free shipping status is shown in the cart."
+          "default": "FREE shipping over [threshold]",
+          "info": "Static text (no cart calculation). [threshold] is replaced with the amount from Theme settings > Free shipping (e.g. €30)."
+        },
+        {
+          "type": "text",
+          "id": "heading_emphasis",
+          "label": "Emphasised word in heading",
+          "default": "FREE",
+          "info": "Shown bold in the accent green. Leave empty for no emphasis."
         },
         {
           "type": "text",
           "id": "subtext",
           "label": "Sub-line",
-          "default": "Free shipping on orders from [threshold].",
-          "info": "[threshold] is replaced with the amount from Theme settings > Free shipping (e.g. €30)."
+          "default": "Add another mug and skip the delivery fee.",
+          "info": "[threshold] can be used here too."
         }
       ]
     },

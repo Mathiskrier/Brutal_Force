@@ -47,8 +47,9 @@
           "type": "free_shipping_upsell",
           "settings": {
             "collection": "ceramic-mugs",
-            "heading": "Another one for your crew?",
-            "subtext": "Free shipping on orders from [threshold]."
+            "heading": "FREE shipping over [threshold]",
+            "heading_emphasis": "FREE",
+            "subtext": "Add another mug and skip the delivery fee."
           }
         },
         "variant_picker": {
