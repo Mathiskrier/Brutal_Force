@@ -35,12 +35,12 @@
           "type": "icon-with-text",
           "settings": {
             "layout": "vertical",
-            "icon_1": "heart",
-            "heading_1": "Free Shipping over 30€",
-            "icon_2": "lock",
-            "heading_2": "100% Secure Checkout",
-            "icon_3": "truck",
-            "heading_3": "Fast delivery across Europe"
+            "icon_1": "truck",
+            "heading_1": "Ships from Europe — fast, tracked, no customs",
+            "icon_2": "silhouette",
+            "heading_2": "Trusted by 700+ riders",
+            "icon_3": "box",
+            "heading_3": "Packed to arrive perfect"
           }
         },
         "text_wMaADq": {

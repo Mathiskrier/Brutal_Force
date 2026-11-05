@@ -357,6 +357,38 @@ a.product__text {
   content: '· ';
 }
 
+/* Brutalforce: calm, trustworthy bullet list (icon-with-text block in the buy box) */
+.product__info-container .icon-with-text--vertical {
+  --icon-size: 2rem;
+  --icon-spacing: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.product__info-container .icon-with-text--vertical .icon-with-text__item {
+  margin-bottom: 0;
+  align-items: flex-start;
+}
+
+.product__info-container .icon-with-text .svg-wrapper {
+  fill: rgba(var(--color-foreground), 0.8);
+  margin-top: 0.05rem;
+}
+
+.product__info-container .icon-with-text .h4 {
+  font-family: var(--font-body-family);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  letter-spacing: 0.04rem;
+  color: rgba(var(--color-foreground), 0.85);
+  text-transform: none;
+  margin: 0;
+}
+
 .product--no-media .share-button {
   max-width: 100%;
 }
