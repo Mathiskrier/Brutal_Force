@@ -185,7 +185,8 @@ if (!customElements.get('product-form')) {
           if (text) this.submitButtonText.textContent = text;
         } else {
           this.submitButton.removeAttribute('disabled');
-          this.submitButtonText.textContent = window.variantStrings.addToCart;
+          // Brutalforce: keep the custom label (e.g. "Add to cart & continue") after variant/size switches
+          this.submitButtonText.textContent = this.submitButton.dataset.addLabel || window.variantStrings.addToCart;
         }
       }
 

@@ -73,8 +73,12 @@ if (!customElements.get('free-shipping-upsell')) {
       updateButton(count, total) {
         if (!this.submitButton || !this.submitText) return;
         if (this.submitButton.hasAttribute('disabled')) return; // sold out / unavailable: keep theme text
-        const base = window.variantStrings?.addToCart || 'Add to cart';
-        const label = count > 1 ? `Add ${count} to cart` : base;
+        // Base label from the Buy buttons block, e.g. "Add to cart & continue"
+        const base = this.submitButton.dataset.addLabel || window.variantStrings?.addToCart || 'Add to cart';
+        let label = base;
+        if (count > 1) {
+          label = /^add to cart/i.test(base) ? base.replace(/^add to cart/i, `Add ${count} to cart`) : `${base} (${count})`;
+        }
         this.submitText.textContent = `${label} · ${this.formatMoney(total)}`;
       }
 

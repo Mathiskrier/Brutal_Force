@@ -73,10 +73,18 @@
               assign quantity_rule_soldout = true
             endif
           -%}
+          {%- liquid
+            # Brutalforce: custom label from the Buy buttons block ("Add to cart & continue")
+            assign add_to_cart_label = block.settings.add_to_cart_label
+            if add_to_cart_label == blank
+              assign add_to_cart_label = 'products.product.add_to_cart' | t
+            endif
+          -%}
           <button
             id="ProductSubmitButton-{{ section_id }}"
             type="submit"
             name="add"
+            data-add-label="{{ add_to_cart_label | escape }}"
             class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
             {% if product.selected_or_first_available_variant.available == false
               or quantity_rule_soldout
@@ -91,7 +99,7 @@
               {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
                 {{ 'products.product.sold_out' | t }}
               {%- else -%}
-                {{ 'products.product.add_to_cart' | t }}
+                {{ add_to_cart_label | escape }}
               {%- endif -%}
             </span>
             {%- render 'loading-spinner' -%}
