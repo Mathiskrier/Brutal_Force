@@ -1571,3 +1571,44 @@ a.product__text {
     border: none;
   }
 }
+
+/* Brutalforce: "SSL-encrypted checkout" left of the payment logos under the buy button */
+.product__info-container .payment-trust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1.2rem;
+  row-gap: 0.4rem;
+}
+
+.payment-trust__ssl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.04rem;
+  white-space: nowrap;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.payment-trust__ssl svg {
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.product__info-container .payment-trust .list-payment {
+  justify-content: flex-start !important;
+  margin: 0 -0.3rem;
+  padding-top: 0;
+}
+
+.product__info-container .payment-trust .list-payment__item {
+  padding: 0.3rem;
+}
