@@ -1579,8 +1579,11 @@ a.product__text {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   column-gap: 1.2rem;
   row-gap: 0.4rem;
+  /* same width as the buy button area, so the row is centred under the button */
+  max-width: 44rem;
 }
 
 .payment-trust__ssl {
@@ -1596,7 +1599,7 @@ a.product__text {
 }
 
 .product__info-container .payment-trust .list-payment {
-  justify-content: flex-start !important;
+  justify-content: center !important;
   margin: 0 -0.3rem;
   padding-top: 0;
 }
