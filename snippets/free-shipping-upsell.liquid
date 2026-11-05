@@ -17,8 +17,20 @@
   endif
 
   assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+  # Count the viewed product only if it isn't in the cart yet, so this box never says
+  # "unlocked" while the cart bar (snippets/free-shipping-bar.liquid) still shows a gap.
   assign seed_cents = product.selected_or_first_available_variant.price | default: 0
-  assign projected_cents = cart.items_subtotal_price | plus: seed_cents
+  assign viewed_in_cart = false
+  for item in cart.items
+    if item.product_id == product.id
+      assign viewed_in_cart = true
+      break
+    endif
+  endfor
+  assign projected_cents = cart.items_subtotal_price
+  unless viewed_in_cart
+    assign projected_cents = projected_cents | plus: seed_cents
+  endunless
 
   assign remaining_cents = threshold_cents | minus: projected_cents
   if remaining_cents < 0
@@ -103,6 +115,7 @@
     data-section-id="{{ section_id }}"
     data-threshold="{{ threshold_cents }}"
     data-seed="{{ seed_cents }}"
+    data-product-id="{{ product.id }}"
     data-money-format="{{ shop.money_format | escape }}"
     data-text-away="{{ heading_away | escape }}"
     data-text-unlocked="{{ heading_unlocked | escape }}"

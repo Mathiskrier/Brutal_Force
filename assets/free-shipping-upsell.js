@@ -4,9 +4,10 @@
  * - Ticking a row adds NOTHING to the cart. It only marks that mug for the main Add to cart.
  * - assets/product-form.js asks this element for the ticked mugs (getSelections) when the
  *   main button is pressed, and adds viewed product + ticked mugs in one /cart/add request.
- * - Text only, no progress bar. Projected = live cart subtotal (/cart.js) + viewed product
- *   (price x quantity) + ticked mugs, i.e. what the cart will hold after pressing the main
- *   button now. The message switches between "away" and "unlocked" at the threshold.
+ * - Text only, no progress bar. Projected = live cart subtotal (/cart.js) + ticked mugs
+ *   + the viewed product (price x quantity) only if it is NOT in the cart yet. That way this box
+ *   never says "unlocked" while the cart bar (snippets/free-shipping-bar.liquid) still shows a gap.
+ *   The message switches between "away" and "unlocked" at the threshold.
  * - Threshold: Theme settings > Free shipping (settings.free_shipping_threshold), passed in as cents.
  */
 if (!customElements.get('free-shipping-upsell')) {
@@ -18,7 +19,9 @@ if (!customElements.get('free-shipping-upsell')) {
         this.sectionId = this.dataset.sectionId;
         this.threshold = Math.round(Number(this.dataset.threshold) * rate);
         this.seed = Number(this.dataset.seed) || 0;
+        this.productId = Number(this.dataset.productId);
         this.cartSubtotal = null;
+        this.viewedInCart = false;
 
         this.heading = this.querySelector('[data-fs-heading]');
         this.note = this.querySelector('[data-fs-note]');
@@ -73,6 +76,7 @@ if (!customElements.get('free-shipping-upsell')) {
           if (!response.ok) return;
           const cart = await response.json();
           this.cartSubtotal = cart.items_subtotal_price || 0;
+          this.viewedInCart = (cart.items || []).some((item) => item.product_id === this.productId);
           this.update();
         } catch (e) {
           // Keep the last known state if the cart can't be read
@@ -89,7 +93,8 @@ if (!customElements.get('free-shipping-upsell')) {
         if (this.paymentButton) this.paymentButton.hidden = ticked.length > 0;
 
         if (this.cartSubtotal === null || !this.threshold) return;
-        const projected = this.cartSubtotal + addTotal;
+        const viewedTotal = this.viewedInCart ? 0 : this.seed * this.quantity;
+        const projected = this.cartSubtotal + viewedTotal + tickedTotal;
         const remaining = Math.max(0, this.threshold - projected);
         const unlocked = remaining === 0;
 
