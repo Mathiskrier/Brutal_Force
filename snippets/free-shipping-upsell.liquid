@@ -2,10 +2,11 @@
   Brutalforce: free shipping box with checkbox add-ons (sits above the buy buttons).
   Ticking a row adds NOTHING to the cart. Ticked mugs are added together with the viewed
   product when the main Add to cart button is pressed (see assets/product-form.js).
-  Bar amount = live cart subtotal + viewed product (price x quantity) + ticked mugs.
-  Threshold comes from Theme settings > Free shipping (settings.free_shipping_threshold).
+  Text only (no progress bar). Projected total = live cart subtotal + viewed product
+  (price x quantity) + ticked mugs; the message switches at the threshold from
+  Theme settings > Free shipping (settings.free_shipping_threshold).
 
-  @param {block} block - The free_shipping_upsell block (settings: collection, heading_away, heading_unlocked, subtext)
+  @param {block} block - The free_shipping_upsell block (settings: collection, heading_away, heading_unlocked)
   @param {product} product - The product currently being viewed (always excluded from the rows)
   @param {string} section_id - The main-product section id (to find its quantity input and buy buttons)
 {%- enddoc -%}
@@ -24,16 +25,8 @@
     assign remaining_cents = 0
   endif
 
-  assign progress = 100
-  if threshold_cents > 0
-    assign progress = projected_cents | times: 100 | divided_by: threshold_cents
-  endif
-  if progress > 100
-    assign progress = 100
-  endif
-
-  assign heading_away = block.settings.heading_away | default: "You're [amount] away from free shipping"
-  assign heading_unlocked = block.settings.heading_unlocked | default: 'Free shipping unlocked'
+  assign heading_away = block.settings.heading_away | default: 'Add one for your crew and your whole order ships free'
+  assign heading_unlocked = block.settings.heading_unlocked | default: 'Free shipping unlocked — your order ships free'
 -%}
 
 {%- capture upsell_rows -%}
@@ -121,24 +114,10 @@
         {%- if remaining_cents == 0 -%}
           {{- heading_unlocked | escape -}}
         {%- else -%}
-          {%- assign remaining_money = remaining_cents | money -%}
-          {{- heading_away | escape | replace: '[amount]', remaining_money -}}
+          {{- heading_away | escape -}}
         {%- endif -%}
       </p>
     </div>
-    <div
-      class="fs-upsell__bar"
-      role="progressbar"
-      aria-label="{{ heading_unlocked | escape }}"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      aria-valuenow="{{ progress }}"
-    >
-      <span class="fs-upsell__bar-fill" style="width: {{ progress }}%;"></span>
-    </div>
-    {%- if block.settings.subtext != blank -%}
-      <p class="fs-upsell__sub">{{ block.settings.subtext | escape }}</p>
-    {%- endif -%}
     <ul class="fs-upsell__list" role="list">
       {{ upsell_rows }}
     </ul>

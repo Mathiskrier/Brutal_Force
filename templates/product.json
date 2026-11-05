@@ -47,9 +47,8 @@
           "type": "free_shipping_upsell",
           "settings": {
             "collection": "ceramic-mugs",
-            "heading_away": "You're [amount] away from free shipping",
-            "heading_unlocked": "Free shipping unlocked",
-            "subtext": "Add one for your crew — and your whole order ships free."
+            "heading_away": "Add one for your crew and your whole order ships free",
+            "heading_unlocked": "Free shipping unlocked — your order ships free"
           }
         },
         "variant_picker": {

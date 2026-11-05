@@ -13,6 +13,7 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0 0.4rem;
+  margin-bottom: 0.6rem;
 }
 
 .fs-upsell__icon {
@@ -40,41 +41,9 @@
   color: rgb(var(--color-foreground));
 }
 
-.fs-upsell__bar {
-  height: 0.6rem;
-  margin: 1rem 0.4rem 0.8rem;
-  border-radius: 99rem;
-  background: rgba(var(--color-foreground), 0.1);
-  overflow: hidden;
-}
-
-.fs-upsell__bar-fill {
-  display: block;
-  height: 100%;
-  max-width: 100%;
-  border-radius: inherit;
-  background: rgb(var(--color-foreground));
-  transition: width 0.4s ease, background-color 0.3s ease;
-}
-
-.fs-upsell.is-unlocked .fs-upsell__bar-fill {
-  background: #2f8f57;
-}
-
-.fs-upsell__sub {
-  margin: 0 0.4rem 0.6rem;
-  font-size: 1.3rem;
-  line-height: 1.45;
-  letter-spacing: 0.04rem;
-  color: rgba(var(--color-foreground), 0.75);
-}
-
-.fs-upsell.is-unlocked .fs-upsell__sub {
-  display: none;
-}
-
-.fs-upsell.is-unlocked .fs-upsell__bar {
-  margin-bottom: 0.6rem;
+/* Free shipping reached: calm green truck as a small confirmation */
+.fs-upsell.is-unlocked .fs-upsell__icon {
+  color: #2f8f57;
 }
 
 /* Rows: the whole row is the tap target */

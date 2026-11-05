@@ -4,8 +4,9 @@
  * - Ticking a row adds NOTHING to the cart. It only marks that mug for the main Add to cart.
  * - assets/product-form.js asks this element for the ticked mugs (getSelections) when the
  *   main button is pressed, and adds viewed product + ticked mugs in one /cart/add request.
- * - Bar amount = live cart subtotal (/cart.js) + viewed product (price x quantity) + ticked mugs.
- *   That is exactly what the cart will hold after pressing the main button now.
+ * - Text only, no progress bar. Projected = live cart subtotal (/cart.js) + viewed product
+ *   (price x quantity) + ticked mugs, i.e. what the cart will hold after pressing the main
+ *   button now. The message switches between "away" and "unlocked" at the threshold.
  * - Threshold: Theme settings > Free shipping (settings.free_shipping_threshold), passed in as cents.
  */
 if (!customElements.get('free-shipping-upsell')) {
@@ -20,8 +21,6 @@ if (!customElements.get('free-shipping-upsell')) {
         this.cartSubtotal = null;
 
         this.heading = this.querySelector('[data-fs-heading]');
-        this.bar = this.querySelector('.fs-upsell__bar');
-        this.fill = this.querySelector('.fs-upsell__bar-fill');
         this.note = this.querySelector('[data-fs-note]');
         this.checkboxes = Array.from(this.querySelectorAll('.fs-upsell__checkbox'));
 
@@ -92,11 +91,8 @@ if (!customElements.get('free-shipping-upsell')) {
         if (this.cartSubtotal === null || !this.threshold) return;
         const projected = this.cartSubtotal + addTotal;
         const remaining = Math.max(0, this.threshold - projected);
-        const progress = Math.min(100, (projected / this.threshold) * 100);
         const unlocked = remaining === 0;
 
-        this.fill.style.width = `${progress}%`;
-        this.bar.setAttribute('aria-valuenow', String(Math.round(progress)));
         this.classList.toggle('is-unlocked', unlocked);
         this.heading.textContent = unlocked
           ? this.dataset.textUnlocked
