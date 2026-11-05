@@ -47,8 +47,8 @@
           "type": "free_shipping_upsell",
           "settings": {
             "collection": "ceramic-mugs",
-            "heading": "Add a 2nd mug — unlock free shipping",
-            "subtext": "Two mugs ship free. Grab one for your crew."
+            "heading": "Noch einen für deine Crew?",
+            "subtext": "Ab [threshold] ist der Versand gratis."
           }
         },
         "variant_picker": {

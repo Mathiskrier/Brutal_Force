@@ -19,8 +19,11 @@
   # Viewed product price: only used for the main button label ("Add 2 to cart · €39,00")
   assign seed_cents = product.selected_or_first_available_variant.price | default: 0
 
-  assign heading = block.settings.heading | default: 'Add a 2nd mug — unlock free shipping'
-  assign subtext = block.settings.subtext | default: 'Two mugs ship free. Grab one for your crew.'
+  assign heading = block.settings.heading | default: 'Noch einen für deine Crew?'
+  assign subtext = block.settings.subtext | default: 'Ab [threshold] ist der Versand gratis.'
+
+  # [threshold] = Theme settings > Free shipping (same value the cart bar uses), e.g. "€30"
+  assign threshold_money = settings.free_shipping_threshold | default: 30 | times: 100 | money_without_trailing_zeros
 -%}
 
 {%- capture upsell_rows -%}
@@ -104,7 +107,7 @@
       <div class="fs-upsell__text">
         <p class="fs-upsell__heading">{{ heading | escape }}</p>
         {%- if subtext != blank -%}
-          <p class="fs-upsell__sub">{{ subtext | escape }}</p>
+          <p class="fs-upsell__sub">{{ subtext | escape | replace: '[threshold]', threshold_money }}</p>
         {%- endif -%}
       </div>
     </div>
