@@ -4,10 +4,13 @@
  * - Ticking a row adds NOTHING to the cart. It only marks that mug for the main Add to cart.
  * - assets/product-form.js asks this element for the ticked mugs (getSelections) when the
  *   main button is pressed, and adds viewed product + ticked mugs in one /cart/add request.
- * - Text only, no progress bar. Projected = live cart subtotal (/cart.js) + ticked mugs
- *   + the viewed product (price x quantity) only if it is NOT in the cart yet. That way this box
- *   never says "unlocked" while the cart bar (snippets/free-shipping-bar.liquid) still shows a gap.
- *   The message switches between "away" and "unlocked" at the threshold.
+ * - Text only, no progress bar. Message rule:
+ *     nothing chosen (no tick, quantity 1) -> live cart subtotal only, the exact number the cart
+ *       bar (snippets/free-shipping-bar.liquid) uses, so the two can never contradict;
+ *     something chosen (tick or quantity > 1) -> cart + viewed x quantity + ticked mugs,
+ *       i.e. what the cart will hold after pressing the main button.
+ * - Re-reads the live cart on cart updates, when the page is restored with the Back button
+ *   (bfcache) and when the tab becomes visible again (cart changed in another tab).
  * - Threshold: Theme settings > Free shipping (settings.free_shipping_threshold), passed in as cents.
  */
 if (!customElements.get('free-shipping-upsell')) {
@@ -19,9 +22,7 @@ if (!customElements.get('free-shipping-upsell')) {
         this.sectionId = this.dataset.sectionId;
         this.threshold = Math.round(Number(this.dataset.threshold) * rate);
         this.seed = Number(this.dataset.seed) || 0;
-        this.productId = Number(this.dataset.productId);
         this.cartSubtotal = null;
-        this.viewedInCart = false;
 
         this.heading = this.querySelector('[data-fs-heading]');
         this.note = this.querySelector('[data-fs-note]');
@@ -32,9 +33,17 @@ if (!customElements.get('free-shipping-upsell')) {
         this.paymentButton = this.submitButton?.closest('form')?.querySelector('.shopify-payment-button');
 
         this.onQuantityChange = () => this.update();
+        this.onPageShow = (event) => {
+          if (event.persisted) this.refreshCart();
+        };
+        this.onVisibility = () => {
+          if (document.visibilityState === 'visible') this.refreshCart();
+        };
         this.checkboxes.forEach((checkbox) => checkbox.addEventListener('change', () => this.update()));
         document.addEventListener('change', this.onQuantityChange);
         document.addEventListener('input', this.onQuantityChange);
+        window.addEventListener('pageshow', this.onPageShow);
+        document.addEventListener('visibilitychange', this.onVisibility);
 
         this.unsubscribers = [];
         if (typeof subscribe === 'function' && window.PUB_SUB_EVENTS) {
@@ -56,6 +65,8 @@ if (!customElements.get('free-shipping-upsell')) {
       disconnectedCallback() {
         document.removeEventListener('change', this.onQuantityChange);
         document.removeEventListener('input', this.onQuantityChange);
+        window.removeEventListener('pageshow', this.onPageShow);
+        document.removeEventListener('visibilitychange', this.onVisibility);
         (this.unsubscribers || []).forEach((unsubscribe) => unsubscribe && unsubscribe());
       }
 
@@ -76,7 +87,6 @@ if (!customElements.get('free-shipping-upsell')) {
           if (!response.ok) return;
           const cart = await response.json();
           this.cartSubtotal = cart.items_subtotal_price || 0;
-          this.viewedInCart = (cart.items || []).some((item) => item.product_id === this.productId);
           this.update();
         } catch (e) {
           // Keep the last known state if the cart can't be read
@@ -93,8 +103,10 @@ if (!customElements.get('free-shipping-upsell')) {
         if (this.paymentButton) this.paymentButton.hidden = ticked.length > 0;
 
         if (this.cartSubtotal === null || !this.threshold) return;
-        const viewedTotal = this.viewedInCart ? 0 : this.seed * this.quantity;
-        const projected = this.cartSubtotal + viewedTotal + tickedTotal;
+        // Nothing chosen -> real cart only (same number as the cart bar).
+        // Something chosen -> what the cart will hold after pressing the main button.
+        const hasChoice = ticked.length > 0 || this.quantity > 1;
+        const projected = hasChoice ? this.cartSubtotal + addTotal : this.cartSubtotal;
         const remaining = Math.max(0, this.threshold - projected);
         const unlocked = remaining === 0;
 

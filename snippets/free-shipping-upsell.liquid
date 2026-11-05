@@ -2,9 +2,12 @@
   Brutalforce: free shipping box with checkbox add-ons (sits above the buy buttons).
   Ticking a row adds NOTHING to the cart. Ticked mugs are added together with the viewed
   product when the main Add to cart button is pressed (see assets/product-form.js).
-  Text only (no progress bar). Projected total = live cart subtotal + viewed product
-  (price x quantity) + ticked mugs; the message switches at the threshold from
-  Theme settings > Free shipping (settings.free_shipping_threshold).
+  Text only (no progress bar). Message rule (mirrored in assets/free-shipping-upsell.js):
+  - nothing chosen (no tick, quantity 1): amount = live cart subtotal only, exactly what the
+    cart bar (snippets/free-shipping-bar.liquid) shows, so the two can never contradict.
+  - something chosen (tick or quantity > 1): amount = cart + viewed x quantity + ticked mugs,
+    i.e. what the cart will hold after pressing the main button.
+  Threshold: Theme settings > Free shipping (settings.free_shipping_threshold).
 
   @param {block} block - The free_shipping_upsell block (settings: collection, heading_away, heading_unlocked)
   @param {product} product - The product currently being viewed (always excluded from the rows)
@@ -17,20 +20,9 @@
   endif
 
   assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
-  # Count the viewed product only if it isn't in the cart yet, so this box never says
-  # "unlocked" while the cart bar (snippets/free-shipping-bar.liquid) still shows a gap.
+  # First render: nothing is ticked and quantity is 1, so the message reflects the real cart only.
   assign seed_cents = product.selected_or_first_available_variant.price | default: 0
-  assign viewed_in_cart = false
-  for item in cart.items
-    if item.product_id == product.id
-      assign viewed_in_cart = true
-      break
-    endif
-  endfor
   assign projected_cents = cart.items_subtotal_price
-  unless viewed_in_cart
-    assign projected_cents = projected_cents | plus: seed_cents
-  endunless
 
   assign remaining_cents = threshold_cents | minus: projected_cents
   if remaining_cents < 0
@@ -115,7 +107,6 @@
     data-section-id="{{ section_id }}"
     data-threshold="{{ threshold_cents }}"
     data-seed="{{ seed_cents }}"
-    data-product-id="{{ product.id }}"
     data-money-format="{{ shop.money_format | escape }}"
     data-text-away="{{ heading_away | escape }}"
     data-text-unlocked="{{ heading_unlocked | escape }}"
