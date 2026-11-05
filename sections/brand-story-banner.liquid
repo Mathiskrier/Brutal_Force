@@ -1,0 +1,246 @@
+{%- comment -%}
+  Brutalforce: "Born in Tarifa" brand-story banner.
+  Full-width image strip with a dark gradient overlay and white text on top.
+  Used on all product templates (same content everywhere - brand story, not per-product).
+  Image: the "Image" setting if set, otherwise the theme asset born-in-tarifa.jpg.
+{%- endcomment -%}
+{%- liquid
+  assign img = section.settings.image
+  assign alt_text = section.settings.image_alt | default: 'Tarifa beach with the lighthouse, palms bending in the wind and a breaking wave'
+-%}
+
+<div
+  class="bf-story color-{{ section.settings.color_scheme }}"
+  style="margin-top: {{ section.settings.margin_top }}px; margin-bottom: {{ section.settings.margin_bottom }}px; --bf-story-h: {{ section.settings.height_desktop }}px; --bf-story-h-mobile: {{ section.settings.height_mobile }}px; --bf-story-pos: center {{ section.settings.focal_y }}%; --bf-story-pos-mobile: {{ section.settings.focal_x_mobile }}% {{ section.settings.focal_y }}%;"
+>
+  <div class="bf-story__media">
+    {%- if img != blank -%}
+      {{
+        img
+        | image_url: width: 2400
+        | image_tag:
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2000, 2400',
+          class: 'bf-story__img',
+          alt: alt_text
+      }}
+    {%- else -%}
+      <img
+        class="bf-story__img"
+        src="{{ 'born-in-tarifa.jpg' | asset_url }}"
+        alt="{{ alt_text | escape }}"
+        width="760"
+        height="760"
+        loading="lazy"
+        decoding="async"
+      >
+    {%- endif -%}
+    <span class="bf-story__overlay" aria-hidden="true"></span>
+  </div>
+
+  <div class="bf-story__content page-width">
+    <div class="bf-story__text">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="bf-story__heading h1">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="bf-story__body rte">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .bf-story {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--bf-story-h-mobile);
+    overflow: hidden;
+    color: #fff;
+    background: #1b2a2f;
+  }
+
+  .bf-story__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .bf-story__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--bf-story-pos-mobile);
+  }
+
+  /* Dark overlay: strongest behind the text, still lets the photo show through */
+  .bf-story__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0.2) 100%);
+  }
+
+  .bf-story__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .bf-story__text {
+    max-width: 52rem;
+  }
+
+  .bf-story__heading {
+    margin: 0 0 1.2rem;
+    color: #fff;
+    text-shadow: 0 0.1rem 1.2rem rgba(0, 0, 0, 0.25);
+  }
+
+  .bf-story__body,
+  .bf-story__body p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.5rem;
+    line-height: 1.6;
+    letter-spacing: 0.04rem;
+    text-shadow: 0 0.1rem 0.8rem rgba(0, 0, 0, 0.3);
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-story {
+      min-height: var(--bf-story-h);
+    }
+
+    .bf-story__img {
+      object-position: var(--bf-story-pos);
+    }
+
+    /* text on the left: darker on the left, lighter towards the right */
+    .bf-story__overlay {
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.42) 40%, rgba(0, 0, 0, 0.12) 75%, rgba(0, 0, 0, 0.05) 100%);
+    }
+
+    .bf-story__content {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+
+    .bf-story__body,
+    .bf-story__body p {
+      font-size: 1.6rem;
+    }
+  }
+
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Brand story banner",
+  "tag": "section",
+  "class": "section bf-story-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Optional. Empty = the built-in Tarifa photo. For sharp desktop results use an image at least 2000px wide."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Tarifa beach with the lighthouse, palms bending in the wind and a breaking wave"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Born in Tarifa"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Just a few friends in the wind capital of Europe, forever refreshing Windguru for the next session. Over 700 mugs later, we're still at it.</p>"
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "label": "Height on desktop",
+      "min": 280,
+      "max": 520,
+      "step": 10,
+      "unit": "px",
+      "default": 380
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "label": "Height on mobile",
+      "min": 300,
+      "max": 560,
+      "step": 10,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "focal_y",
+      "label": "Image focus (vertical)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 62,
+      "info": "Which part of the photo stays visible when it's cropped. Higher = further down."
+    },
+    {
+      "type": "range",
+      "id": "focal_x_mobile",
+      "label": "Image focus on mobile (horizontal)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 45
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand story banner"
+    }
+  ]
+}
+{% endschema %}

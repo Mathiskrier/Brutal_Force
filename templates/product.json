@@ -9,6 +9,21 @@
  */
 {
   "sections": {
+    "brand_story_tarifa": {
+      "type": "brand-story-banner",
+      "settings": {
+        "heading": "Born in Tarifa",
+        "text": "<p>Just a few friends in the wind capital of Europe, forever refreshing Windguru for the next session. Over 700 mugs later, we're still at it.</p>",
+        "image_alt": "Tarifa beach with the lighthouse, palms bending in the wind and a breaking wave",
+        "height_desktop": 380,
+        "height_mobile": 420,
+        "focal_y": 62,
+        "focal_x_mobile": 45,
+        "color_scheme": "scheme-1",
+        "margin_top": 36,
+        "margin_bottom": 36
+      }
+    },
     "main": {
       "type": "main-product",
       "blocks": {
@@ -250,6 +265,7 @@
   },
   "order": [
     "main",
+    "brand_story_tarifa",
     "related-products",
     "rich_text_fhnJ7R",
     "collapsible_content_9b89xV",
