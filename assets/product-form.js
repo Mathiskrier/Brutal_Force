@@ -46,9 +46,27 @@ if (!customElements.get('product-form')) {
         const quantity = parseInt(formData.get('quantity')) || 1;
         const linesUpdateDeferred = this.createCartLinesUpdateEvent(variantId, quantity);
 
-        fetch(`${routes.cart_add_url}`, config)
+        // Brutalforce: add ticked mugs from the free shipping box (snippets/free-shipping-upsell.liquid)
+        // together with this product, in one /cart/add request.
+        const upsell = document.getElementById(`FreeShippingUpsell-${this.dataset.sectionId}`);
+        const upsellSelection =
+          upsell && typeof upsell.getSelections === 'function' ? upsell.getSelections() : Promise.resolve(null);
+
+        upsellSelection
+          .catch(() => null)
+          .then((selection) => {
+            if (selection && selection.items.length) this.appendUpsellItems(formData, selection.items);
+            config.body = formData;
+            return fetch(`${routes.cart_add_url}`, config);
+          })
           .then((response) => response.json())
           .then((response) => {
+            // Multi-item adds return { items: [...] }; the cart notification needs the main line's key
+            if (!response.status && !response.key && Array.isArray(response.items) && response.items[0]) {
+              response.key = response.items[0].key;
+            }
+            if (!response.status && upsell && typeof upsell.afterAdd === 'function') upsell.afterAdd();
+
             if (response.status) {
               publish(PUB_SUB_EVENTS.cartError, {
                 source: 'product-form',
@@ -133,6 +151,32 @@ if (!customElements.get('product-form')) {
         if (errorMessage) {
           this.errorMessage.textContent = errorMessage;
         }
+      }
+
+      // Brutalforce: turn the single-product form data into an items[] add (main product first)
+      appendUpsellItems(formData, extraItems) {
+        const mainId = formData.get('id');
+        const quantity = parseInt(formData.get('quantity')) || 1;
+        const sellingPlan = formData.get('selling_plan');
+        const properties = [];
+        for (const [key, value] of formData.entries()) {
+          if (key.startsWith('properties[')) properties.push([key, value]);
+        }
+
+        ['id', 'quantity', 'selling_plan'].forEach((key) => formData.delete(key));
+        properties.forEach(([key]) => formData.delete(key));
+
+        formData.append('items[0][id]', mainId);
+        formData.append('items[0][quantity]', quantity);
+        if (sellingPlan) formData.append('items[0][selling_plan]', sellingPlan);
+        properties.forEach(([key, value]) =>
+          formData.append(`items[0][properties]${key.slice('properties'.length)}`, value)
+        );
+
+        extraItems.forEach((item, index) => {
+          formData.append(`items[${index + 1}][id]`, item.id);
+          formData.append(`items[${index + 1}][quantity]`, item.quantity);
+        });
       }
 
       toggleSubmitButton(disable = true, text) {

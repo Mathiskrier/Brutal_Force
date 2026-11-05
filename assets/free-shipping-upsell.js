@@ -1,9 +1,12 @@
 /*
- * Brutalforce: free shipping upsell (snippets/free-shipping-upsell.liquid)
- * - Reads the live cart (/cart.js) and shows how far the order is from free shipping.
- *   Projected order = cart subtotal + the viewed product, if it is not in the cart yet.
- * - "Add" buttons add the first available variant via /cart/add.js without leaving the page,
- *   then refresh the cart notification / drawer, the cart icon and this bar.
+ * Brutalforce: free shipping box with checkbox add-ons (snippets/free-shipping-upsell.liquid)
+ *
+ * - Ticking a row adds NOTHING to the cart. It only marks that mug for the main Add to cart.
+ * - assets/product-form.js asks this element for the ticked mugs (getSelections) when the
+ *   main button is pressed, and adds viewed product + ticked mugs in one /cart/add request.
+ * - Bar amount = live cart subtotal (/cart.js) + viewed product (price x quantity) + ticked mugs.
+ *   That is exactly what the cart will hold after pressing the main button now.
+ * - Threshold: Theme settings > Free shipping (settings.free_shipping_threshold), passed in as cents.
  */
 if (!customElements.get('free-shipping-upsell')) {
   customElements.define(
@@ -11,45 +14,83 @@ if (!customElements.get('free-shipping-upsell')) {
     class FreeShippingUpsell extends HTMLElement {
       connectedCallback() {
         const rate = Number(window.Shopify?.currency?.rate) || 1;
+        this.sectionId = this.dataset.sectionId;
         this.threshold = Math.round(Number(this.dataset.threshold) * rate);
         this.seed = Number(this.dataset.seed) || 0;
-        this.productId = Number(this.dataset.productId);
+        this.cartSubtotal = null;
+
         this.heading = this.querySelector('[data-fs-heading]');
         this.bar = this.querySelector('.fs-upsell__bar');
         this.fill = this.querySelector('.fs-upsell__bar-fill');
+        this.note = this.querySelector('[data-fs-note]');
+        this.checkboxes = Array.from(this.querySelectorAll('.fs-upsell__checkbox'));
 
-        this.querySelectorAll('[data-variant-id]').forEach((button) => {
-          button.addEventListener('click', () => this.add(button));
-        });
+        this.submitButton = document.getElementById(`ProductSubmitButton-${this.sectionId}`);
+        this.submitText = this.submitButton?.querySelector('span');
+        this.paymentButton = this.submitButton?.closest('form')?.querySelector('.shopify-payment-button');
 
+        this.onQuantityChange = () => this.update();
+        this.checkboxes.forEach((checkbox) => checkbox.addEventListener('change', () => this.update()));
+        document.addEventListener('change', this.onQuantityChange);
+        document.addEventListener('input', this.onQuantityChange);
+
+        this.unsubscribers = [];
         if (typeof subscribe === 'function' && window.PUB_SUB_EVENTS) {
-          this.unsubscribe = subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => {
-            if (event?.source !== 'free-shipping-upsell') this.refresh();
-          });
+          this.unsubscribers.push(subscribe(PUB_SUB_EVENTS.cartUpdate, () => this.refreshCart()));
+          this.unsubscribers.push(
+            subscribe(PUB_SUB_EVENTS.variantChange, (event) => {
+              if (event?.data?.sectionId !== this.sectionId) return;
+              if (event.data.variant) this.seed = Number(event.data.variant.price) || 0;
+              // product-info.js resets the button text on variant change; re-apply ours afterwards
+              setTimeout(() => this.update());
+            })
+          );
         }
 
-        this.refresh();
+        this.update();
+        this.refreshCart();
       }
 
       disconnectedCallback() {
-        if (this.unsubscribe) this.unsubscribe();
+        document.removeEventListener('change', this.onQuantityChange);
+        document.removeEventListener('input', this.onQuantityChange);
+        (this.unsubscribers || []).forEach((unsubscribe) => unsubscribe && unsubscribe());
       }
 
-      async refresh() {
+      get quantity() {
+        const input = document.getElementById(`Quantity-${this.sectionId}`);
+        return Math.max(1, parseInt(input?.value, 10) || 1);
+      }
+
+      get ticked() {
+        return this.checkboxes.filter((checkbox) => checkbox.checked && !checkbox.disabled);
+      }
+
+      async refreshCart() {
         try {
-          const cartUrl = (window.routes?.cart_url || '/cart') + '.js';
-          const response = await fetch(cartUrl, { headers: { Accept: 'application/json' } });
+          const response = await fetch(`${window.routes?.cart_url || '/cart'}.js`, {
+            headers: { Accept: 'application/json' },
+          });
           if (!response.ok) return;
-          this.render(await response.json());
+          const cart = await response.json();
+          this.cartSubtotal = cart.items_subtotal_price || 0;
+          this.update();
         } catch (e) {
-          // Keep the server-rendered state if the cart can't be read
+          // Keep the last known state if the cart can't be read
         }
       }
 
-      render(cart) {
-        if (!this.threshold) return;
-        const viewedInCart = (cart.items || []).some((item) => item.product_id === this.productId);
-        const projected = (cart.items_subtotal_price || 0) + (viewedInCart ? 0 : this.seed);
+      update() {
+        const ticked = this.ticked;
+        const tickedTotal = ticked.reduce((sum, checkbox) => sum + Number(checkbox.dataset.price || 0), 0);
+        const addTotal = this.seed * this.quantity + tickedTotal;
+        const addCount = this.quantity + ticked.length;
+
+        this.updateButton(addCount, addTotal);
+        if (this.paymentButton) this.paymentButton.hidden = ticked.length > 0;
+
+        if (this.cartSubtotal === null || !this.threshold) return;
+        const projected = this.cartSubtotal + addTotal;
         const remaining = Math.max(0, this.threshold - projected);
         const progress = Math.min(100, (projected / this.threshold) * 100);
         const unlocked = remaining === 0;
@@ -62,61 +103,87 @@ if (!customElements.get('free-shipping-upsell')) {
           : this.dataset.textAway.replace('[amount]', this.formatMoney(remaining));
       }
 
-      async add(button) {
-        if (button.disabled) return;
-        button.disabled = true;
-        button.classList.add('is-loading');
-
-        const cartUi = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
-        const body = { id: Number(button.dataset.variantId), quantity: 1 };
-        if (cartUi && typeof cartUi.getSectionsToRender === 'function') {
-          body.sections = cartUi.getSectionsToRender().map((section) => section.id);
-          body.sections_url = window.location.pathname;
-        }
-
-        try {
-          const addUrl = (window.routes?.cart_add_url || '/cart/add') + '.js';
-          const response = await fetch(addUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify(body),
-          });
-          const data = await response.json();
-          if (!response.ok || data.status) throw data;
-
-          if (cartUi) {
-            cartUi.classList.remove('is-empty');
-            try {
-              cartUi.renderContents(data);
-            } catch (e) {
-              // Cart UI could not be refreshed; the item is still in the cart
-            }
-          }
-
-          if (typeof publish === 'function' && window.PUB_SUB_EVENTS) {
-            publish(PUB_SUB_EVENTS.cartUpdate, {
-              source: 'free-shipping-upsell',
-              productVariantId: body.id,
-              cartData: data,
-            });
-          }
-
-          this.flash(button, 'is-added');
-          await this.refresh();
-        } catch (error) {
-          this.flash(button, 'is-error');
-          if (error?.description) console.warn('[free-shipping-upsell]', error.description);
-        } finally {
-          button.disabled = false;
-          button.classList.remove('is-loading');
-        }
+      updateButton(count, total) {
+        if (!this.submitButton || !this.submitText) return;
+        if (this.submitButton.hasAttribute('disabled')) return; // sold out / unavailable: keep theme text
+        const base = window.variantStrings?.addToCart || 'Add to cart';
+        const label = count > 1 ? `Add ${count} to cart` : base;
+        this.submitText.textContent = `${label} · ${this.formatMoney(total)}`;
       }
 
-      flash(button, className) {
-        button.classList.remove('is-added', 'is-error');
-        button.classList.add(className);
-        clearTimeout(button.flashTimer);
-        button.flashTimer = setTimeout(() => button.classList.remove(className), 2000);
+      /*
+       * Called by product-form.js right before adding to the cart.
+       * Re-checks availability of ticked mugs, skips unavailable ones and tells the customer.
+       */
+      async getSelections() {
+        const ticked = this.ticked;
+        const items = [];
+        const skipped = [];
+        this.hideNote();
+
+        await Promise.all(
+          ticked.map(async (checkbox) => {
+            const variantId = Number(checkbox.value);
+            let available = true;
+            try {
+              const root = window.Shopify?.routes?.root || '/';
+              const response = await fetch(`${root}products/${checkbox.dataset.handle}.js`, {
+                headers: { Accept: 'application/json' },
+              });
+              if (response.ok) {
+                const product = await response.json();
+                const variant = (product.variants || []).find((v) => v.id === variantId);
+                available = Boolean(variant && variant.available);
+              } else {
+                available = false;
+              }
+            } catch (e) {
+              available = true; // network hiccup: let /cart/add decide
+            }
+
+            if (available) {
+              items.push({ id: variantId, quantity: 1 });
+            } else {
+              skipped.push(checkbox.dataset.title);
+              checkbox.checked = false;
+              checkbox.disabled = true;
+              checkbox.closest('.fs-upsell__item')?.classList.add('is-unavailable');
+            }
+          })
+        );
+
+        // keep the order of the rows
+        items.sort(
+          (a, b) =>
+            this.checkboxes.findIndex((c) => Number(c.value) === a.id) -
+            this.checkboxes.findIndex((c) => Number(c.value) === b.id)
+        );
+
+        if (skipped.length) {
+          const verb = skipped.length > 1 ? "are no longer available and weren't" : "is no longer available and wasn't";
+          this.showNote(`${skipped.join(' and ')} ${verb} added.`);
+          this.update();
+        }
+        return { items, skipped };
+      }
+
+      // Called by product-form.js after a successful add
+      afterAdd() {
+        this.checkboxes.forEach((checkbox) => (checkbox.checked = false));
+        this.update();
+        this.refreshCart();
+      }
+
+      showNote(text) {
+        if (!this.note) return;
+        this.note.textContent = text;
+        this.note.classList.remove('hidden');
+      }
+
+      hideNote() {
+        if (!this.note) return;
+        this.note.textContent = '';
+        this.note.classList.add('hidden');
       }
 
       formatMoney(cents) {

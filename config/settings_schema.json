@@ -1273,6 +1273,18 @@
     ]
   },
   {
+    "name": "Free shipping",
+    "settings": [
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "default": 30,
+        "info": "In store currency. Must match your free shipping discount (Discounts > FreeShipping). Read by the product page free shipping box and any cart free shipping bar."
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.brand_information.name",
     "settings": [
       {
