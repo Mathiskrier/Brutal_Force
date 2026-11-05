@@ -1604,3 +1604,52 @@ a.product__text {
 .product__info-container .payment-trust .list-payment__item {
   padding: 0.3rem;
 }
+
+/* Brutalforce: main "Add to cart & continue" button - the loudest element in the buy box.
+   Version is chosen in the theme editor: Buy buttons block > Main button style (black | yellow). */
+.product-form__submit.bf-cta {
+  --bf-cta-bg: 17, 17, 17;          /* A: brand black */
+  --bf-cta-bg-hover: 51, 51, 51;
+  --color-button-text: 255, 255, 255;
+  --bf-cta-shadow: 0 0.4rem 1.4rem rgba(0, 0, 0, 0.22);
+  --bf-cta-shadow-hover: 0 0.6rem 1.8rem rgba(0, 0, 0, 0.28);
+
+  min-height: 5.6rem;
+  padding: 0 2rem;
+  border-radius: var(--buttons-radius-outset, 0.5rem);
+  background-color: rgb(var(--bf-cta-bg));
+  color: rgb(var(--color-button-text));
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05rem;
+  box-shadow: var(--bf-cta-shadow);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.product-form__submit.bf-cta--yellow {
+  --bf-cta-bg: 255, 196, 57;        /* B: PayPal yellow #FFC439 */
+  --bf-cta-bg-hover: 242, 177, 30;
+  --color-button-text: 17, 17, 17;
+  --bf-cta-shadow: 0 0.4rem 1.4rem rgba(0, 0, 0, 0.16);
+  --bf-cta-shadow-hover: 0 0.6rem 1.8rem rgba(0, 0, 0, 0.22);
+}
+
+/* drop the theme's thin border/shadow layers so the button reads solid */
+.product-form__submit.bf-cta::before,
+.product-form__submit.bf-cta::after {
+  box-shadow: none !important;
+}
+
+.product-form__submit.bf-cta:not([disabled]):hover {
+  background-color: rgb(var(--bf-cta-bg-hover));
+  box-shadow: var(--bf-cta-shadow-hover);
+}
+
+.product-form__submit.bf-cta:not([disabled]):active {
+  transform: translateY(0.1rem);
+  box-shadow: var(--bf-cta-shadow);
+}
+
+.product-form__submit.bf-cta[disabled] {
+  box-shadow: none;
+}

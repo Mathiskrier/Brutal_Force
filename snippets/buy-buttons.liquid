@@ -79,13 +79,19 @@
             if add_to_cart_label == blank
               assign add_to_cart_label = 'products.product.add_to_cart' | t
             endif
+
+            # Brutalforce: bold main CTA (Buy buttons block > Main button style: black | yellow)
+            assign main_button_class = ''
+            if block.settings.main_button_style != blank
+              assign main_button_class = ' bf-cta bf-cta--' | append: block.settings.main_button_style
+            endif
           -%}
           <button
             id="ProductSubmitButton-{{ section_id }}"
             type="submit"
             name="add"
             data-add-label="{{ add_to_cart_label | escape }}"
-            class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+            class="product-form__submit button button--full-width {% if show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}{{ main_button_class }}"
             {% if product.selected_or_first_available_variant.available == false
               or quantity_rule_soldout
               or product.selected_or_first_available_variant == null

@@ -67,6 +67,7 @@
           "settings": {
             "show_dynamic_checkout": false,
             "add_to_cart_label": "Add to cart & continue",
+            "main_button_style": "black",
             "show_gift_card_recipient": true
           }
         },
