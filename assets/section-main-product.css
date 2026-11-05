@@ -359,7 +359,7 @@ a.product__text {
 
 /* Brutalforce: calm, trustworthy bullet list (icon-with-text block in the buy box) */
 .product__info-container .icon-with-text--vertical {
-  --icon-size: 2rem;
+  --icon-size: 2.2rem;
   --icon-spacing: 1.2rem;
   display: flex;
   flex-direction: column;
@@ -380,8 +380,8 @@ a.product__text {
 /* Lucide line icons (assets/icon-lucide-*.svg): thin stroke, no fill */
 .icon-with-text .svg-wrapper .icon-lucide {
   fill: none;
-  stroke: rgba(var(--color-foreground), 0.85);
-  stroke-width: 1.5;
+  stroke: rgb(var(--color-foreground));
+  stroke-width: 2;
   width: 100%;
   height: 100%;
 }
