@@ -108,6 +108,11 @@
                 {{ add_to_cart_label | escape }}
               {%- endif -%}
             </span>
+            {%- if main_button_class != blank -%}
+              <span class="bf-cta__arrow" aria-hidden="true">
+                {{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}
+              </span>
+            {%- endif -%}
             {%- render 'loading-spinner' -%}
           </button>
           {%- if show_dynamic_checkout -%}
