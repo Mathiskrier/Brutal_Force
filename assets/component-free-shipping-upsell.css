@@ -226,7 +226,7 @@
 }
 
 /* Tablet: the info column is very narrow (~285px) - keep 64px images and put the
-   price under the name/knots so the name keeps the full text width */
+   price under the name/knots so the name keeps the full text width (tablet only) */
 @media screen and (min-width: 750px) and (max-width: 989px) {
   .fs-upsell__row {
     grid-template-columns: 2.2rem 6.4rem minmax(0, 1fr);
