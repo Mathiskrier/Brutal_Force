@@ -139,6 +139,9 @@
   border-radius: 0.6rem;
   overflow: hidden;
   background: rgb(255, 255, 255);
+  /* very light frame so the white product photo sits cleanly on the green box */
+  border: 1px solid rgba(var(--color-foreground), 0.1);
+  box-sizing: border-box;
 }
 
 .fs-upsell__img {
