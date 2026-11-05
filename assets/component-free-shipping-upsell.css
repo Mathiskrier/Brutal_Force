@@ -225,10 +225,31 @@
   color: rgba(var(--color-foreground), 0.6);
 }
 
-/* Tablet: the info column is narrow - keep 64px images, tighter gaps */
+/* Tablet: the info column is very narrow (~285px) - keep 64px images and put the
+   price under the name/knots so the name keeps the full text width */
 @media screen and (min-width: 750px) and (max-width: 989px) {
   .fs-upsell__row {
-    gap: 0.8rem;
+    grid-template-columns: 2.2rem 6.4rem minmax(0, 1fr);
+    grid-template-areas:
+      'box media title'
+      'box media price';
+    column-gap: 0.8rem;
+    row-gap: 0.2rem;
+  }
+
+  .fs-upsell__box { grid-area: box; }
+  .fs-upsell__media { grid-area: media; }
+  .fs-upsell__title { grid-area: title; align-self: end; }
+
+  .fs-upsell__price {
+    grid-area: price;
+    align-self: start;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    column-gap: 0.6rem;
+    text-align: left;
   }
 }
 
