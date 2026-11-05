@@ -46,7 +46,7 @@ if (!customElements.get('free-shipping-upsell')) {
         document.addEventListener('visibilitychange', this.onVisibility);
 
         this.unsubscribers = [];
-        if (typeof subscribe === 'function' && window.PUB_SUB_EVENTS) {
+        if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
           this.unsubscribers.push(subscribe(PUB_SUB_EVENTS.cartUpdate, () => this.refreshCart()));
           this.unsubscribers.push(
             subscribe(PUB_SUB_EVENTS.variantChange, (event) => {

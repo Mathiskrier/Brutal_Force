@@ -65,7 +65,7 @@
     .catch(() => {});
 
   // Track changes made on this page so a later check doesn't treat them as stale
-  if (typeof subscribe === 'function' && window.PUB_SUB_EVENTS) {
+  if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
     subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => {
       const cart = event?.cartData;
       if (cart && typeof cart.item_count === 'number') {
