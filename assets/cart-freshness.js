@@ -55,25 +55,29 @@
     }
   }
 
-  // Remember the cart this page was rendered with
-  fetch(`${window.routes?.cart_url || '/cart'}.js`, { headers: { Accept: 'application/json' } })
-    .then((r) => r.json())
-    .then((cart) => {
-      lastItemCount = cart.item_count;
-      lastSubtotal = cart.items_subtotal_price;
-    })
-    .catch(() => {});
+  // Remember the cart this page currently shows
+  function rememberLiveCart() {
+    return fetch(`${window.routes?.cart_url || '/cart'}.js`, { headers: { Accept: 'application/json' } })
+      .then((r) => r.json())
+      .then((cart) => {
+        lastItemCount = cart.item_count;
+        lastSubtotal = cart.items_subtotal_price;
+      })
+      .catch(() => {});
+  }
+  rememberLiveCart();
 
-  // Track changes made on this page so a later check doesn't treat them as stale
+  // Changes made on this page re-render the cart themselves: just update the baseline
   if (typeof subscribe === 'function' && typeof PUB_SUB_EVENTS !== 'undefined') {
     subscribe(PUB_SUB_EVENTS.cartUpdate, (event) => {
       const cart = event?.cartData;
-      if (cart && typeof cart.item_count === 'number') {
+      if (cart && typeof cart.item_count === 'number' && typeof cart.items_subtotal_price === 'number') {
         lastItemCount = cart.item_count;
         lastSubtotal = cart.items_subtotal_price;
       } else {
         lastItemCount = null;
         lastSubtotal = null;
+        rememberLiveCart();
       }
     });
   }
