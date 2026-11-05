@@ -347,6 +347,12 @@ a.product__text {
   vertical-align: middle;
 }
 
+.product__info-container .jdgm-prev-badge__text {
+  font-size: 1.4rem;
+  letter-spacing: 0.04rem;
+  vertical-align: middle;
+}
+
 .product__info-container .jdgm-prev-badge__text::before {
   content: '· ';
 }
