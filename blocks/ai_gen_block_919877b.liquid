@@ -1,0 +1,380 @@
+{% doc %}
+  @prompt
+    a testimonial section. with an image a name a comment
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-testimonial-{{ ai_gen_id }} {
+    padding: 40px 20px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-testimonial-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: {{ block.settings.layout }};
+    gap: 30px;
+    align-items: center;
+  }
+
+  .ai-testimonial-image-wrapper-{{ ai_gen_id }} {
+    flex-shrink: 0;
+  }
+
+  .ai-testimonial-image-{{ ai_gen_id }} {
+    width: {{ block.settings.image_size }}px;
+    height: {{ block.settings.image_size }}px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    object-fit: cover;
+  }
+
+  .ai-testimonial-image-placeholder-{{ ai_gen_id }} {
+    width: {{ block.settings.image_size }}px;
+    height: {{ block.settings.image_size }}px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: {{ block.settings.image_border_radius }}px;
+  }
+
+  .ai-testimonial-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-testimonial-text-{{ ai_gen_id }} {
+    flex: 1;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-testimonial-comment-{{ ai_gen_id }} {
+    font-size: {{ block.settings.comment_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.comment_color }};
+    margin: 0 0 20px 0;
+    font-style: {{ block.settings.comment_style }};
+  }
+
+  .ai-testimonial-name-{{ ai_gen_id }} {
+    font-size: {{ block.settings.name_size }}px;
+    font-weight: {{ block.settings.name_weight }};
+    color: {{ block.settings.name_color }};
+    margin: 0;
+  }
+
+  .ai-testimonial-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 15px;
+    {% if block.settings.text_alignment == 'center' %}
+      justify-content: center;
+    {% elsif block.settings.text_alignment == 'right' %}
+      justify-content: flex-end;
+    {% else %}
+      justify-content: flex-start;
+    {% endif %}
+  }
+
+  .ai-testimonial-star-{{ ai_gen_id }} {
+    width: {{ block.settings.star_size }}px;
+    height: {{ block.settings.star_size }}px;
+    fill: {{ block.settings.star_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-testimonial-content-{{ ai_gen_id }} {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .ai-testimonial-text-{{ ai_gen_id }} {
+      text-align: center;
+    }
+
+    .ai-testimonial-stars-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+
+    .ai-testimonial-image-{{ ai_gen_id }},
+    .ai-testimonial-image-placeholder-{{ ai_gen_id }} {
+      width: {{ block.settings.image_size | times: 0.8 }}px;
+      height: {{ block.settings.image_size | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-testimonial-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-testimonial-content-{{ ai_gen_id }}">
+    <div class="ai-testimonial-image-wrapper-{{ ai_gen_id }}">
+      {% if block.settings.image %}
+        <img
+          src="{{ block.settings.image | image_url: width: 400 }}"
+          alt="{{ block.settings.name | escape }}"
+          class="ai-testimonial-image-{{ ai_gen_id }}"
+          loading="lazy"
+          width="{{ block.settings.image_size }}"
+          height="{{ block.settings.image_size }}"
+        >
+      {% else %}
+        <div class="ai-testimonial-image-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-testimonial-text-{{ ai_gen_id }}">
+      {% if block.settings.show_stars %}
+        <div class="ai-testimonial-stars-{{ ai_gen_id }}">
+          {% for i in (1..block.settings.rating) %}
+            <svg class="ai-testimonial-star-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.comment != blank %}
+        <div class="ai-testimonial-comment-{{ ai_gen_id }}">
+          {{ block.settings.comment }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.name != blank %}
+        <p class="ai-testimonial-name-{{ ai_gen_id }}">{{ block.settings.name }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonial",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_size",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Image size",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Image border radius",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "comment",
+      "label": "Comment",
+      "default": "<p>This product exceeded my expectations! The quality is outstanding and it arrived faster than I thought. Highly recommend to anyone looking for excellence.</p>"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "Sarah Johnson"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show star rating",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "row",
+          "label": "Horizontal"
+        },
+        {
+          "value": "column",
+          "label": "Vertical"
+        }
+      ],
+      "default": "row"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 400,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 800
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "comment_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Comment size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "comment_color",
+      "label": "Comment color",
+      "default": "#121212"
+    },
+    {
+      "type": "select",
+      "id": "comment_style",
+      "label": "Comment style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "italic"
+    },
+    {
+      "type": "range",
+      "id": "name_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Name size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "name_weight",
+      "label": "Name weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Star size",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#fce477"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial"
+    }
+  ]
+}
+{% endschema %}

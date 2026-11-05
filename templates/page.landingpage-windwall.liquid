@@ -1,0 +1,1118 @@
+
+{% layout none %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WindWall — Your wind. On your wall.</title>
+<meta name="description" content="A live LED display for kiters, windsurfers and sailors. Wind, swell and tide from your favorite spots — always on your wall.">
+
+<!-- ═══ GOOGLE ANALYTICS GA4 — replace G-XXXXXXXXXX with your Measurement ID ═══ -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script> -->
+
+<!-- ═══ META PIXEL — replace XXXXXXXXXXXXXXXX with your Pixel ID ═══ -->
+<!-- <script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', 'XXXXXXXXXXXXXXXX');
+  fbq('track', 'PageView');
+</script> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --off: #f5f4f0;
+    --muted: #888;
+    --accent: #ff8800;
+    --accent2: #ff44aa;
+    --green: #39d353;
+    --blue: #4fc3f7;
+    --border: #e8e8e4;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700; letter-spacing:-0.5px;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    color: var(--black);
+    text-decoration: none;
+  }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.75; }
+
+  /* HERO */
+  .hero {
+    padding: 160px 40px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .hero-left {}
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .hero-tag span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700;
+    font-size: clamp(44px, 5vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -2px;
+    color: var(--black);
+    margin-bottom: 24px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: #555;
+    line-height: 1.65;
+    max-width: 420px;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .hero-cta-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: fit-content;
+  }
+  .btn-primary:hover {
+    background: #222;
+    transform: translateY(-1px);
+  }
+
+  .hero-trust {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .hero-trust span { display: flex; align-items: center; gap: 5px; }
+  .hero-trust svg { color: var(--accent); }
+
+  /* DISPLAY MOCKUP */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* TRUST STRIP */
+  .trust-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    background: var(--off);
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+  }
+  .trust-item svg { color: var(--black); }
+
+  /* FEATURES */
+  .features {
+    max-width: 1100px;
+    margin: 100px auto;
+    padding: 0 40px;
+  }
+  .section-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    margin-bottom: 60px;
+    max-width: 500px;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .feature-card {
+    background: var(--off);
+    padding: 36px 32px;
+    transition: background 0.2s;
+  }
+  .feature-card:first-child { border-radius: 16px 0 0 16px; }
+  .feature-card:last-child { border-radius: 0 16px 16px 0; }
+  .feature-card:hover { background: #eeede9; }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: var(--black);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  .feature-title {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .feature-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* HOW IT WORKS */
+  .how {
+    background: var(--black);
+    color: var(--white);
+    padding: 100px 40px;
+  }
+  .how-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .how .section-tag { color: #555; }
+  .how .section-title { color: var(--white); }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+  }
+  .step { }
+  .step-num {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700;
+    font-size: 48px;
+    color: #222;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .step-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* SPECS */
+  .specs {
+    max-width: 1100px;
+    margin: 100px auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .specs-list {
+    list-style: none;
+    border-top: 1px solid var(--border);
+  }
+  .specs-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .specs-list li span:first-child { color: var(--muted); font-weight: 300; }
+  .specs-list li span:last-child { font-weight: 500; }
+
+  /* BOTTOM CTA */
+  .bottom-cta {
+    background: var(--off);
+    padding: 100px 40px;
+    text-align: center;
+  }
+  .bottom-cta h2 {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700;
+    font-size: clamp(36px, 5vw, 60px);
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+  .bottom-cta h2 em { font-style: italic; color: var(--muted); }
+  .bottom-cta p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 100%;
+  }
+  .footer-logo {
+    font-family: 'Space Grotesk', sans-serif; font-weight:700;
+    font-size: 16px;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  /* RESPONSIVE — TABLET */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr 1fr !important; gap: 40px !important; padding: 100px 30px 60px !important; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 28px; }
+    .specs { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  /* RESPONSIVE — MOBILE */
+  @media (max-width: 640px) {
+    nav { padding: 14px 20px; }
+    .nav-cta { padding: 8px 16px; font-size: 13px; }
+
+    /* Hero — stacked, image first */
+    .hero-inner {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+      padding: 70px 20px 40px !important;
+    }
+    .hero-text { order: 2; padding: 0 4px; }
+    .hero-img { order: 1; }
+
+    /* Image no border radius on sides */
+    .hero-img img { border-radius: 10px !important; }
+
+    /* tag smaller */
+    .hero-inner .hero-tag-wrap { margin-bottom: 16px !important; }
+
+    /* H1 tighter on mobile */
+    .hero-inner h1 {
+      font-size: 34px !important;
+      letter-spacing: -1px !important;
+      line-height: 1.1 !important;
+      margin-bottom: 14px !important;
+    }
+    .hero-inner p {
+      font-size: 15px !important;
+      margin-bottom: 24px !important;
+      line-height: 1.6 !important;
+    }
+
+    /* CTA button full width */
+    .hero-inner button {
+      width: 100% !important;
+      justify-content: center !important;
+      padding: 15px 24px !important;
+    }
+
+    /* FAQ mobile */
+    #faq-list .faq-q { font-size: 15px !important; }
+
+    /* Trust grid mobile */
+    .trust-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* Gallery mobile — stack vertically */
+    .gallery-grid { grid-template-columns: 1fr !important; }
+    .gallery-grid > div:first-child { grid-row: auto !important; aspect-ratio: 16/9 !important; }
+    .gallery-grid > div { aspect-ratio: 16/9 !important; }
+
+    /* Trust items inline */
+    .hero-trust {
+      gap: 10px !important;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    .hero-trust span { font-size: 12px !important; }
+
+    /* Trust strip */
+    .trust-strip { gap: 16px; flex-wrap: wrap; padding: 16px 20px; justify-content: center; }
+    .trust-item { font-size: 12px; }
+
+    /* Features */
+    .features { padding: 0 20px; margin: 48px auto; }
+    .features-grid { grid-template-columns: 1fr; gap: 2px; }
+    .feature-card:first-child { border-radius: 16px 16px 0 0; }
+    .feature-card:last-child { border-radius: 0 0 16px 16px; }
+    .feature-card { padding: 28px 24px; }
+    .section-title { font-size: 28px !important; }
+
+    /* How it works */
+    .how { padding: 48px 20px; }
+    .steps { grid-template-columns: 1fr; gap: 28px; }
+
+    /* Specs */
+    .specs { grid-template-columns: 1fr; gap: 32px; padding: 0 20px; margin: 48px auto; }
+
+    /* Bottom CTA */
+    .bottom-cta { padding: 48px 20px; }
+    .bottom-cta h2 { font-size: 30px !important; }
+    .bottom-cta button { width: 100% !important; justify-content: center !important; }
+
+    /* Modal */
+    .modal { padding: 32px 24px; }
+
+    /* Footer */
+    footer { padding: 20px; flex-direction: column; gap: 8px; text-align: center; }
+    section[style*="max-width:720px"] { padding-left: 20px !important; padding-right: 20px !important; }
+    section[style*="background:#f5f4f0"] { padding: 60px 20px !important; }
+    section[style*="background:#f5f4f0"] > div { grid-template-columns: 1fr !important; gap: 32px !important; text-align: center; }
+    section[style*="background:#f5f4f0"] > div > div:first-child { text-align: center; }
+    section[style*="background:#f5f4f0"] p { font-size: 15px !important; }
+  }
+</style>
+<!-- Omnisend -->
+<script type="text/javascript">
+  window.omnisend = window.omnisend || [];
+  omnisend.push(["accountID", "6a12b1449c08a1ea49814c33"]);
+  omnisend.push(["track", "$pageViewed"]);
+</script>
+<script async src="https://omnisnippet1.com/inshop/launcher-v2.js"></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" style="text-decoration:none; font-family:'Space Grotesk',sans-serif; font-size:18px; font-weight:700; letter-spacing:-0.5px; color:#0a0a0a;">WindWall</a>
+  <button class="nav-cta" onclick="if(window.omnisend && window.omnisend.push){window.omnisend.push(['openForm','6a1ac58b5cab28beff904406']);}else{window.omnisend=window.omnisend||[];window.omnisend.push(['openForm','6a1ac58b5cab28beff904406']);}">Order your WindWall</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" style="background:linear-gradient(160deg,#0a0a0a 0%,#141414 100%); padding:0; overflow:hidden;">
+
+  <!-- top bar accent line -->
+  <div style="height:3px; background:linear-gradient(90deg,#ff8800,#ff44aa,#39d353);"></div>
+
+  <div style="padding:100px 40px 80px; max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1.4fr; gap:60px; align-items:center;" class="hero-inner">
+  <div class="hero-text">
+    <!-- tag -->
+    <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,136,0,0.12); border:1px solid rgba(255,136,0,0.3); border-radius:100px; padding:6px 14px; margin-bottom:28px;">
+      <span style="width:7px;height:7px;border-radius:50%;background:#ff8800;animation:pulse 2s infinite;display:inline-block;"></span>
+      <span style="font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#ff8800;">Coming soon</span>
+    </div>
+
+    <!-- H1 -->
+    <h1 style="font-family:'Space Grotesk',sans-serif; font-size:clamp(38px,4.5vw,58px); line-height:1.08; letter-spacing:-1.5px; font-weight:700; color:#ffffff; margin-bottom:20px;">
+      Your favourite<br>surf spots.<br>
+      <span style="color:#ff8800;">Live on your wall.</span>
+    </h1>
+
+    <!-- subline -->
+    <p style="font-size:16px; color:#888; line-height:1.7; font-weight:400; margin-bottom:36px; max-width:400px;">
+      WindWall is a live LED display that shows real-time wind, swell and tide from your favourite kite and surf spots — rotating automatically, always on.
+    </p>
+
+    <!-- CTA -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <button onclick="if(window.omnisend && window.omnisend.push){window.omnisend.push(['openForm','6a1ac58b5cab28beff904406']);}else{window.omnisend=window.omnisend||[];window.omnisend.push(['openForm','6a1ac58b5cab28beff904406']);}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#ff8800;color:#fff;border:none;padding:16px 32px;border-radius:100px;font-size:15px;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;transition:all 0.2s;width:fit-content;letter-spacing:0.2px;" onmouseover="this.style.background='#e67a00'" onmouseout="this.style.background='#ff8800'">
+        Order your WindWall
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="hero-trust" style="display:flex;gap:20px;flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;font-weight:500;">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="6" stroke="#ff8800" stroke-width="1.2"/><path d="M4 6.5l2 2 3-3" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Free shipping
+        </span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;font-weight:500;">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="6" stroke="#ff8800" stroke-width="1.2"/><path d="M4 6.5l2 2 3-3" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          No subscription. Ever.
+        </span>
+        <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;font-weight:500;">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="6" stroke="#ff8800" stroke-width="1.2"/><path d="M4 6.5l2 2 3-3" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Early bird pricing
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-img" style="display:flex; justify-content:center; align-items:center;">
+    <img src="https://cdn.shopify.com/s/files/1/0908/1566/0418/files/ChatGPT_Image_May_30_2026_11_19_31_AM.png?v=1780141298" alt="WindWall LED display showing live wind data" style="width:100%; max-width:680px; border-radius:16px; display:block; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.12));">
+  </div>
+</section>
+</section>
+
+
+
+<!-- FEATURES -->
+<section class="features">
+  <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;">
+    <span style="width:20px; height:2px; background:#ff8800; display:inline-block; border-radius:2px;"></span>
+    <span style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8800;">Why WindWall</span>
+  </div>
+  <h2 class="section-title">Not a forecast tool.<br><span style="color:#ff8800;">A feeling.</span></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🌊</div>
+      <div class="feature-title">Your spots, rotating</div>
+      <p class="feature-text">Pick up to 5 spots worldwide. WindWall cycles through them automatically — showing live wind, gusts, swell and tide. No phone needed.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Truly plug & play</div>
+      <p class="feature-text">Connect to WiFi, open the free web app, add your spots. Done in under 3 minutes. No app download, no subscription, no recurring fees.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖤</div>
+      <div class="feature-title">Designed for home</div>
+      <p class="feature-text">32 × 16 cm. Matte black aluminium. One USB-C cable. Looks like it was always there — next to your board, your wetsuit, your life.</p>
+    </div>
+  </div>
+
+  <!-- Trust items -->
+  <div style="border-top:1px solid #e8e8e4; margin-top:48px; padding-top:28px; display:flex; flex-wrap:wrap; gap:24px 40px;">
+    <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:#666;font-weight:500;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="7" stroke="#ff8800" stroke-width="1.2"/><path d="M4.5 7.5l2 2 4-4" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Set up in 3 minutes
+    </span>
+    <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:#666;font-weight:500;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="7" stroke="#ff8800" stroke-width="1.2"/><path d="M4.5 7.5l2 2 4-4" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      No subscription. Ever.
+    </span>
+    <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:#666;font-weight:500;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="7" stroke="#ff8800" stroke-width="1.2"/><path d="M4.5 7.5l2 2 4-4" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Live data, always on
+    </span>
+    <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:#666;font-weight:500;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="7" stroke="#ff8800" stroke-width="1.2"/><path d="M4.5 7.5l2 2 4-4" stroke="#ff8800" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Free web app included
+    </span>
+  </div>
+
+</section>
+
+<!-- GALLERY -->
+<section style="padding:0 40px 100px; max-width:1200px; margin:0 auto;">
+
+  <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;">
+    <span style="width:20px; height:2px; background:#ff8800; display:inline-block; border-radius:2px;"></span>
+    <span style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8800;">In the wild</span>
+  </div>
+  <h2 class="section-title" style="margin-bottom:40px;">At home.<br><span style="color:#ff8800;">Wherever the wind blows.</span></h2>
+
+  <div class="gallery-grid" style="display:grid; grid-template-columns:1.2fr 1fr; grid-template-rows:auto auto; gap:12px;">
+
+    <!-- Big left — spans 2 rows — wall mount -->
+    <div style="grid-row:1/3; border-radius:16px; overflow:hidden; position:relative;">
+      <img src="https://cdn.shopify.com/s/files/1/0908/1566/0418/files/ChatGPT_Image_May_30_2026_12_11_24_PM.png?v=1780141299" alt="WindWall mounted on wall" style="width:100%; height:100%; object-fit:cover; display:block;">
+      <div style="position:absolute; bottom:16px; left:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); border-radius:100px; padding:6px 14px;">
+        <span style="font-size:12px; color:#fff; font-weight:500; letter-spacing:0.3px;">On the wall</span>
+      </div>
+    </div>
+
+    <!-- Top right — sideboard -->
+    <div style="border-radius:16px; overflow:hidden; position:relative;">
+      <img src="https://cdn.shopify.com/s/files/1/0908/1566/0418/files/ChatGPT_Image_May_30_2026_11_58_14_AM.png?v=1780141299" alt="WindWall on a sideboard" style="width:100%; height:100%; object-fit:cover; display:block;">
+      <div style="position:absolute; bottom:16px; left:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); border-radius:100px; padding:6px 14px;">
+        <span style="font-size:12px; color:#fff; font-weight:500; letter-spacing:0.3px;">On the sideboard</span>
+      </div>
+    </div>
+
+    <!-- Bottom right — desk -->
+    <div style="border-radius:16px; overflow:hidden; position:relative;">
+      <img src="https://cdn.shopify.com/s/files/1/0908/1566/0418/files/ChatGPT_Image_May_30_2026_12_20_29_PM.png?v=1780141299" alt="WindWall on a desk" style="width:100%; height:100%; object-fit:cover; display:block;">
+      <div style="position:absolute; bottom:16px; left:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); border-radius:100px; padding:6px 14px;">
+        <span style="font-size:12px; color:#fff; font-weight:500; letter-spacing:0.3px;">On the desk</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-inner" style="max-width:1100px; margin:0 auto;">
+    <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;">
+      <span style="width:20px; height:2px; background:#ff8800; display:inline-block; border-radius:2px;"></span>
+      <span style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8800;">How it works</span>
+    </div>
+    <h2 class="section-title" style="color:#fff;">Three steps.<br>Then forget about it.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" style="color:#ff8800;">01</div>
+        <div class="step-title">Plug it in</div>
+        <p class="step-text">Connect WindWall to any USB-C power source. Mount it on your wall or stand it on a shelf. One cable, that's it.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" style="color:#ff8800;">02</div>
+        <div class="step-title">Add your spots</div>
+        <p class="step-text">Open the free web app on any device. Search for your spots on the map, choose your wind model, set the rotation speed.</p>
+      </div>
+      <div class="step">
+        <div class="step-num" style="color:#ff8800;">03</div>
+        <div class="step-title">Live on your wall</div>
+        <p class="step-text">WindWall updates automatically. Wind picks up in Tarifa? You'll know before you check your phone. That's the whole point.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section class="specs">
+  <div>
+    <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;">
+      <span style="width:20px; height:2px; background:#ff8800; display:inline-block; border-radius:2px;"></span>
+      <span style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8800;">Specs</span>
+    </div>
+    <h2 class="section-title">Built to last.<br>Simple by design.</h2>
+    <p style="font-size:15px; color:#666; font-weight:300; line-height:1.65;">WindWall is a physical object — not an app. It's always on, always visible, always yours. One purchase. No monthly fees. No lock-in.</p>
+  </div>
+  <div>
+    <ul class="specs-list">
+      <li><span>Display</span><span>128 × 64 px RGB LED</span></li>
+      <li><span>Dimensions</span><span>32 × 16 × 4 cm</span></li>
+      <li><span>Connectivity</span><span>WiFi 2.4 GHz</span></li>
+      <li><span>Power</span><span>USB-C 5V</span></li>
+      <li><span>Max spots</span><span>5 spots rotating</span></li>
+      <li><span>Update rate</span><span>Every 5–10 min</span></li>
+      <li><span>Web app</span><span>Free, no download</span></li>
+      <li><span>Subscription</span><span>None. Ever.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section style="background:#f5f4f0; padding:80px 40px;">
+  <div class="founder-inner" style="max-width:900px; margin:0 auto; display:grid; grid-template-columns:320px 1fr; gap:60px; align-items:start;">
+
+    <div>
+      <img src="https://cdn.shopify.com/s/files/1/0908/1566/0418/files/Untitled_design_2.jpg?v=1780141306" alt="WindWall founder" style="width:100%; border-radius:12px; object-fit:cover; object-position:top; display:block;">
+    </div>
+
+    <div class="founder-text">
+      <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:16px;">
+        <span style="width:20px; height:2px; background:#ff8800; display:inline-block; border-radius:2px;"></span>
+        <span style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8800;">Why I built this</span>
+      </div>
+      <h2 style="font-family:'Space Grotesk',sans-serif; font-size:clamp(28px,3vw,40px); font-weight:700; letter-spacing:-1px; line-height:1.1; color:#0a0a0a; margin-bottom:24px;">Built by a kiter.<br><span style="color:#ff8800;">For kiters.</span></h2>
+
+      <p style="font-size:17px; color:#0a0a0a; line-height:1.75; font-weight:400; margin-bottom:20px;">
+        I've been kitesurfing and windsurfing for years. My life revolves around the wind — checking forecasts obsessively, refreshing Windguru before my morning coffee, planning trips around swell windows.
+      </p>
+      <p style="font-size:17px; color:#0a0a0a; line-height:1.75; font-weight:400; margin-bottom:20px;">
+        But I didn't want another screen. I wanted something that <em>lived</em> in my home — that kept me connected to my spots, to the ocean, to that feeling — even when I wasn't on the water. Something that makes you smile when you walk past it and see 28 knots lighting up in orange.
+      </p>
+      <p style="font-size:17px; color:#0a0a0a; line-height:1.75; font-weight:400; margin-bottom:24px;">
+        WindWall isn't a forecast tool. It's a piece of your passion on your wall.
+      </p>
+
+      <div style="font-size:14px; color:#888; font-weight:500;">
+        Questions or suggestions? Write me at
+        <a href="mailto:contact@brutal-force.com" style="color:#ff8800; text-decoration:none; font-weight:600;">contact@brutal-force.com</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="max-width:720px; margin:0 auto; padding:0 40px 100px;">
+
+  <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;">
+    <span style="width:20px; height:2px; background:#ff8800; display:inline-block; border-radius:2px;"></span>
+    <span style="font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#ff8800;">FAQ</span>
+  </div>
+  <h2 class="section-title" style="margin-bottom:40px;">Everything you<br>need to know.</h2>
+
+  <div id="faq-list">
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        How do I power WindWall?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        One USB-C cable into any standard wall socket — the same cable your phone uses. No special adapter, no complex wiring. Plug it in, connect to WiFi, and you're done. WindWall draws very little power and can stay on 24/7.
+      </div>
+    </div>
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        Which spots can I track?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        Any spot that exists on Windguru — which means thousands of locations worldwide. If your spot has a live weather station, WindWall shows real-time measured data. If not, it shows the same model forecast data (GFS, ECMWF) that Windguru uses — so you always get the best available information for that location.
+      </div>
+    </div>
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        How does the spot rotation work?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        WindWall cycles through your saved spots automatically. You choose the rotation speed — from every 10 seconds to every few minutes. You can also pin one spot to stay fixed. Change your spots anytime via the free web app — updates appear on the display instantly.
+      </div>
+    </div>
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        Can I see forecasts, not just live wind?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        The current version focuses on live conditions and the past 6 hours. Forecast view — showing the next 24–48 hours per spot — is coming in an upcoming update. Once released, it will appear automatically on your WindWall. No action needed on your part.
+      </div>
+    </div>
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        How big is WindWall?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        32 × 16 × 4 cm — roughly the size of a hardback book lying on its side. Light enough to hang on a wall with two screws, or stand freely on a shelf or sideboard. Matte black aluminium frame.
+      </div>
+    </div>
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        Do you ship to my country?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        Yes — we ship across all of Europe. Free shipping included on every order. More regions coming soon.
+      </div>
+    </div>
+
+    <div class="faq-item" style="border-top:1px solid #e8e8e4; border-bottom:1px solid #e8e8e4; padding:20px 0;">
+      <button class="faq-q" onclick="toggleFaq(this)" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:0;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:#0a0a0a;line-height:1.4;">
+        Will WindWall keep getting better after I buy it?
+        <span class="faq-icon" style="font-size:20px;color:#ff8800;flex-shrink:0;transition:transform 0.2s;">+</span>
+      </button>
+      <div class="faq-a" style="display:none; padding-top:12px; font-size:15px; color:#666; line-height:1.7; font-weight:400;">
+        Yes — and that's a promise. We release regular updates with new features, new display layouts, and new data sources. Every update arrives automatically over WiFi. Your WindWall on day 365 will be better than on day 1 — no extra cost, no action required.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <h2>Be first.<br><span style="color:#ff8800;">Get early bird pricing.</span></h2>
+  <p>WindWall launches soon. Order your WindWall and get notified — with a special price for early supporters.</p>
+  <button class="btn-primary" onclick="if(window.omnisend && window.omnisend.push){window.omnisend.push(['openForm','6a1ac58b5cab28beff904406']);}else{window.omnisend=window.omnisend||[];window.omnisend.push(['openForm','6a1ac58b5cab28beff904406']);}" style="margin: 0 auto;">
+    Order your WindWall
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid #e8e8e4; padding:28px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+  <span style="font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; letter-spacing:-0.5px; color:#0a0a0a;">WindWall</span>
+  <span style="font-size:13px; color:#aaa;">Powered by <a href="https://brutal-force.com" style="color:#ff8800; text-decoration:none; font-weight:600;">Brutal Force</a></span>
+  <span style="font-size:13px; color:#bbb;">© 2026 WindWall. All rights reserved.</span>
+</footer>
+
+
+<script>
+
+// ---- LED CANVAS ----
+(function(){
+const W=256,H=128;
+const canvas=document.getElementById('ledCanvas');
+canvas.width=W; canvas.height=H;
+canvas.style.imageRendering='pixelated';
+canvas.style.width='100%';
+canvas.style.height='auto';
+
+const F={
+  ' ':[0x00,0x00,0x00,0x00,0x00],
+  'A':[0x3E,0x48,0x88,0x48,0x3E],
+  'B':[0x7E,0x4A,0x4A,0x4A,0x34],
+  'C':[0x3C,0x42,0x42,0x42,0x24],
+  'D':[0x7E,0x42,0x42,0x24,0x18],
+  'E':[0x7E,0x4A,0x4A,0x4A,0x42],
+  'F':[0x7E,0x48,0x48,0x48,0x40],
+  'G':[0x3C,0x42,0x4A,0x4A,0x2E],
+  'H':[0x7E,0x08,0x08,0x08,0x7E],
+  'I':[0x00,0x42,0x7E,0x42,0x00],
+  'J':[0x04,0x02,0x02,0x7C,0x00],
+  'K':[0x7E,0x08,0x14,0x22,0x42],
+  'L':[0x7E,0x02,0x02,0x02,0x02],
+  'M':[0x7E,0x20,0x10,0x20,0x7E],
+  'N':[0x7E,0x20,0x10,0x08,0x7E],
+  'O':[0x3C,0x42,0x42,0x42,0x3C],
+  'P':[0x7E,0x48,0x48,0x48,0x30],
+  'Q':[0x3C,0x42,0x46,0x42,0x3D],
+  'R':[0x7E,0x48,0x4C,0x4A,0x31],
+  'S':[0x32,0x4A,0x4A,0x4A,0x24],
+  'T':[0x40,0x40,0x7E,0x40,0x40],
+  'U':[0x7C,0x02,0x02,0x02,0x7C],
+  'V':[0x78,0x04,0x02,0x04,0x78],
+  'W':[0x7C,0x02,0x0C,0x02,0x7C],
+  'X':[0x62,0x14,0x08,0x14,0x62],
+  'Y':[0x60,0x10,0x0E,0x10,0x60],
+  'Z':[0x46,0x4A,0x52,0x62,0x42],
+  '0':[0x3C,0x46,0x4A,0x32,0x3C],
+  '1':[0x00,0x20,0x7E,0x00,0x00],
+  '2':[0x22,0x46,0x4A,0x52,0x22],
+  '3':[0x24,0x42,0x4A,0x4A,0x34],
+  '4':[0x18,0x28,0x48,0x7E,0x08],
+  '5':[0x74,0x52,0x52,0x52,0x4C],
+  '6':[0x1C,0x2A,0x4A,0x4A,0x0C],
+  '7':[0x40,0x46,0x48,0x50,0x60],
+  '8':[0x34,0x4A,0x4A,0x4A,0x34],
+  '9':[0x30,0x4A,0x4A,0x4A,0x3C],
+  '-':[0x08,0x08,0x08,0x08,0x08],
+  '.':[0x00,0x00,0x03,0x03,0x00],
+};
+
+function wRGB(kn){
+  if(kn<=10)return[160,160,160];
+  if(kn<=13)return[140,215,110];
+  if(kn<=16)return[50,175,50];
+  if(kn<=19)return[35,140,35];
+  if(kn<=23)return[160,205,0];
+  if(kn<=27)return[255,205,0];
+  if(kn<=32)return[255,130,0];
+  if(kn<=37)return[255,50,175];
+  return[255,30,30];
+}
+
+const SPOTS=[
+  {name:'TARIFA',      wind:25,gust:36,dir:'SW',swell:'1.2m',angle:225},
+  {name:'HOOKIPA',     wind:15,gust:32,dir:'N', swell:'3.0m',angle:0},
+  {name:'FUERTE',      wind:19,gust:28,dir:'NW',swell:'1.6m',angle:315},
+  {name:'DAKHLA',      wind:31,gust:42,dir:'NE',swell:'0.8m',angle:45},
+  {name:'CABARETE',    wind:22,gust:30,dir:'E', swell:'1.0m',angle:90},
+];
+
+let buf=new Uint8ClampedArray(W*H*4);
+function clear(){for(let i=0;i<buf.length;i+=4){buf[i]=5;buf[i+1]=5;buf[i+2]=5;buf[i+3]=255;}}
+function sp(x,y,r,g,b){
+  x=Math.round(x);y=Math.round(y);
+  if(x<0||x>=W||y<0||y>=H)return;
+  const i=(y*W+x)*4;buf[i]=r;buf[i+1]=g;buf[i+2]=b;
+}
+
+function txt(str,x,y,r,g,b,sc){
+  sc=sc||1;let cx=x;
+  for(let ci=0;ci<str.length;ci++){
+    const gl=F[str[ci].toUpperCase()]||F[' '];
+    for(let c=0;c<5;c++){
+      const cd=gl[c];
+      for(let rw=0;rw<7;rw++){
+        if(cd&(1<<(6-rw))){
+          for(let sy=0;sy<sc;sy++)
+            for(let sx=0;sx<sc;sx++)
+              sp(cx+c*sc+sx,y+rw*sc+sy,r,g,b);
+        }
+      }
+    }
+    cx+=(5+1)*sc;
+    if(cx+5*sc>W)break;
+  }
+  return cx; // return end x
+}
+
+function drawArrow(cx,cy,angleDeg,r,g,b,len){
+  const a=angleDeg*Math.PI/180;
+  const tx=Math.round(cx+Math.cos(a)*len);
+  const ty=Math.round(cy+Math.sin(a)*len);
+  const dx=tx-cx,dy=ty-cy;
+  const steps=Math.max(Math.abs(dx),Math.abs(dy),1);
+  for(let i=0;i<=steps;i++){
+    const px=Math.round(cx+dx*i/steps);
+    const py=Math.round(cy+dy*i/steps);
+    sp(px,py,r,g,b);sp(px+1,py,r,g,b);
+    sp(px,py+1,r,g,b);sp(px+1,py+1,r,g,b);
+  }
+}
+
+function wave(y0,seed){
+  for(let x=180;x<W-1;x++){
+    const wy=y0+Math.sin((x*0.5+seed)*0.28)*4+Math.sin((x*0.3+seed)*0.18)*2.5;
+    const cy=Math.max(2,Math.min(H-3,Math.round(wy)));
+    sp(x,cy,255,255,255);sp(x+1,cy,255,255,255);
+  }
+  const dx=210;
+  const dwy=y0+Math.sin((dx*0.5+seed)*0.28)*4+Math.sin((dx*0.3+seed)*0.18)*2.5;
+  const dcy=Math.max(2,Math.min(H-3,Math.round(dwy)));
+  for(let yy=-2;yy<=2;yy++)for(let xx=-2;xx<=2;xx++)sp(dx+xx,dcy+yy,255,255,255);
+}
+
+function divider(y){
+  for(let x=0;x<W;x+=3){sp(x,y,40,40,40);sp(x+1,y,40,40,40);}
+}
+
+// History takes bottom 35px: from y=88 to y=123
+function history(hist,wind){
+  const baseY=108, amp=14;
+  for(let i=0;i<hist.length;i++){
+    const x=i*4; if(x>W-4)break;
+    const v=hist[i];
+    const[r,g,b]=wRGB(v);
+    const curve=Math.round(Math.sin(i*0.22)*3);
+    const normY=Math.round(((v-8)/32)*amp);
+    const py=Math.max(baseY-amp,Math.min(baseY,baseY-normY+curve));
+    sp(x,py,r,g,b);sp(x+1,py,r,g,b);
+    sp(x+2,py,r,g,b);sp(x+3,py,r,g,b);
+  }
+  const[lr,lg,lb]=wRGB(wind);
+  const lx=Math.min(W-7,(hist.length-1)*4);
+  const lv=hist[hist.length-1]||wind;
+  const lc=Math.round(Math.sin((hist.length-1)*0.22)*3);
+  const ln=Math.round(((lv-8)/32)*amp);
+  const ly=Math.max(baseY-amp,Math.min(baseY,baseY-ln+lc));
+  for(let yy=-3;yy<=3;yy++)for(let xx=-3;xx<=3;xx++)sp(lx+xx,ly+yy,lr,lg,lb);
+}
+
+function timeLabels(){
+  const labs=['-6h','-5h','-4h','-3h','-2h','-1h','NOW'];
+  labs.forEach(function(l,i){
+    const x=Math.round(2+i*((W-16)/6));
+    sp(x,118,30,30,30);sp(x+1,118,30,30,30);
+    txt(l,Math.max(0,x-3),121,38,38,38,1);
+  });
+}
+
+function render(spot,hist){
+  clear();
+  const[wr,wg,wb]=wRGB(spot.wind);
+  const[gr,gg,gb]=wRGB(spot.gust);
+
+  // ── ROW 1: Spot name sc=3, Live dot top right ──
+  txt(spot.name,4,2,205,205,205,3);
+
+  // Live dot — big enough to see
+  for(let yy=0;yy<4;yy++)for(let xx=0;xx<4;xx++)sp(228+xx,3+yy,210,40,0);
+  txt('LIVE',235,4,65,65,65,2);
+
+  // ── ROW 2: arrow + wind sc=4 + KN + gust sc=4 + dir + swell + wave ──
+  // Arrow
+  drawArrow(6,52,spot.angle,190,190,190,10);
+
+  // Wind — scale 4
+  const ws=String(spot.wind);
+  txt(ws,24,26,wr,wg,wb,4);
+  const we=24+ws.length*24;
+  txt('KN',we+2,42,72,72,72,2);
+
+  // Gust — scale 4
+  txt(String(spot.gust),we+30,26,gr,gg,gb,4);
+
+  // Dir — scale 2, right side, line 1
+  txt(spot.dir,180,28,79,195,247,2);
+  // Swell — scale 2, right side, line 2 — below dir with gap
+  txt(spot.swell,180,44,79,195,247,2);
+
+  // Wave — starts after swell text
+  wave(50,spot.angle);
+
+  // ── DIVIDER ──
+  divider(70);
+
+  // ── PAST 6H ──
+  txt('PAST 6H',4,73,48,48,48,2);
+
+  // ── HISTORY ──
+  history(hist,spot.wind);
+
+  // ── TIME LABELS ──
+  timeLabels();
+}
+
+function blit(alpha){
+  const ctx=canvas.getContext('2d');
+  const id=ctx.createImageData(W,H);
+  for(let i=0;i<buf.length;i+=4){
+    id.data[i]=Math.round(buf[i]*alpha);
+    id.data[i+1]=Math.round(buf[i+1]*alpha);
+    id.data[i+2]=Math.round(buf[i+2]*alpha);
+    id.data[i+3]=255;
+  }
+  ctx.putImageData(id,0,0);
+}
+
+const histories=SPOTS.map(function(_,si){
+  return Array.from({length:64},function(_,i){
+    return SPOTS[si].wind+Math.sin(i*0.18+si)*5+Math.sin(i*0.07+si*2)*3;
+  });
+});
+
+let si=0;
+function initDots(){
+  const c=document.getElementById('spotDots');
+  c.innerHTML='';
+  SPOTS.forEach(function(_,i){
+    const d=document.createElement('div');
+    d.style.cssText='width:6px;height:6px;border-radius:50%;background:#333;transition:background 0.3s;display:inline-block;margin:0 4px;';
+    c.appendChild(d);
+  });
+}
+function updateDots(idx){
+  const dots=document.getElementById('spotDots').children;
+  for(let i=0;i<dots.length;i++)dots[i].style.background=i===idx?'#fff':'#333';
+}
+
+initDots();
+render(SPOTS[0],histories[0]);
+blit(1);
+updateDots(0);
+
+let fading=false;
+function fadeOut(cb){
+  fading=true;let a=1;
+  (function step(){a-=0.08;if(a<=0){blit(0);cb();return;}blit(a);requestAnimationFrame(step);})();
+}
+function fadeIn(){
+  let a=0;
+  (function step(){a+=0.08;if(a>=1){blit(1);fading=false;return;}blit(a);requestAnimationFrame(step);})();
+}
+setInterval(function(){
+  if(fading)return;
+  fadeOut(function(){
+    si=(si+1)%SPOTS.length;
+    render(SPOTS[si],histories[si]);
+    updateDots(si);
+    fadeIn();
+  });
+},2500);
+
+})();
+
+
+;
+
+
+
+
+
+// FAQ accordion
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const icon = btn.querySelector('.faq-icon');
+  const isOpen = answer.style.display === 'block';
+  // close all
+  document.querySelectorAll('.faq-a').forEach(a => a.style.display = 'none');
+  document.querySelectorAll('.faq-icon').forEach(i => { i.textContent = '+'; i.style.transform = 'rotate(0deg)'; });
+  // open this one if it was closed
+  if (!isOpen) {
+    answer.style.display = 'block';
+    icon.textContent = '×';
+    icon.style.transform = 'rotate(0deg)';
+  }
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
