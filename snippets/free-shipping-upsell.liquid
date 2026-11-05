@@ -55,19 +55,33 @@
           {%- if upsell_product.featured_image != blank -%}
             {{
               upsell_product.featured_image
-              | image_url: width: 168
+              | image_url: width: 216
               | image_tag:
                 loading: 'lazy',
-                width: 48,
-                height: 48,
-                sizes: '48px',
-                widths: '48, 96, 144',
+                width: 64,
+                height: 64,
+                sizes: '(min-width: 750px) 72px, 64px',
+                widths: '64, 128, 192, 216',
                 class: 'fs-upsell__img',
                 alt: upsell_alt
             }}
           {%- endif -%}
         </span>
-        <span class="fs-upsell__title">{{ upsell_product.title | escape }}</span>
+        {%- liquid
+          # "Storm Mug - 30+ knots" -> name "Storm Mug" + detail "30+ knots" (second line)
+          assign title_parts = upsell_product.title | split: ' - '
+          assign title_name = title_parts | first
+          assign title_detail = ''
+          if title_parts.size > 1
+            assign title_detail = upsell_product.title | remove_first: title_name | remove_first: ' - '
+          endif
+        -%}
+        <span class="fs-upsell__title">
+          <span class="fs-upsell__name">{{ title_name | escape }}</span>
+          {%- if title_detail != blank -%}
+            <span class="fs-upsell__detail">{{ title_detail | escape }}</span>
+          {%- endif -%}
+        </span>
         <span class="fs-upsell__price">
           {%- if upsell_variant.compare_at_price > upsell_variant.price -%}
             <s class="fs-upsell__compare">
