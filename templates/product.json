@@ -35,11 +35,11 @@
           "type": "icon-with-text",
           "settings": {
             "layout": "vertical",
-            "icon_1": "truck",
+            "icon_1": "lucide_truck",
             "heading_1": "Ships from Europe — fast, tracked, no customs",
-            "icon_2": "silhouette",
+            "icon_2": "lucide_users",
             "heading_2": "Trusted by 700+ riders",
-            "icon_3": "box",
+            "icon_3": "lucide_package_check",
             "heading_3": "Packed to arrive perfect"
           }
         },
