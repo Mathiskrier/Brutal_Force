@@ -43,13 +43,6 @@
             "heading_3": "Ships safe in protective packaging"
           }
         },
-        "text_wMaADq": {
-          "type": "text",
-          "settings": {
-            "text": "*Deals apply at checkout",
-            "text_style": "body"
-          }
-        },
         "variant_picker": {
           "type": "variant_picker",
           "settings": {
@@ -99,7 +92,6 @@
         "judge_me_reviews_preview_badge_68WxdD",
         "price",
         "icon_with_text_TdDzim",
-        "text_wMaADq",
         "variant_picker",
         "inventory_TmDeHC",
         "quantity_selector",
