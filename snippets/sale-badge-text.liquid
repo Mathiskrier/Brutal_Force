@@ -1,0 +1,10 @@
+{%- comment -%}
+  Brutalforce: text inside the sale badge.
+  Uses Theme settings > Badges > "Sale badge text" (e.g. BLACKWEEK),
+  falls back to the theme's default "Sale" when that field is empty.
+{%- endcomment -%}
+{%- if settings.sale_badge_text != blank -%}
+  {{- settings.sale_badge_text | escape -}}
+{%- else -%}
+  {{- 'products.product.on_sale' | t -}}
+{%- endif -%}

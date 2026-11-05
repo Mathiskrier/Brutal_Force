@@ -1259,6 +1259,12 @@
         "default": "scheme-5"
       },
       {
+        "type": "text",
+        "id": "sale_badge_text",
+        "label": "Sale badge text",
+        "info": "Shown on every sale badge, e.g. BLACKWEEK. Leave empty to show the default \"Sale\"."
+      },
+      {
         "type": "color_scheme",
         "id": "sold_out_badge_color_scheme",
         "label": "t:settings_schema.badges.settings.sold_out_badge_color_scheme.label",
