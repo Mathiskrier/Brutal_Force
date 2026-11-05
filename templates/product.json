@@ -58,14 +58,6 @@
             "swatch_shape": "circle"
           }
         },
-        "inventory_TmDeHC": {
-          "type": "inventory",
-          "settings": {
-            "text_style": "body",
-            "inventory_threshold": 10,
-            "show_inventory_quantity": false
-          }
-        },
         "quantity_selector": {
           "type": "quantity_selector",
           "settings": {}
@@ -101,7 +93,6 @@
         "price",
         "icon_with_text_TdDzim",
         "variant_picker",
-        "inventory_TmDeHC",
         "quantity_selector",
         "free_shipping_upsell_ceramic",
         "buy_buttons",
