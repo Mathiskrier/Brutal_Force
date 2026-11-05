@@ -2,7 +2,7 @@
   Brutalforce: "Born in Tarifa" brand-story banner.
   Full-width image strip with a dark gradient overlay and white text on top.
   Used on all product templates (same content everywhere - brand story, not per-product).
-  Image: the "Image" setting if set, otherwise the theme asset born-in-tarifa.jpg.
+  Image: the "Image" setting if set, otherwise the theme asset born-in-tarifa.webp.
 {%- endcomment -%}
 {%- liquid
   assign img = section.settings.image
@@ -28,10 +28,10 @@
     {%- else -%}
       <img
         class="bf-story__img"
-        src="{{ 'born-in-tarifa.jpg' | asset_url }}"
+        src="{{ 'born-in-tarifa.webp' | asset_url }}"
         alt="{{ alt_text | escape }}"
-        width="760"
-        height="760"
+        width="1254"
+        height="1254"
         loading="lazy"
         decoding="async"
       >
