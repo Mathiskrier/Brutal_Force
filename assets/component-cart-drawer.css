@@ -412,3 +412,8 @@ cart-drawer-items::-webkit-scrollbar-track-piece {
     margin-left: 0;
   }
 }
+
+/* Brutalforce: express checkout under the drawer's Check out button */
+.drawer__footer .cart__dynamic-checkout-buttons {
+  margin-top: 1rem;
+}

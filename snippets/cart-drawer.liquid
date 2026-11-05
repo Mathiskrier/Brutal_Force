@@ -590,6 +590,16 @@
             {{ 'sections.cart.checkout' | t }}
           </button>
         </div>
+
+        {%- comment -%}
+          Brutalforce: express checkout (PayPal, Google Pay, Apple Pay, Shop Pay) in the drawer.
+          Lives inside .drawer__inner, so it is re-rendered with the cart on every update.
+        {%- endcomment -%}
+        {%- if additional_checkout_buttons and cart != empty -%}
+          <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+            {{ content_for_additional_checkout_buttons }}
+          </div>
+        {%- endif -%}
       </div>
     </div>
   </div>
