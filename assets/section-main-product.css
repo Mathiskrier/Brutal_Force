@@ -1670,8 +1670,9 @@ a.product__text {
   margin: 0;
 }
 
-.product__info-container .price--large .price__sale,
-.product__info-container .price--large .price__regular {
+/* only the price block the theme actually shows (sale vs. regular) */
+.product__info-container .price--large.price--on-sale .price__sale,
+.product__info-container .price--large:not(.price--on-sale) .price__regular {
   display: inline-flex;
   align-items: baseline;
   flex-wrap: nowrap;
