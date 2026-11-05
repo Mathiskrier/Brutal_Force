@@ -1620,7 +1620,7 @@ a.product__text {
   background-color: rgb(var(--bf-cta-bg));
   color: rgb(var(--color-button-text));
   font-size: 1.65rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.05rem;
   box-shadow: var(--bf-cta-shadow);
   transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
