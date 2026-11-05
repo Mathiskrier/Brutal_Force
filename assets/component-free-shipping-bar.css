@@ -2,9 +2,16 @@
 .fs-bar {
   margin: 0 0 1.6rem;
   padding: 1.2rem 1.4rem 1.4rem;
-  border: 1px solid rgba(var(--color-foreground), 0.12);
+  border: 1px solid #e8892b;
   border-radius: 1rem;
   background: rgba(var(--color-foreground), 0.03);
+  box-shadow: 0 0 0 1px #e8892b;
+}
+
+/* Below the threshold: orange frame. Free shipping reached: green frame. */
+.fs-bar.is-unlocked {
+  border-color: #2f8f57;
+  box-shadow: 0 0 0 1px #2f8f57;
 }
 
 .fs-bar__message {
