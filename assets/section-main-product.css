@@ -335,6 +335,22 @@ a.product__text {
   color: rgba(var(--color-foreground), 0.6);
 }
 
+/* Brutalforce: show Judge.me average next to the stars -> "★★★★★ 4.75 / 5 · 8 reviews" */
+.product__info-container .jdgm-prev-badge__stars::after {
+  content: attr(data-score) ' / 5';
+  margin-left: 0.6rem;
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.04rem;
+  color: rgb(var(--color-foreground));
+  vertical-align: middle;
+}
+
+.product__info-container .jdgm-prev-badge__text::before {
+  content: '· ';
+}
+
 .product--no-media .share-button {
   max-width: 100%;
 }
