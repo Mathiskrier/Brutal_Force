@@ -328,6 +328,7 @@ a.product__text {
 }
 
 .product__info-container .product__tax {
+  /* sits just under the (larger) price; was -1.9rem before the price got bigger */
   margin-top: -1.5rem;
   font-size: 1.1rem;
   line-height: 1.3;
