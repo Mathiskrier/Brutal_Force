@@ -5,7 +5,7 @@
  *   calculation at all; the live free shipping status lives in the cart bar
  *   (snippets/free-shipping-bar.liquid).
  * - Ticking a row adds NOTHING to the cart. It only marks that mug for the main Add to cart.
- * - The main button label stays plain ("Add to cart & continue"); no count or total.
+ * - The main button label shows count and total: "Add to cart · €19,50" / "Add 2 to cart · €39,00".
  * - assets/product-form.js asks this element for the ticked mugs (getSelections) when the
  *   main button is pressed, and adds viewed product + ticked mugs in one /cart/add request.
  */
@@ -70,12 +70,16 @@ if (!customElements.get('free-shipping-upsell')) {
         if (this.paymentButton) this.paymentButton.hidden = ticked.length > 0;
       }
 
-      // The label stays plain ("Add to cart & continue") - no count, no total
-      updateButton() {
+      // "Add to cart · €19,50" for one item, "Add 2 to cart · €39,00" for two, etc.
+      updateButton(count, total) {
         if (!this.submitButton || !this.submitText) return;
         if (this.submitButton.hasAttribute('disabled')) return; // sold out / unavailable: keep theme text
-        const label = this.submitButton.dataset.addLabel || window.variantStrings?.addToCart || 'Add to cart';
-        if (this.submitText.textContent.trim() !== label) this.submitText.textContent = label;
+        const base = this.submitButton.dataset.addLabel || window.variantStrings?.addToCart || 'Add to cart';
+        let label = base;
+        if (count > 1) {
+          label = /^add to cart/i.test(base) ? base.replace(/^add to cart/i, `Add ${count} to cart`) : `${base} (${count})`;
+        }
+        this.submitText.textContent = `${label} · ${this.formatMoney(total)}`;
       }
 
       /*
