@@ -84,11 +84,13 @@
               {%- endif -%}
             </s>
           {%- endif -%}
-          {%- if settings.currency_code_enabled -%}
-            {{- upsell_variant.price | money_with_currency -}}
-          {%- else -%}
-            {{- upsell_variant.price | money -}}
-          {%- endif -%}
+          <span class="fs-upsell__now">
+            {%- if settings.currency_code_enabled -%}
+              {{- upsell_variant.price | money_with_currency -}}
+            {%- else -%}
+              {{- upsell_variant.price | money -}}
+            {%- endif -%}
+          </span>
         </span>
       </div>
       <button
