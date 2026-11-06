@@ -301,7 +301,8 @@
             "alt": "Smiling rider holding an enamel forecast mug at an outdoor table",
             "asset": "wild-05",
             "width": 1125,
-            "height": 1500
+            "height": 1500,
+            "featured": true
           }
         },
         "photo_01": {
@@ -328,7 +329,8 @@
             "alt": "Rider giving a thumbs up while holding a forecast mug outdoors",
             "asset": "wild-08",
             "width": 1125,
-            "height": 1500
+            "height": 1500,
+            "featured": true
           }
         },
         "photo_04": {
@@ -346,7 +348,8 @@
             "alt": "Rider unpacking a Brutal Force parcel while a forecast mug is held up",
             "asset": "wild-10",
             "width": 1129,
-            "height": 1500
+            "height": 1500,
+            "featured": true
           }
         },
         "photo_03": {
@@ -384,29 +387,19 @@
             "width": 844,
             "height": 1500
           }
-        },
-        "photo_07": {
-          "type": "photo",
-          "settings": {
-            "alt": "Forecast mug with coffee on a dining table next to a slice of chocolate cake",
-            "asset": "wild-07",
-            "width": 1159,
-            "height": 1930
-          }
         }
       },
       "block_order": [
         "photo_05",
+        "photo_08",
+        "photo_10",
         "photo_01",
         "photo_09",
-        "photo_08",
         "photo_04",
-        "photo_10",
         "photo_03",
         "photo_11",
         "photo_06",
-        "photo_02",
-        "photo_07"
+        "photo_02"
       ],
       "settings": {
         "heading": "Out in the wild",

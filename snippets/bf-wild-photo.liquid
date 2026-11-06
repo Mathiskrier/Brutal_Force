@@ -1,0 +1,52 @@
+{%- comment -%}
+  Brutalforce: one photo of the "Out in the wild" section (sections/bf-real-photos.liquid).
+  Params: block (photo block), sizes (sizes attribute), class (extra class on the <li>)
+  Uses the editor image if set, otherwise the pre-compressed theme asset set
+  "<asset>-400.webp / -800.webp / -1200.webp" + "<asset>-800.jpg" fallback. Always lazy-loaded.
+{%- endcomment -%}
+{%- liquid
+  assign alt = block.settings.alt | default: 'A Brutal Force forecast mug in real life'
+  assign name = block.settings.asset | strip
+-%}
+{%- if block.settings.image != blank -%}
+  <li class="bf-wild__item {{ class }}" {{ block.shopify_attributes }}>
+    {{
+      block.settings.image
+      | image_url: width: 1200
+      | image_tag:
+        loading: 'lazy',
+        decoding: 'async',
+        widths: '200, 300, 400, 600, 800, 1000, 1200',
+        sizes: sizes,
+        alt: alt,
+        class: 'bf-wild__img'
+    }}
+  </li>
+{%- elsif name != blank -%}
+  {%- liquid
+    assign w = block.settings.width | default: 1200
+    assign h = block.settings.height | default: 1500
+    assign webp_400 = name | append: '-400.webp' | asset_url
+    assign webp_800 = name | append: '-800.webp' | asset_url
+    assign webp_max = name | append: '-1200.webp' | asset_url
+    assign jpg_800 = name | append: '-800.jpg' | asset_url
+  -%}
+  <li class="bf-wild__item {{ class }}" {{ block.shopify_attributes }}>
+    <picture>
+      <source
+        type="image/webp"
+        srcset="{{ webp_400 }} 400w, {{ webp_800 }} 800w, {{ webp_max }} {{ w }}w"
+        sizes="{{ sizes }}"
+      >
+      <img
+        class="bf-wild__img"
+        src="{{ jpg_800 }}"
+        alt="{{ alt | escape }}"
+        width="{{ w }}"
+        height="{{ h }}"
+        loading="lazy"
+        decoding="async"
+      >
+    </picture>
+  </li>
+{%- endif -%}

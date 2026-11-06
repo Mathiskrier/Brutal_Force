@@ -1,14 +1,20 @@
 {%- comment -%}
-  Brutalforce: "Out in the wild" - real customer photos (social proof), masonry grid.
-  Each "Photo" block is either:
-   - a pre-compressed theme asset set: "<name>-400.webp", "<name>-800.webp", "<name>-1200.webp"
-     + "<name>-800.jpg" fallback (Asset name + Width/Height of the largest version), or
-   - an image picked in the editor (Image setting), served by Shopify's CDN in responsive sizes.
-  All images are lazy-loaded (loading="lazy"). The CTA scrolls to the Add to cart button on product pages
-  and falls back to its link everywhere else.
+  Brutalforce: "Out in the wild" - real customer photos (social proof).
+  Layout: "Featured" photos (people) large on top, the other photos as small square thumbnails.
+  Mobile: both rows swipe sideways (scroll-snap) so the section stays short.
+  Each "Photo" block renders via snippets/bf-wild-photo.liquid (editor image or pre-compressed
+  theme assets). All images are lazy-loaded (loading="lazy"). The CTA scrolls to the
+  Add to cart button on product pages and falls back to its link everywhere else.
 {%- endcomment -%}
 {%- liquid
-  assign sizes = '(max-width: 749px) calc(50vw - 2.4rem), (max-width: 989px) calc(33vw - 3rem), min(calc(25vw - 4rem), 290px)'
+  assign featured_sizes = '(max-width: 749px) 78vw, (max-width: 989px) 31vw, 380px'
+  assign thumb_sizes = '(max-width: 749px) 30vw, (max-width: 989px) 14vw, 170px'
+  assign thumb_count = 0
+  for block in section.blocks
+    unless block.settings.featured
+      assign thumb_count = thumb_count | plus: 1
+    endunless
+  endfor
 -%}
 
 <div class="bf-wild color-{{ section.settings.color_scheme }} gradient" style="--bf-wild-pt: {{ section.settings.padding_top }}px; --bf-wild-pb: {{ section.settings.padding_bottom }}px;">
@@ -22,56 +28,23 @@
       {%- endif -%}
     </div>
 
-    <ul class="bf-wild__grid list-unstyled" role="list">
+    <ul class="bf-wild__featured bf-wild__scroller list-unstyled" role="list">
       {%- for block in section.blocks -%}
-        {%- liquid
-          assign alt = block.settings.alt | default: 'A Brutal Force forecast mug in real life'
-          assign name = block.settings.asset | strip
-        -%}
-        {%- if block.settings.image != blank -%}
-          <li class="bf-wild__item" {{ block.shopify_attributes }}>
-            {{
-              block.settings.image
-              | image_url: width: 1200
-              | image_tag:
-                loading: 'lazy',
-                decoding: 'async',
-                widths: '300, 400, 600, 800, 1000, 1200',
-                sizes: sizes,
-                alt: alt,
-                class: 'bf-wild__img'
-            }}
-          </li>
-        {%- elsif name != blank -%}
-          {%- liquid
-            assign w = block.settings.width | default: 1200
-            assign h = block.settings.height | default: 1500
-            assign webp_400 = name | append: '-400.webp' | asset_url
-            assign webp_800 = name | append: '-800.webp' | asset_url
-            assign webp_max = name | append: '-1200.webp' | asset_url
-            assign jpg_800 = name | append: '-800.jpg' | asset_url
-          -%}
-          <li class="bf-wild__item" {{ block.shopify_attributes }}>
-            <picture>
-              <source
-                type="image/webp"
-                srcset="{{ webp_400 }} 400w, {{ webp_800 }} 800w, {{ webp_max }} {{ w }}w"
-                sizes="{{ sizes }}"
-              >
-              <img
-                class="bf-wild__img"
-                src="{{ jpg_800 }}"
-                alt="{{ alt | escape }}"
-                width="{{ w }}"
-                height="{{ h }}"
-                loading="lazy"
-                decoding="async"
-              >
-            </picture>
-          </li>
+        {%- if block.settings.featured -%}
+          {%- render 'bf-wild-photo', block: block, sizes: featured_sizes, class: 'bf-wild__item--featured' -%}
         {%- endif -%}
       {%- endfor -%}
     </ul>
+
+    {%- if thumb_count > 0 -%}
+      <ul class="bf-wild__thumbs bf-wild__scroller list-unstyled" role="list" style="--bf-wild-thumbs: {{ thumb_count }};">
+        {%- for block in section.blocks -%}
+          {%- unless block.settings.featured -%}
+            {%- render 'bf-wild-photo', block: block, sizes: thumb_sizes, class: 'bf-wild__item--thumb' -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
 
     {%- if section.settings.button_label != blank -%}
       <div class="bf-wild__cta-wrap">
@@ -134,27 +107,73 @@
     line-height: 1.55;
   }
 
-  /* Masonry: CSS columns keep each photo's natural shape */
-  .bf-wild__grid {
+  .bf-wild__featured,
+  .bf-wild__thumbs {
     margin: 0;
     padding: 0;
-    columns: 2;
-    column-gap: 0.8rem;
   }
 
   .bf-wild__item {
-    margin: 0 0 0.8rem;
-    break-inside: avoid;
+    position: relative;
     border-radius: 1rem;
     overflow: hidden;
     background: rgba(var(--color-foreground), 0.05);
     transform: translateZ(0); /* keeps the rounded corners clean in Safari */
   }
 
+  .bf-wild__item--featured {
+    aspect-ratio: 3 / 4;
+  }
+
+  .bf-wild__item--thumb {
+    aspect-ratio: 1 / 1;
+    border-radius: 0.8rem;
+  }
+
+  .bf-wild__item picture {
+    display: block;
+    height: 100%;
+  }
+
   .bf-wild__img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Mobile: swipe rows, full-bleed with the next photo peeking in */
+  .bf-wild__scroller {
+    display: flex;
+    gap: 0.8rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 1.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .bf-wild__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bf-wild__scroller > .bf-wild__item {
+    scroll-snap-align: start;
+  }
+
+  .bf-wild__item--featured {
+    flex: 0 0 78%;
+  }
+
+  .bf-wild__thumbs {
+    margin-top: 0.8rem;
+  }
+
+  .bf-wild__item--thumb {
+    flex: 0 0 30%;
   }
 
   .bf-wild__cta-wrap {
@@ -219,14 +238,30 @@
       font-size: 1.6rem;
     }
 
-    .bf-wild__grid {
-      columns: 3;
-      column-gap: 1.2rem;
+    .bf-wild__scroller {
+      margin: 0;
+      padding: 0;
+      overflow: visible;
     }
 
-    .bf-wild__item {
-      margin-bottom: 1.2rem;
+    .bf-wild__featured {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.2rem;
+      max-width: 116rem;
+      margin: 0 auto;
+    }
+
+    .bf-wild__item--featured {
       border-radius: 1.2rem;
+    }
+
+    .bf-wild__thumbs {
+      display: grid;
+      grid-template-columns: repeat(var(--bf-wild-thumbs, 7), minmax(0, 1fr));
+      gap: 1.2rem;
+      max-width: 116rem;
+      margin: 1.2rem auto 0;
     }
 
     .bf-wild__cta-wrap {
@@ -234,11 +269,6 @@
     }
   }
 
-  @media screen and (min-width: 990px) {
-    .bf-wild__grid {
-      columns: 4;
-    }
-  }
 {% endstyle %}
 
 {% schema %}
@@ -309,6 +339,13 @@
           "id": "image",
           "label": "Image",
           "info": "Pick a new photo here. Leave empty to use the built-in photo below."
+        },
+        {
+          "type": "checkbox",
+          "id": "featured",
+          "label": "Featured (large, shown first)",
+          "info": "Use for photos with people in them. Others show as small thumbnails.",
+          "default": false
         },
         {
           "type": "text",
