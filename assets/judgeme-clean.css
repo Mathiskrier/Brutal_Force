@@ -1,0 +1,133 @@
+/*
+ * Brutalforce: cleaner Judge.me review widget.
+ * Judge.me paints names, badges, bars, sort menu and pagination in its yellow (#FDCA00).
+ * Here only the stars stay yellow; everything else uses the shop's text color.
+ * Theme-only override, so it changes nothing in the Judge.me app settings.
+ */
+.jdgm-rev-widg {
+  --jdgm-primary-color: rgb(18, 18, 18);
+  --jdgm-secondary-color: rgba(18, 18, 18, 0.06);
+  --jdgm-paginate-color: rgb(18, 18, 18);
+  --jdgm-reviewer-name-color: rgb(18, 18, 18);
+  --jdgm-write-review-text-color: rgb(18, 18, 18);
+  --jdgm-write-review-bg-color: #fff;
+  font-family: var(--font-body-family);
+  color: rgb(18, 18, 18);
+}
+
+/* Heading: same Inter style as the FAQ heading */
+.jdgm-rev-widg .jdgm-rev-widg__title {
+  font-family: var(--font-body-family);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 2.4rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* Summary */
+.jdgm-rev-widg .jdgm-rev-widg__summary-text {
+  color: rgba(18, 18, 18, 0.65);
+}
+
+.jdgm-rev-widg .jdgm-histogram__bar {
+  background-color: rgba(18, 18, 18, 0.07);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.jdgm-rev-widg .jdgm-histogram__bar-content {
+  background-color: rgba(18, 18, 18, 0.8);
+  border-radius: 99px;
+}
+
+.jdgm-rev-widg .jdgm-histogram__frequency {
+  color: rgba(18, 18, 18, 0.55);
+}
+
+.jdgm-rev-widg .jdgm-histogram__clear-filter {
+  color: rgb(18, 18, 18);
+}
+
+/* Write a review: quiet outlined button */
+.jdgm-rev-widg a.jdgm-write-rev-link,
+.jdgm-rev-widg .jdgm-write-rev-link {
+  color: rgb(18, 18, 18);
+  background-color: #fff;
+  border: 0.1rem solid rgb(18, 18, 18);
+  border-radius: 0.4rem;
+  font-weight: 600;
+}
+
+.jdgm-rev-widg a.jdgm-write-rev-link:hover {
+  color: #fff;
+  background-color: rgb(18, 18, 18);
+}
+
+/* Sort menu and pagination */
+.jdgm-rev-widg .jdgm-sort-dropdown,
+.jdgm-rev-widg .jdgm-sort-dropdown-arrow,
+.jdgm-rev-widg .jdgm-sort-dropdown-wrapper,
+.jdgm-rev-widg .jdgm-paginate__page {
+  color: rgb(18, 18, 18);
+}
+
+.jdgm-rev-widg .jdgm-paginate__page:not(.jdgm-curt) {
+  color: rgba(18, 18, 18, 0.55);
+}
+
+.jdgm-rev-widg .jdgm-paginate__page.jdgm-curt {
+  font-weight: 600;
+}
+
+/* Each review */
+.jdgm-rev-widg .jdgm-rev.jdgm-divider-top {
+  border-top-color: rgba(18, 18, 18, 0.1);
+}
+
+.jdgm-rev-widg .jdgm-rev__icon {
+  display: none;
+}
+
+.jdgm-rev-widg .jdgm-rev__author-wrapper {
+  margin-left: 0;
+}
+
+.jdgm-rev-widg .jdgm-rev__author {
+  color: rgb(18, 18, 18);
+  font-weight: 600;
+}
+
+.jdgm-rev-widg .jdgm-rev__timestamp {
+  color: rgba(18, 18, 18, 0.5);
+}
+
+/* "Verified": small green label instead of the yellow block */
+.jdgm-rev-widg .jdgm-rev__buyer-badge.jdgm-rev__buyer-badge {
+  margin-left: 0.6rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 99px;
+  color: rgb(31, 122, 71);
+  background-color: rgba(47, 143, 87, 0.1);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+.jdgm-rev-widg .jdgm-rev__title {
+  font-weight: 600;
+}
+
+.jdgm-rev-widg .jdgm-rev__body,
+.jdgm-rev-widg .jdgm-rev__body p {
+  color: rgba(18, 18, 18, 0.75);
+  line-height: 1.6;
+}
+
+@media screen and (min-width: 750px) {
+  .jdgm-rev-widg .jdgm-rev-widg__title {
+    font-size: 2.8rem;
+  }
+}
