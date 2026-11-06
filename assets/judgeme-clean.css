@@ -86,8 +86,15 @@
   border-top-color: rgba(18, 18, 18, 0.1);
 }
 
-.jdgm-rev-widg .jdgm-rev__icon {
-  display: none;
+.jdgm-rev-widg .jdgm-rev .jdgm-rev__icon,
+.jdgm-rev-widg .jdgm-rev .jdgm-rev__icon::after {
+  display: none !important;
+}
+
+.jdgm-rev-widg .jdgm-row-profile {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .jdgm-rev-widg .jdgm-rev__author-wrapper {
