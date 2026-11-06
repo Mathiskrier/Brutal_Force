@@ -291,6 +291,7 @@
   }
 
   .bf-footer__insta-label {
+    white-space: nowrap;
     font-weight: 600;
     font-size: 1.6rem;
   }
@@ -361,7 +362,7 @@
 
   @media screen and (min-width: 990px) {
     .bf-footer__grid {
-      grid-template-columns: minmax(0, 1.5fr) repeat({{ section.blocks.size | plus: 1 }}, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1.5fr) repeat({{ section.blocks.size }}, minmax(0, 1fr)) auto;
       gap: 4rem 4.8rem;
     }
 
