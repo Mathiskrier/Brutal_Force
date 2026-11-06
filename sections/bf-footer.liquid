@@ -1,0 +1,504 @@
+{%- comment -%}
+  Brutalforce footer: dark, multi-column, brand-first.
+  Column 1: logo, tagline, "Have questions?" (email + contact page)
+  Link columns: "Link column" blocks (Shop, Info) - each link is a label + URL text pair
+  Follow us: Instagram (Theme settings > Social media > Instagram, unless set here)
+  Bottom bar: the 4 clean payment logos, country/currency picker, copyright, Cookie preferences
+  The payment logos are display only; accepted payment methods are set in Shopify Payments.
+{%- endcomment -%}
+{{ 'component-list-payment.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign email = section.settings.email | strip
+  assign instagram_url = section.settings.instagram_url | default: settings.social_instagram_link
+  assign instagram_handle = ''
+  if instagram_url != blank
+    assign instagram_handle = instagram_url | split: '?' | first | split: '/' | last
+  endif
+  assign shown_payment_types = 'visa,paypal,google_pay,apple_pay' | split: ','
+-%}
+
+<div class="bf-footer color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="bf-footer__grid">
+      <div class="bf-footer__brand">
+        <a href="{{ routes.root_url }}" class="bf-footer__logo" aria-label="{{ shop.name | escape }}">
+          {%- if section.settings.logo != blank -%}
+            {{
+              section.settings.logo
+              | image_url: width: 480
+              | image_tag:
+                loading: 'lazy',
+                widths: '160, 240, 320, 480',
+                sizes: '160px',
+                alt: shop.name,
+                style: 'width: 16rem; height: auto;'
+            }}
+          {%- else -%}
+            <img
+              src="{{ 'brutal-force-logo-light.png' | asset_url }}"
+              alt="{{ shop.name | escape }}"
+              width="473"
+              height="218"
+              loading="lazy"
+              style="width: 16rem; height: auto;"
+            >
+          {%- endif -%}
+        </a>
+        {%- if section.settings.tagline != blank -%}
+          <p class="bf-footer__tagline">{{ section.settings.tagline | escape }}</p>
+        {%- endif -%}
+
+        <div class="bf-footer__contact">
+          {%- if section.settings.contact_heading != blank -%}
+            <p class="bf-footer__heading">{{ section.settings.contact_heading | escape }}</p>
+          {%- endif -%}
+          {%- if email != blank -%}
+            <a class="bf-footer__email" href="mailto:{{ email }}">
+              <span class="bf-footer__icon">{{- 'icon-lucide-mail.svg' | inline_asset_content -}}</span>
+              <span>{{ email | escape }}</span>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.contact_label != blank and section.settings.contact_url != blank -%}
+            <a class="bf-footer__link bf-footer__link--muted" href="{{ section.settings.contact_url }}">
+              {{- section.settings.contact_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- for block in section.blocks -%}
+        <nav class="bf-footer__col" aria-label="{{ block.settings.heading | escape }}" {{ block.shopify_attributes }}>
+          {%- if block.settings.heading != blank -%}
+            <p class="bf-footer__heading">{{ block.settings.heading | escape }}</p>
+          {%- endif -%}
+          <ul class="bf-footer__links list-unstyled" role="list">
+            {%- for i in (1..6) -%}
+              {%- liquid
+                assign label_key = 'link_' | append: i | append: '_label'
+                assign url_key = 'link_' | append: i | append: '_url'
+                assign link_label = block.settings[label_key]
+                assign link_url = block.settings[url_key] | strip
+              -%}
+              {%- if link_label != blank and link_url != blank -%}
+                <li><a class="bf-footer__link" href="{{ link_url }}">{{ link_label | escape }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endfor -%}
+
+      {%- if instagram_url != blank -%}
+        <div class="bf-footer__col bf-footer__follow">
+          {%- if section.settings.follow_heading != blank -%}
+            <p class="bf-footer__heading">{{ section.settings.follow_heading | escape }}</p>
+          {%- endif -%}
+          <a class="bf-footer__insta" href="{{ instagram_url }}" target="_blank" rel="noopener">
+            <span class="bf-footer__insta-icon">{{- 'icon-lucide-instagram.svg' | inline_asset_content -}}</span>
+            <span class="bf-footer__insta-text">
+              <span class="bf-footer__insta-label">{{ section.settings.follow_label | escape }}</span>
+              {%- if instagram_handle != blank -%}
+                <span class="bf-footer__insta-handle">@{{ instagram_handle | escape }}</span>
+              {%- endif -%}
+            </span>
+            <span class="visually-hidden">(Instagram, opens in a new window)</span>
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="bf-footer__bottom">
+      <div class="bf-footer__bottom-row">
+        <ul class="list list-payment bf-footer__payment" role="list" aria-label="Payment methods">
+          {%- for type in shown_payment_types -%}
+            {%- if shop.enabled_payment_types contains type -%}
+              <li class="list-payment__item">{{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}</li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+
+        {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
+          <localization-form class="bf-footer__localization">
+            {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
+              <div>
+                <h2 class="visually-hidden" id="FooterCountryLabel">{{ 'localization.country_label' | t }}</h2>
+                {%- render 'country-localization', localPosition: 'FooterCountry' -%}
+              </div>
+            {%- endform -%}
+          </localization-form>
+        {%- endif -%}
+      </div>
+
+      <div class="bf-footer__bottom-row bf-footer__legal">
+        <small>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_name | default: shop.name | escape }}</small>
+        {%- for policy in shop.policies -%}
+          {%- if policy.url contains 'shopifyReshowConsentBanner' -%}
+            <small><a class="bf-footer__link bf-footer__link--muted" href="{{ policy.url }}">{{ policy.title | escape }}</a></small>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .bf-footer {
+    --bf-footer-muted: rgba(var(--color-foreground), 0.68);
+    --bf-footer-line: rgba(var(--color-foreground), 0.14);
+    padding-top: 4.8rem;
+    padding-bottom: 2.4rem;
+    font-size: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .bf-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem 2.4rem;
+  }
+
+  .bf-footer__brand,
+  .bf-footer__follow {
+    grid-column: 1 / -1;
+  }
+
+  .bf-footer__logo {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  .bf-footer__logo img {
+    display: block;
+    max-width: 100%;
+  }
+
+  .bf-footer__tagline {
+    margin: 1.6rem 0 0;
+    color: var(--bf-footer-muted);
+    letter-spacing: 0.02rem;
+  }
+
+  .bf-footer__contact {
+    margin-top: 2.8rem;
+  }
+
+  .bf-footer__heading {
+    margin: 0 0 1.4rem;
+    font-family: var(--font-body-family);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: 0.12rem;
+    text-transform: uppercase;
+    color: rgb(var(--color-foreground));
+  }
+
+  .bf-footer__email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    color: rgb(var(--color-foreground));
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  .bf-footer__email:hover span:last-child {
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+  }
+
+  .bf-footer__icon {
+    display: inline-flex;
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .bf-footer__icon .icon,
+  .bf-footer__insta-icon .icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  .bf-footer__contact .bf-footer__link {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+
+  .bf-footer__contact > * {
+    display: flex;
+  }
+
+  .bf-footer__links {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bf-footer__links li + li {
+    margin-top: 1rem;
+  }
+
+  .bf-footer__link {
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .bf-footer__links .bf-footer__link,
+  .bf-footer__link--muted {
+    color: var(--bf-footer-muted);
+  }
+
+  .bf-footer__link:hover,
+  .bf-footer__link--muted:hover {
+    color: rgb(var(--color-foreground));
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+  }
+
+  .bf-footer__insta {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.4rem;
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+  }
+
+  .bf-footer__insta-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 4.8rem;
+    height: 4.8rem;
+    padding: 1.1rem;
+    border: 0.1rem solid var(--bf-footer-line);
+    border-radius: 50%;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .bf-footer__insta:hover .bf-footer__insta-icon {
+    background-color: rgba(var(--color-foreground), 0.08);
+    border-color: rgba(var(--color-foreground), 0.4);
+  }
+
+  .bf-footer__insta-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+  }
+
+  .bf-footer__insta-label {
+    font-weight: 600;
+    font-size: 1.6rem;
+  }
+
+  .bf-footer__insta-handle {
+    color: var(--bf-footer-muted);
+    font-size: 1.4rem;
+  }
+
+  .bf-footer__bottom {
+    margin-top: 4.8rem;
+    padding-top: 2.4rem;
+    border-top: 0.1rem solid var(--bf-footer-line);
+  }
+
+  .bf-footer__bottom-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem 2.4rem;
+  }
+
+  .bf-footer__bottom-row + .bf-footer__bottom-row {
+    margin-top: 2rem;
+  }
+
+  .bf-footer__payment.list-payment {
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .bf-footer__localization .localization-form {
+    margin: 0;
+    padding: 0;
+  }
+
+  .bf-footer__localization .localization-form__select {
+    margin: 0;
+  }
+
+  .bf-footer__legal {
+    justify-content: flex-start;
+    gap: 0.6rem 2.4rem;
+    color: var(--bf-footer-muted);
+    font-size: 1.3rem;
+  }
+
+  .bf-footer__legal small {
+    font-size: 1.3rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-footer {
+      padding-top: 6.4rem;
+      padding-bottom: 3.2rem;
+    }
+
+    .bf-footer__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .bf-footer__follow {
+      grid-column: auto;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .bf-footer__grid {
+      grid-template-columns: minmax(0, 1.5fr) repeat({{ section.blocks.size | plus: 1 }}, minmax(0, 1fr));
+      gap: 4rem 4.8rem;
+    }
+
+    .bf-footer__brand {
+      grid-column: auto;
+    }
+
+    .bf-footer__bottom {
+      margin-top: 6.4rem;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Brutalforce footer",
+  "tag": "footer",
+  "class": "bf-footer-section",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-4"
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Optional. Empty = the built-in light logo (white text, made for the dark footer)."
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Windguru mugs, born in Tarifa."
+    },
+    {
+      "type": "header",
+      "content": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Heading",
+      "default": "Have questions?"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email address",
+      "default": "contact@brutal-force.com"
+    },
+    {
+      "type": "text",
+      "id": "contact_label",
+      "label": "Contact page link label",
+      "default": "Contact page"
+    },
+    {
+      "type": "text",
+      "id": "contact_url",
+      "label": "Contact page link URL",
+      "default": "/pages/contact"
+    },
+    {
+      "type": "header",
+      "content": "Follow us"
+    },
+    {
+      "type": "text",
+      "id": "follow_heading",
+      "label": "Heading",
+      "default": "Follow us"
+    },
+    {
+      "type": "text",
+      "id": "follow_label",
+      "label": "Instagram label",
+      "default": "Follow the sessions"
+    },
+    {
+      "type": "text",
+      "id": "instagram_url",
+      "label": "Instagram URL",
+      "info": "Empty = the Instagram link from Theme settings > Social media."
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "label": "Show country/currency selector",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_name",
+      "label": "Copyright name",
+      "default": "Brutal Force"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "links",
+      "name": "Link column",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop" },
+        { "type": "text", "id": "link_1_label", "label": "Link 1 label" },
+        { "type": "text", "id": "link_1_url", "label": "Link 1 URL", "info": "e.g. /collections/drinkware" },
+        { "type": "text", "id": "link_2_label", "label": "Link 2 label" },
+        { "type": "text", "id": "link_2_url", "label": "Link 2 URL" },
+        { "type": "text", "id": "link_3_label", "label": "Link 3 label" },
+        { "type": "text", "id": "link_3_url", "label": "Link 3 URL" },
+        { "type": "text", "id": "link_4_label", "label": "Link 4 label" },
+        { "type": "text", "id": "link_4_url", "label": "Link 4 URL" },
+        { "type": "text", "id": "link_5_label", "label": "Link 5 label" },
+        { "type": "text", "id": "link_5_url", "label": "Link 5 URL" },
+        { "type": "text", "id": "link_6_label", "label": "Link 6 label" },
+        { "type": "text", "id": "link_6_url", "label": "Link 6 URL" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brutalforce footer"
+    }
+  ]
+}
+{% endschema %}
