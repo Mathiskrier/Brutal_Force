@@ -1,0 +1,343 @@
+{%- comment -%}
+  Brutalforce: "Out in the wild" - real customer photos (social proof), masonry grid.
+  Each "Photo" block is either:
+   - a pre-compressed theme asset set: "<name>-400.webp", "<name>-800.webp", "<name>-1200.webp"
+     + "<name>-800.jpg" fallback (Asset name + Width/Height of the largest version), or
+   - an image picked in the editor (Image setting), served by Shopify's CDN in responsive sizes.
+  All images are lazy-loaded. The CTA scrolls to the Add to cart button on product pages
+  and falls back to its link everywhere else.
+{%- endcomment -%}
+{%- liquid
+  assign sizes = '(max-width: 749px) calc(50vw - 2.4rem), (max-width: 989px) calc(33vw - 3rem), min(calc(25vw - 4rem), 290px)'
+-%}
+
+<div class="bf-wild color-{{ section.settings.color_scheme }} gradient" style="--bf-wild-pt: {{ section.settings.padding_top }}px; --bf-wild-pb: {{ section.settings.padding_bottom }}px;">
+  <div class="page-width">
+    <div class="bf-wild__header">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="bf-wild__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="bf-wild__text">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <ul class="bf-wild__grid list-unstyled" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign alt = block.settings.alt | default: 'A Brutal Force forecast mug in real life'
+          assign name = block.settings.asset | strip
+        -%}
+        {%- if block.settings.image != blank -%}
+          <li class="bf-wild__item" {{ block.shopify_attributes }}>
+            {{
+              block.settings.image
+              | image_url: width: 1200
+              | image_tag:
+                loading: 'lazy',
+                decoding: 'async',
+                widths: '300, 400, 600, 800, 1000, 1200',
+                sizes: sizes,
+                alt: alt,
+                class: 'bf-wild__img'
+            }}
+          </li>
+        {%- elsif name != blank -%}
+          {%- liquid
+            assign w = block.settings.width | default: 1200
+            assign h = block.settings.height | default: 1500
+            assign webp_400 = name | append: '-400.webp' | asset_url
+            assign webp_800 = name | append: '-800.webp' | asset_url
+            assign webp_max = name | append: '-1200.webp' | asset_url
+            assign jpg_800 = name | append: '-800.jpg' | asset_url
+          -%}
+          <li class="bf-wild__item" {{ block.shopify_attributes }}>
+            <picture>
+              <source
+                type="image/webp"
+                srcset="{{ webp_400 }} 400w, {{ webp_800 }} 800w, {{ webp_max }} {{ w }}w"
+                sizes="{{ sizes }}"
+              >
+              <img
+                class="bf-wild__img"
+                src="{{ jpg_800 }}"
+                alt="{{ alt | escape }}"
+                width="{{ w }}"
+                height="{{ h }}"
+                loading="lazy"
+                decoding="async"
+              >
+            </picture>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="bf-wild__cta-wrap">
+        <a
+          class="bf-wild__cta"
+          href="{{ section.settings.button_link | default: '/collections/drinkware' }}"
+          data-bf-scroll-to-buy
+        >
+          <span>{{ section.settings.button_label | escape }}</span>
+          <span class="bf-wild__cta-arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  (() => {
+    const link = document.querySelector('#shopify-section-{{ section.id }} [data-bf-scroll-to-buy]');
+    if (!link || link.dataset.bound) return;
+    link.dataset.bound = 'true';
+    link.addEventListener('click', (event) => {
+      // On product pages: scroll smoothly to the Add to cart button instead of leaving the page
+      const button = document.querySelector('.product-form__submit');
+      if (!button) return;
+      event.preventDefault();
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      button.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(() => button.focus({ preventScroll: true }), reduce ? 0 : 600);
+    });
+  })();
+</script>
+
+{% style %}
+  .bf-wild {
+    padding-top: calc(var(--bf-wild-pt) * 0.75);
+    padding-bottom: calc(var(--bf-wild-pb) * 0.75);
+  }
+
+  .bf-wild__header {
+    max-width: 60rem;
+    margin: 0 auto 2.4rem;
+    text-align: center;
+  }
+
+  .bf-wild__heading {
+    margin: 0;
+    font-family: var(--font-body-family);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2.4rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .bf-wild__text {
+    margin: 0.8rem 0 0;
+    color: rgba(var(--color-foreground), 0.65);
+    font-size: 1.5rem;
+    line-height: 1.55;
+  }
+
+  /* Masonry: CSS columns keep each photo's natural shape */
+  .bf-wild__grid {
+    margin: 0;
+    padding: 0;
+    columns: 2;
+    column-gap: 0.8rem;
+  }
+
+  .bf-wild__item {
+    margin: 0 0 0.8rem;
+    break-inside: avoid;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: rgba(var(--color-foreground), 0.05);
+    transform: translateZ(0); /* keeps the rounded corners clean in Safari */
+  }
+
+  .bf-wild__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .bf-wild__cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.4rem;
+  }
+
+  .bf-wild__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    min-height: 5rem;
+    padding: 0 3.2rem;
+    border-radius: var(--buttons-radius-outset, 0.4rem);
+    background: rgb(17, 17, 17);
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.02rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .bf-wild__cta:hover {
+    background: rgb(51, 51, 51);
+  }
+
+  .bf-wild__cta-arrow {
+    display: inline-flex;
+    width: 1.8rem;
+    height: 1.8rem;
+    transition: transform 0.15s ease;
+  }
+
+  .bf-wild__cta-arrow .icon,
+  .bf-wild__cta-arrow svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .bf-wild__cta:hover .bf-wild__cta-arrow {
+    transform: translateX(0.3rem);
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-wild {
+      padding-top: var(--bf-wild-pt);
+      padding-bottom: var(--bf-wild-pb);
+    }
+
+    .bf-wild__header {
+      margin-bottom: 3.2rem;
+    }
+
+    .bf-wild__heading {
+      font-size: 2.8rem;
+    }
+
+    .bf-wild__text {
+      font-size: 1.6rem;
+    }
+
+    .bf-wild__grid {
+      columns: 3;
+      column-gap: 1.2rem;
+    }
+
+    .bf-wild__item {
+      margin-bottom: 1.2rem;
+      border-radius: 1.2rem;
+    }
+
+    .bf-wild__cta-wrap {
+      margin-top: 3.2rem;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .bf-wild__grid {
+      columns: 4;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Real photos (Out in the wild)",
+  "tag": "section",
+  "class": "section bf-wild-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Out in the wild"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Real mugs, real mornings, sent in by riders across Europe. No studio, no stock — just the crew."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Get yours"
+    },
+    {
+      "type": "text",
+      "id": "button_link",
+      "label": "Button link",
+      "default": "/collections/drinkware",
+      "info": "Used where there is no Add to cart button on the page. On product pages the button scrolls to Add to cart."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Pick a new photo here. Leave empty to use the built-in photo below."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text (describe the photo)"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Built-in photo (asset name)",
+          "info": "Advanced: name of the pre-compressed photo set, e.g. wild-01."
+        },
+        {
+          "type": "number",
+          "id": "width",
+          "label": "Built-in photo width (px)"
+        },
+        {
+          "type": "number",
+          "id": "height",
+          "label": "Built-in photo height (px)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Real photos (Out in the wild)"
+    }
+  ]
+}
+{% endschema %}
