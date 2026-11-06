@@ -1,5 +1,5 @@
 {% doc %}
-  Renders an icon-with-text block containing up to three items.
+  Renders an icon-with-text block containing up to four items (4th added by Brutalforce).
 
   @param {block} block - The section block whose settings provide the layout, headings, icons, and images.
 
@@ -10,6 +10,7 @@
   assign heading_1_empty = false
   assign heading_2_empty = false
   assign heading_3_empty = false
+  assign heading_4_empty = false
   assign text_only_all_items = true
 
   if block.settings.heading_1 == empty
@@ -22,6 +23,11 @@
 
   if block.settings.heading_3 == empty
     assign heading_3_empty = true
+  endif
+
+  # Brutalforce: 4th item (Icon 4 / Heading 4); empty unless set
+  if block.settings.heading_4 == empty or block.settings.heading_4 == blank
+    assign heading_4_empty = true
   endif
 
   if heading_1_empty == false and block.settings.icon_1 != 'none' or block.settings.image_1 != null
@@ -99,6 +105,28 @@
       {%- endif -%}
       <span class="h4 inline-richtext">
         {{- block.settings.heading_3 -}}
+      </span>
+    </li>
+  {%- endunless -%}
+  {%- unless heading_4_empty -%}
+    <li class="icon-with-text__item">
+      {%- if block.settings.image_4 == null -%}
+        {% render 'icon-accordion', icon: block.settings.icon_4 -%}
+      {%- else -%}
+        <img
+          src="{{ block.settings.image_4 | image_url }}"
+          {% if block.settings.image_4.alt != blank %}
+            alt="{{ block.settings.image_4.alt | escape }}"
+          {% else %}
+            role="presentation"
+          {% endif %}
+          height="auto"
+          width="auto"
+          loading="lazy"
+        >
+      {%- endif -%}
+      <span class="h4 inline-richtext">
+        {{- block.settings.heading_4 -}}
       </span>
     </li>
   {%- endunless -%}

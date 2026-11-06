@@ -54,8 +54,10 @@
             "heading_1": "Ships from Europe - tracked & fast",
             "icon_2": "lucide_users",
             "heading_2": "Trusted by 700+ riders",
-            "icon_3": "lucide_package_check",
-            "heading_3": "Ships safe in protective packaging"
+            "icon_3": "lucide_gift",
+            "heading_3": "The perfect gift for any surfer",
+            "icon_4": "lucide_package_check",
+            "heading_4": "Ships safe in protective packaging"
           }
         },
         "free_shipping_upsell_ceramic": {
@@ -240,9 +242,9 @@
         "faq_gift": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Is this a good gift for a surfer?",
+            "heading": "Why is this the perfect gift for any surfer?",
             "icon": "none",
-            "row_content": "<p>Yes, and one that actually gets used. Every kitesurfer, windsurfer, wing foiler and sailor knows the Windguru colors and checks the forecast a few times a day. With this mug they see them every morning over coffee, instead of a gift that ends up in a drawer. A small present that makes anyone who loves the wind smile.</p>",
+            "row_content": "<p>Because it's a gift they'll actually use. Every kitesurfer, windsurfer, wing foiler and sailor knows the Windguru colors and checks the forecast a few times a day. With this mug they see them every morning over coffee, instead of a gift that ends up in a drawer. A small present that makes anyone who loves the wind smile.</p>",
             "page": ""
           }
         }
