@@ -4,7 +4,7 @@
    - a pre-compressed theme asset set: "<name>-400.webp", "<name>-800.webp", "<name>-1200.webp"
      + "<name>-800.jpg" fallback (Asset name + Width/Height of the largest version), or
    - an image picked in the editor (Image setting), served by Shopify's CDN in responsive sizes.
-  All images are lazy-loaded. The CTA scrolls to the Add to cart button on product pages
+  All images are lazy-loaded (loading="lazy"). The CTA scrolls to the Add to cart button on product pages
   and falls back to its link everywhere else.
 {%- endcomment -%}
 {%- liquid
