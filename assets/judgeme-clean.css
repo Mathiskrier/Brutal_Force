@@ -2,7 +2,7 @@
  * Brutalforce: cleaner Judge.me review widget.
  * Judge.me paints names, badges, bars, sort menu and pagination in its yellow (#FDCA00).
  * Here only the stars stay yellow; everything else uses the shop's text color.
- * Theme-only override, so it changes nothing in the Judge.me app settings.
+ * Theme-only override, so it changes nothing in the Judge.me app settings (draft theme only).
  */
 .jdgm-rev-widg {
   --jdgm-primary-color: rgb(18, 18, 18);
