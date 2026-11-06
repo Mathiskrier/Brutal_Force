@@ -183,54 +183,84 @@
     "collapsible_content_9b89xV": {
       "type": "collapsible-content",
       "blocks": {
-        "collapsible_row_xbN3Vb": {
+        "faq_shipping_time": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Do you offer a money-back guarantee?",
-            "icon": "return",
-            "row_content": "<p>Yes! If your mug arrives with any <strong>production defects or damage</strong>, just contact us and we’ll make it right. </p>",
+            "heading": "How long does shipping take?",
+            "icon": "none",
+            "row_content": "<p>We hand your order to the carrier within 1 working day. Depending on where you live, it usually arrives within 5 working days.</p>",
             "page": ""
           }
         },
-        "collapsible_row_fiXAeb": {
+        "faq_ships_from": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "What payment methods do you accept?",
-            "icon": "price_tag",
-            "row_content": "<p>We accept all major credit cards, PayPal, and convenient options like Apple Pay and Google Pay.</p>",
+            "heading": "Where do you ship from?",
+            "icon": "none",
+            "row_content": "<p>We work with fulfillment centers across Europe, including Spain and France. Your order ships from the one closest to you, so it travels a shorter way: faster for you, better for the planet.</p>",
             "page": ""
           }
         },
-        "collapsible_row_gwqkyW": {
+        "faq_free_shipping": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Are your mugs dishwasher and microwave safe?",
-            "icon": "washing",
-            "row_content": "<p>Our ceramic mugs are safe for both dishwasher and microwave. Enamel mugs should be hand-washed to preserve the coating and should not be used in the microwave.</p>",
+            "heading": "Do you offer free shipping?",
+            "icon": "none",
+            "row_content": "<p>Yes, on every order over €30. Two mugs and you're there.</p>",
             "page": ""
           }
         },
-        "collapsible_row_hmzYfJ": {
+        "faq_tracking": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Can I have my favorite spot on my mug?",
-            "icon": "map_pin",
-            "row_content": "<p>Our mugs don’t display specific spots with names. But if you want your favorite spot — with the name and its wind — on a custom mug, just reach out to us through the contact page. We’re happy to create one just for you!</p>",
+            "heading": "Can I track my order?",
+            "icon": "none",
+            "row_content": "<p>Yes. As soon as your order ships, you get an email with a tracking link.</p>",
+            "page": ""
+          }
+        },
+        "faq_damaged": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What if my mug arrives damaged?",
+            "icon": "none",
+            "row_content": "<p>Every mug is packed with protective packaging. If one still arrives damaged, send us a photo at <a href=\"mailto:contact@brutal-force.com\" title=\"mailto:contact@brutal-force.com\">contact@brutal-force.com</a> and we'll ship you a new one for free. No need to send the broken one back.</p>",
+            "page": ""
+          }
+        },
+        "faq_custom_spot": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Can I get my favorite spot on a mug?",
+            "icon": "none",
+            "row_content": "<p>Yes. Tell us your spot and the wind you ride there through our <a href=\"/pages/contact\" title=\"Contact\">contact page</a>, and we'll create a mug just for you.</p>",
+            "page": ""
+          }
+        },
+        "faq_contact": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How can I reach you?",
+            "icon": "none",
+            "row_content": "<p>Email us at <a href=\"mailto:contact@brutal-force.com\" title=\"mailto:contact@brutal-force.com\">contact@brutal-force.com</a> or use our <a href=\"/pages/contact\" title=\"Contact\">contact form</a>. We usually reply within a few hours.</p>",
             "page": ""
           }
         }
       },
       "block_order": [
-        "collapsible_row_xbN3Vb",
-        "collapsible_row_fiXAeb",
-        "collapsible_row_gwqkyW",
-        "collapsible_row_hmzYfJ"
+        "faq_shipping_time",
+        "faq_ships_from",
+        "faq_free_shipping",
+        "faq_tracking",
+        "faq_damaged",
+        "faq_custom_spot",
+        "faq_contact"
       ],
       "name": "t:sections.collapsible_content.presets.name",
       "settings": {
         "caption": "",
-        "heading": "FAQ",
-        "heading_size": "h1",
+        "heading": "Frequently asked questions",
+        "heading_size": "h2",
         "heading_alignment": "center",
         "layout": "none",
         "container_color_scheme": "",
