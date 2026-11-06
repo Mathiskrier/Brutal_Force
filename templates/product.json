@@ -237,24 +237,24 @@
             "page": ""
           }
         },
-        "faq_contact": {
+        "faq_gift": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "How can I reach you?",
+            "heading": "Is this a good gift for a surfer?",
             "icon": "none",
-            "row_content": "<p>Email us at <a href=\"mailto:contact@brutal-force.com\" title=\"mailto:contact@brutal-force.com\">contact@brutal-force.com</a> or use our <a href=\"/pages/contact\" title=\"Contact\">contact form</a>. We usually reply within a few hours.</p>",
+            "row_content": "<p>Yes, and one that actually gets used. Every kitesurfer, windsurfer, wing foiler and sailor knows the Windguru colors and checks the forecast a few times a day. With this mug they see them every morning over coffee, instead of a gift that ends up in a drawer. A small present that makes anyone who loves the wind smile.</p>",
             "page": ""
           }
         }
       },
       "block_order": [
+        "faq_gift",
         "faq_shipping_time",
         "faq_ships_from",
         "faq_free_shipping",
         "faq_tracking",
         "faq_damaged",
-        "faq_custom_spot",
-        "faq_contact"
+        "faq_custom_spot"
       ],
       "name": "t:sections.collapsible_content.presets.name",
       "settings": {
