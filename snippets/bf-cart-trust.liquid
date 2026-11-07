@@ -1,0 +1,40 @@
+{%- doc -%}
+  Brutalforce: small reassurance band under the Check out button (cart drawer + cart page).
+  Line 1: real shop-wide Judge.me rating + review count (shop metafields judgeme.all_reviews_rating /
+          all_reviews_count; if missing, the weighted average of all products' review metafields)
+          + "700+ riders" (same figure as the product page bullet).
+  Line 2: the damage guarantee from the refund policy.
+{%- enddoc -%}
+{%- liquid
+  assign review_count = shop.metafields.judgeme.all_reviews_count | plus: 0
+  assign review_rating = shop.metafields.judgeme.all_reviews_rating | plus: 0
+  if review_count == 0
+    assign weighted = 0.0
+    for p in collections.all.products limit: 50
+      assign c = p.metafields.reviews.rating_count.value | default: 0
+      if c > 0
+        assign r = p.metafields.reviews.rating.value.rating | default: 0
+        assign weighted = r | times: c | plus: weighted
+        assign review_count = review_count | plus: c
+      endif
+    endfor
+    if review_count > 0
+      assign review_rating = weighted | divided_by: review_count
+    endif
+  endif
+  assign review_rating = review_rating | round: 1
+-%}
+{%- if cart != empty -%}
+  <div class="bf-trust" data-reviews="{{ review_rating }}|{{ review_count }}">
+    {%- if review_count > 0 -%}
+      <p class="bf-trust__line">
+        <span class="bf-trust__icon bf-trust__icon--star" aria-hidden="true">{{- 'icon-lucide-star.svg' | inline_asset_content -}}</span>
+        <span>{{ review_rating }} · {{ review_count }} reviews · 700+ riders</span>
+      </p>
+    {%- endif -%}
+    <p class="bf-trust__line">
+      <span class="bf-trust__icon" aria-hidden="true">{{- 'icon-lucide-shield-check.svg' | inline_asset_content -}}</span>
+      <span>Arrives broken? We'll replace it free</span>
+    </p>
+  </div>
+{%- endif -%}

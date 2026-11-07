@@ -572,3 +572,54 @@
   font-weight: 600;
   font-size: 1.5rem;
 }
+
+/* ------------------------------------------------------------------
+   Brutalforce: reassurance band under Check out (snippets/bf-cart-trust.liquid)
+   ------------------------------------------------------------------ */
+.bf-trust {
+  margin-top: 1.2rem;
+  padding: 1rem 1.2rem;
+  border-radius: 0.8rem;
+  background: rgba(var(--color-foreground), 0.04);
+  text-align: left;
+}
+
+.bf-trust__line {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  letter-spacing: 0.02rem;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.bf-trust__line + .bf-trust__line {
+  margin-top: 0.5rem;
+}
+
+.bf-trust__icon {
+  display: inline-flex;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: rgba(var(--color-foreground), 0.65);
+}
+
+.bf-trust__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.bf-trust__icon--star {
+  color: #fdca00;
+}
+
+.bf-trust__icon--star svg {
+  fill: currentColor;
+}
+
+.cart__footer .bf-trust {
+  width: 100%;
+}
