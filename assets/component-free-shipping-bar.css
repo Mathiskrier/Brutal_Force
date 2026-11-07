@@ -623,3 +623,19 @@
 .cart__footer .bf-trust {
   width: 100%;
 }
+
+/* Brutalforce: on phones and short screens the whole drawer scrolls as one page, so the
+   cart lines are never squeezed to 0 by the bar, suggestions, summary, buttons and trust band
+   (the theme only did this below 650px height) */
+@media screen and (max-width: 749px), screen and (max-height: 900px) {
+  cart-drawer-items {
+    overflow: visible;
+    flex: none;
+  }
+
+  .cart-drawer .drawer__inner {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
