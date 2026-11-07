@@ -281,10 +281,27 @@
   text-wrap: balance;
 }
 
-.fs-upsell__set strong {
-  font-weight: 600;
+.fs-upsell__set strong,
+.fs-upsell__set s,
+.fs-upsell__set-value {
   white-space: nowrap;
-  color: rgba(var(--color-foreground), 0.8);
+}
+
+/* crossed-out reference price: muted, like a compare-at price */
+.fs-upsell__set-compare {
+  margin-right: 0.2rem;
+  color: rgba(var(--color-foreground), 0.45);
+}
+
+/* the real set price carries the visual weight */
+.fs-upsell__set-price {
+  font-weight: 600;
+  font-size: 1.35rem;
+  color: rgb(var(--color-foreground));
+}
+
+.fs-upsell__set-value {
+  color: rgba(var(--color-foreground), 0.78);
 }
 
 .fs-upsell__set:hover .fs-upsell__set-text {

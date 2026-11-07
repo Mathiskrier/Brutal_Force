@@ -68,7 +68,7 @@
             "heading_emphasis": "FREE",
             "subtext": "Add another mug and skip the delivery fee.",
             "bundle_product": "happiness-mug-pack",
-            "bundle_text": "Want all three? Get the set for [price] and save [saving]"
+            "bundle_text": "Want all three? [compare] [price] — save [saving][free_shipping]"
           }
         },
         "variant_picker": {

@@ -149,13 +149,23 @@
           assign reference_price = reference_price | plus: item.first_available_variant.price
         endfor
         assign bundle_saving = reference_price | minus: bundle_price
-        assign bundle_price_html = bundle_price | money_without_trailing_zeros | prepend: '<strong>' | append: '</strong>'
-        assign bundle_saving_html = bundle_saving | money_without_trailing_zeros | prepend: '<strong>' | append: '</strong>'
-        assign bundle_text = block.settings.bundle_text | default: 'Want all three? Get the set for [price] and save [saving]' | escape
-        if bundle_saving <= 0
-          assign bundle_text = bundle_text | split: ' and save' | first
+        assign bundle_compare_html = reference_price | money_without_trailing_zeros | prepend: '<s class="fs-upsell__set-compare">' | append: '</s>'
+        assign bundle_price_html = bundle_price | money_without_trailing_zeros | prepend: '<strong class="fs-upsell__set-price">' | append: '</strong>'
+        assign bundle_saving_html = bundle_saving | money_without_trailing_zeros | prepend: '<span class="fs-upsell__set-value">' | append: '</span>'
+
+        # "+ free shipping" only when the set itself reaches the free shipping threshold
+        assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+        assign free_shipping_html = ''
+        if bundle_price >= threshold_cents
+          assign free_shipping_html = ' + <span class="fs-upsell__set-value">free shipping</span>'
         endif
-        assign bundle_text = bundle_text | replace: '[price]', bundle_price_html | replace: '[saving]', bundle_saving_html
+
+        assign bundle_text = block.settings.bundle_text | default: 'Want all three? [compare] [price] — save [saving][free_shipping]' | escape
+        if bundle_saving <= 0
+          # no saving: drop the crossed-out price and the "save ..." part
+          assign bundle_text = bundle_text | replace: '[compare] ', '' | replace: '[compare]', '' | split: ' — save' | first | split: ' and save' | first
+        endif
+        assign bundle_text = bundle_text | replace: '[compare]', bundle_compare_html | replace: '[price]', bundle_price_html | replace: '[saving]', bundle_saving_html | replace: '[free_shipping]', free_shipping_html
       -%}
       <a class="fs-upsell__set" href="{{ bundle.url }}">
         <span class="fs-upsell__set-text">{{ bundle_text }}&nbsp;<span class="fs-upsell__set-arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span></span>
