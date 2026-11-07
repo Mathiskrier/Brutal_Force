@@ -15,9 +15,10 @@
       assign shown = shown | plus: 1
     endif
   endfor
+  assign max_columns = section.settings.max_columns | default: 4
   assign columns = shown
-  if columns > 4
-    assign columns = 4
+  if columns > max_columns
+    assign columns = max_columns
   endif
 -%}
 
@@ -69,6 +70,11 @@
           {%- assign skip_styles = true -%}
         {%- endfor -%}
       </ul>
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <div class="bf-more__cta-wrap">
+          <a class="bf-more__cta" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+        </div>
+      {%- endif -%}
     </div>
   </div>
 {%- endif -%}
@@ -160,6 +166,31 @@
     color: var(--bf-badge-sub);
   }
 
+  .bf-more__cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.4rem;
+  }
+
+  .bf-more__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4.6rem;
+    padding: 0 2.8rem;
+    border: 0.1rem solid rgb(17, 17, 17);
+    border-radius: var(--buttons-radius-outset, 0.4rem);
+    color: rgb(17, 17, 17);
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .bf-more__cta:hover {
+    background: rgb(17, 17, 17);
+    color: #fff;
+  }
+
   @media screen and (min-width: 750px) {
     .bf-more {
       padding-top: var(--bf-more-pt);
@@ -197,6 +228,25 @@
       "id": "set_product",
       "label": "Set / bundle product",
       "info": "Gets the badge below and a highlighted card."
+    },
+    {
+      "type": "range",
+      "id": "max_columns",
+      "label": "Max columns on desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button below (optional)"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
     },
     {
       "type": "text",
@@ -249,18 +299,43 @@
       "type": "badge",
       "name": "Badge",
       "settings": [
-        { "type": "product", "id": "product", "label": "Product" },
-        { "type": "text", "id": "label", "label": "Badge", "default": "Most popular" },
-        { "type": "text", "id": "sub_label", "label": "Second line (smaller, optional)" },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Badge",
+          "default": "Most popular"
+        },
+        {
+          "type": "text",
+          "id": "sub_label",
+          "label": "Second line (smaller, optional)"
+        },
         {
           "type": "select",
           "id": "style",
           "label": "Colour",
           "options": [
-            { "value": "yellow", "label": "Yellow (deal / saving)" },
-            { "value": "black", "label": "Black (bestseller)" },
-            { "value": "charcoal", "label": "Charcoal (product quality)" },
-            { "value": "outline", "label": "Outline (category, e.g. Outdoor)" }
+            {
+              "value": "yellow",
+              "label": "Yellow (deal / saving)"
+            },
+            {
+              "value": "black",
+              "label": "Black (bestseller)"
+            },
+            {
+              "value": "charcoal",
+              "label": "Charcoal (product quality)"
+            },
+            {
+              "value": "outline",
+              "label": "Outline (category, e.g. Outdoor)"
+            }
           ],
           "default": "black"
         }
