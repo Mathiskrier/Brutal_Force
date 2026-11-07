@@ -543,3 +543,32 @@
   color: rgb(31, 122, 71);
   font-weight: 600;
 }
+
+/* summary v4 (calm): Price + Shipping muted, "You save" the only highlighted number */
+.bf-summary__row--price,
+.bf-summary__row--shipping,
+.bf-summary__row--price dt,
+.bf-summary__row--shipping dt,
+.bf-summary__row--price .bf-summary__now,
+.bf-summary__row--shipping .bf-summary__now {
+  color: rgba(var(--color-foreground), 0.62);
+  font-weight: 400;
+}
+
+.bf-summary__row--price .bf-summary__was,
+.bf-summary__row--shipping .bf-summary__was {
+  color: rgba(var(--color-foreground), 0.4);
+}
+
+.bf-summary__row--save {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.bf-summary__row--save dt,
+.bf-summary__row--save dd {
+  color: rgb(31, 122, 71);
+  font-weight: 600;
+  font-size: 1.5rem;
+}

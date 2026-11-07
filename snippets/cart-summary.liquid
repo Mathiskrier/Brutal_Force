@@ -1,9 +1,10 @@
 {%- doc -%}
   Brutalforce: order summary above "Estimated total" (cart drawer + cart page).
 
-    Price          €45,00 (struck)  €43,50   [Save €1,50]
-    Shipping       €4,99 (struck)  FREE
-    Total savings  −€6,49
+    Price          €45,00 (struck)  €43,50        (muted)
+    Shipping       €4,99 (struck)  FREE          (muted)
+    ------------
+    You save       −€6,49                        (the one green number; only when shipping is FREE)
 
   - Compare-at total = sum of each line's compare-at price (or its regular price if it has none) x qty
   - Real total       = cart.total_price (what the products cost)
@@ -11,7 +12,8 @@
   - Shipping         = HARDCODED normal shipping (constant below), shown struck + FREE once the cart
                        reaches the free shipping amount (same test as the bar). Not read from Shopify.
                        Below that amount: "Calculated at checkout" and no shipping saving.
-  - Total savings    = product savings + the hardcoded shipping (only when shipping is FREE)
+  - You save         = product savings + the hardcoded shipping, shown ONLY when shipping is FREE
+                       (below the free shipping amount the struck Price already shows the saving)
   To change the normal shipping price, edit NORMAL_SHIPPING_CENTS below (499 = €4,99).
 {%- enddoc -%}
 {%- liquid
@@ -52,9 +54,6 @@
           <s class="bf-summary__was">{{ compare_total | money }}</s>
         {%- endif -%}
         <span class="bf-summary__now">{{ real_total | money }}</span>
-        {%- if product_savings > 0 -%}
-          <span class="bf-summary__badge">Save {{ product_savings | money }}</span>
-        {%- endif -%}
       </dd>
     </div>
     <div class="bf-summary__row bf-summary__row--shipping">
@@ -62,15 +61,16 @@
       <dd>
         {%- if ships_free -%}
           <s class="bf-summary__was">{{ NORMAL_SHIPPING_CENTS | money }}</s>
-          <strong class="bf-summary__free">FREE</strong>
+          <span class="bf-summary__now">FREE</span>
         {%- else -%}
-          <span class="bf-summary__muted">Calculated at checkout</span>
+          <span class="bf-summary__now">Calculated at checkout</span>
         {%- endif -%}
       </dd>
     </div>
-    {%- if total_savings > 0 -%}
+    {%- comment -%} the one highlighted number - only once free shipping applies {%- endcomment -%}
+    {%- if ships_free and total_savings > 0 -%}
       <div class="bf-summary__row bf-summary__row--save">
-        <dt>Total savings</dt>
+        <dt>You save</dt>
         <dd>−{{ total_savings | money }}</dd>
       </div>
     {%- endif -%}
