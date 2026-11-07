@@ -1,0 +1,186 @@
+{%- comment -%}
+  Brutalforce: "Didn't find your mug yet?" - discovery row low on the product page.
+  Shows a fixed, editable product list (the single mugs + the set), always leaving out the
+  product being viewed. The "Set / bundle product" gets a "Best value" badge and a highlighted card.
+  Cards link to the product pages (no quick add): visitors here are still choosing a design.
+{%- endcomment -%}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign set_product = section.settings.set_product
+  assign shown = 0
+  for item in section.settings.products
+    if item.id != product.id and item.available
+      assign shown = shown | plus: 1
+    endif
+  endfor
+  assign columns = shown
+  if columns > 4
+    assign columns = 4
+  endif
+-%}
+
+{%- if shown > 0 -%}
+  <div class="bf-more color-{{ section.settings.color_scheme }} gradient" style="--bf-more-pt: {{ section.settings.padding_top }}px; --bf-more-pb: {{ section.settings.padding_bottom }}px;">
+    <div class="page-width">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="bf-more__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      <ul class="grid product-grid grid--{{ columns }}-col-desktop grid--2-col-tablet-down bf-more__grid" role="list">
+        {%- assign skip_styles = false -%}
+        {%- for item in section.settings.products -%}
+          {%- if item.id == product.id or item.available == false -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign is_set = false
+            if set_product != blank and item.id == set_product.id
+              assign is_set = true
+            endif
+            assign badge = ''
+            if is_set
+              assign badge = section.settings.set_badge
+            endif
+          -%}
+          <li class="grid__item bf-more__item{% if is_set %} bf-more__item--set{% endif %}">
+            {%- render 'card-product',
+              card_product: item,
+              media_aspect_ratio: 'square',
+              show_secondary_image: false,
+              show_vendor: false,
+              show_rating: section.settings.show_rating,
+              section_id: section.id,
+              skip_styles: skip_styles,
+              custom_badge: badge,
+              product_view_context: 'recommendation'
+            -%}
+          </li>
+          {%- assign skip_styles = true -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
+
+{% style %}
+  .bf-more {
+    padding-top: calc(var(--bf-more-pt) * 0.75);
+    padding-bottom: calc(var(--bf-more-pb) * 0.75);
+  }
+
+  .bf-more__heading {
+    margin: 0 0 2.4rem;
+    text-align: center;
+    font-family: var(--font-body-family);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2.4rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  /* Set card: same card, but clearly "the set": badge + soft yellow frame */
+  .bf-more__item--set .card-wrapper {
+    border-radius: calc(var(--card-corner-radius) + 0.4rem);
+    box-shadow: 0 0 0 0.2rem #fce477;
+    background: rgba(252, 228, 119, 0.12);
+  }
+
+  .bf-more__item--set .card__content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .bf-badge--value {
+    background: #fce477;
+    color: rgb(18, 18, 18);
+    border-color: #fce477;
+    font-weight: 600;
+    letter-spacing: 0.08rem;
+    text-transform: uppercase;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-more {
+      padding-top: var(--bf-more-pt);
+      padding-bottom: var(--bf-more-pb);
+    }
+
+    .bf-more__heading {
+      margin-bottom: 3.2rem;
+      font-size: 2.8rem;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "More mugs",
+  "tag": "section",
+  "class": "section bf-more-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Didn't find your mug yet?"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products",
+      "limit": 8,
+      "info": "The product being viewed is always left out. Cards link to the product page (no quick add)."
+    },
+    {
+      "type": "product",
+      "id": "set_product",
+      "label": "Set / bundle product",
+      "info": "Gets the badge below and a highlighted card."
+    },
+    {
+      "type": "text",
+      "id": "set_badge",
+      "label": "Set badge",
+      "default": "Best value"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show rating",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "More mugs"
+    }
+  ]
+}
+{% endschema %}

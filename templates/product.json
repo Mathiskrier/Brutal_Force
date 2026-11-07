@@ -138,24 +138,6 @@
         "padding_bottom": 0
       }
     },
-    "related-products": {
-      "type": "related-products",
-      "settings": {
-        "heading": "The right windspeed for everyone",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "columns_mobile": "2",
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": true,
-        "padding_top": 8,
-        "padding_bottom": 28
-      }
-    },
     "rich_text_fhnJ7R": {
       "type": "rich-text",
       "blocks": {
@@ -414,15 +396,34 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "more_mugs": {
+      "type": "bf-more-mugs",
+      "settings": {
+        "heading": "Didn't find your mug yet?",
+        "products": [
+          "wind-ceramic-mug-11oz",
+          "storm-ceramic-mug",
+          "breeze-ceramic-mug-11-oz",
+          "brutal-force-mug",
+          "happiness-mug-pack"
+        ],
+        "set_product": "happiness-mug-pack",
+        "set_badge": "Best value",
+        "show_rating": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 12
+      }
     }
   },
   "order": [
     "main",
     "brand_story_tarifa",
-    "related-products",
-    "rich_text_fhnJ7R",
     "collapsible_content_9b89xV",
     "out_in_the_wild",
-    "17478606947302e352"
+    "17478606947302e352",
+    "more_mugs",
+    "rich_text_fhnJ7R"
   ]
 }

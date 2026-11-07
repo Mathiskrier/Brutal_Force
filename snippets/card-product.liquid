@@ -7,6 +7,7 @@
   @param {boolean} [show_secondary_image] - Whether to show the second product image on hover. Defaults to `false`.
   @param {boolean} [show_vendor] - Whether to show the product vendor. Defaults to `false`.
   @param {boolean} [show_rating] - Whether to show the product rating. Defaults to `false`.
+  @param {string} [custom_badge] - Brutalforce: badge text shown instead of the sale badge (e.g. "Best value").
   @param {boolean} [extend_height] - Whether the card fills its available container space. Defaults to `false`.
   @param {boolean} [lazy_load] - Whether to lazy-load product images. Defaults to `true`.
   @param {boolean} [skip_styles] - Whether to omit the component styles. Defaults to `false`.
@@ -129,7 +130,9 @@
               </h3>
             </div>
             <div class="card__badge {{ settings.badge_position }}">
-              {%- if card_product.available == false -%}
+              {%- if custom_badge != blank and card_product.available -%}
+                <span class="badge badge--bottom-left bf-badge--value">{{ custom_badge | escape }}</span>
+              {%- elsif card_product.available == false -%}
                 <span
                   id="NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}"
                   class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
@@ -553,7 +556,9 @@
             {% endif %}
           {% endif %}
           <div class="card__badge {{ settings.badge_position }}">
-            {%- if card_product.available == false -%}
+            {%- if custom_badge != blank and card_product.available -%}
+                <span class="badge badge--bottom-left bf-badge--value">{{ custom_badge | escape }}</span>
+              {%- elsif card_product.available == false -%}
               <span
                 id="Badge-{{ section_id }}-{{ card_product.id }}"
                 class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}"
