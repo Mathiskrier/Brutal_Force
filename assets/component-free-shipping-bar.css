@@ -453,3 +453,9 @@
 .cart__footer .bf-summary {
   width: 100%;
 }
+
+/* cart page: Estimated total aligned with the summary rows above it */
+.cart__footer .bf-summary + .totals {
+  width: 100%;
+  justify-content: space-between;
+}
