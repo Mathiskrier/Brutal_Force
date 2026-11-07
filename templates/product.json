@@ -417,6 +417,23 @@
         "button_label": "Add to cart",
         "color_scheme": "scheme-1"
       }
+    },
+    "set_reviews": {
+      "type": "bf-set-reviews",
+      "settings": {
+        "set_product": "happiness-mug-pack",
+        "products": [
+          "breeze-ceramic-mug-11-oz",
+          "wind-ceramic-mug-11oz",
+          "storm-ceramic-mug",
+          "brutal-force-mug"
+        ],
+        "heading": "Customer Reviews",
+        "per_page": 5,
+        "more_label": "Show more reviews",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     }
   },
   "order": [
@@ -425,6 +442,7 @@
     "collapsible_content_9b89xV",
     "out_in_the_wild",
     "17478606947302e352",
+    "set_reviews",
     "more_mugs",
     "sticky_atc"
   ]

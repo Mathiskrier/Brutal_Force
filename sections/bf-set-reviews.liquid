@@ -1,0 +1,443 @@
+{%- comment -%}
+  Brutalforce: reviews of all mugs on a set's product page (e.g. the 3-Pack).
+  Judge.me collects reviews per product, so the set itself has none. On the set's page this
+  section loads the published Judge.me reviews of the products listed in "Products"
+  (the mugs in the set) from Judge.me's public review endpoint (the same one its own widget
+  uses for paging), merges them (newest first) and shows them in one list. Every review says
+  which mug it is about. The empty Judge.me widget is hidden on this page only.
+  On every other product page this section renders nothing.
+{%- endcomment -%}
+{%- liquid
+  assign set_product = section.settings.set_product
+  assign is_set_page = false
+  if set_product != blank and set_product.id == product.id
+    assign is_set_page = true
+  endif
+  assign ids = ''
+  for item in section.settings.products
+    if item.id != product.id
+      assign ids = ids | append: item.id | append: ','
+    endif
+  endfor
+-%}
+
+{%- if is_set_page and ids != blank -%}
+  <div
+    class="bf-allrev page-width"
+    style="--bf-allrev-pt: {{ section.settings.padding_top }}px; --bf-allrev-pb: {{ section.settings.padding_bottom }}px;"
+  >
+    <bf-set-reviews
+      class="bf-allrev__widget"
+      data-shop="{{ shop.permanent_domain }}"
+      data-ids="{{ ids }}"
+      data-per-page="{{ section.settings.per_page }}"
+      hidden
+    >
+      <h2 class="bf-allrev__title">{{ section.settings.heading | escape }}</h2>
+      <div class="bf-allrev__summary">
+        <span class="bf-allrev__stars" aria-hidden="true"><span class="bf-allrev__stars-fill" data-stars-fill></span></span>
+        <span class="bf-allrev__avg" data-avg></span>
+      </div>
+      <p class="bf-allrev__note" data-note></p>
+      <ul class="bf-allrev__list list-unstyled" role="list" data-list></ul>
+      <div class="bf-allrev__more-wrap">
+        <button type="button" class="bf-allrev__more" data-more hidden>{{ section.settings.more_label | escape }}</button>
+      </div>
+    </bf-set-reviews>
+  </div>
+
+  <script>
+    if (!customElements.get('bf-set-reviews')) {
+      customElements.define(
+        'bf-set-reviews',
+        class BfSetReviews extends HTMLElement {
+          connectedCallback() {
+            this.ids = (this.dataset.ids || '').split(',').filter(Boolean);
+            this.perPage = parseInt(this.dataset.perPage, 10) || 5;
+            this.shown = 0;
+            this.reviews = [];
+            // load only when the visitor gets close to the section
+            this.io = new IntersectionObserver(
+              (entries) => {
+                if (!entries.some((e) => e.isIntersecting)) return;
+                this.io.disconnect();
+                this.load();
+              },
+              { rootMargin: '800px 0px' }
+            );
+            this.io.observe(this.parentElement);
+            this.querySelector('[data-more]').addEventListener('click', () => this.render());
+          }
+
+          async load() {
+            const shop = this.dataset.shop;
+            const results = await Promise.all(
+              this.ids.map(async (id) => {
+                try {
+                  const url = `https://api.judge.me/reviews/reviews_for_widget?url=${encodeURIComponent(shop)}&shop_domain=${encodeURIComponent(shop)}&platform=shopify&page=1&per_page=100&product_id=${id}`;
+                  const response = await fetch(url);
+                  if (!response.ok) return [];
+                  const data = await response.json();
+                  return this.parse(data.html || '');
+                } catch (e) {
+                  return [];
+                }
+              })
+            );
+            this.reviews = results.flat().sort((a, b) => b.date - a.date);
+            if (!this.reviews.length) return; // nothing to show: keep the section hidden
+
+            const total = this.reviews.length;
+            const avg = this.reviews.reduce((sum, r) => sum + r.score, 0) / total;
+            this.querySelector('[data-stars-fill]').style.width = `${(avg / 5) * 100}%`;
+            this.querySelector('[data-avg]').textContent = `${avg.toFixed(2).replace(/0$/, '')} out of 5`;
+            this.querySelector('[data-note]').textContent = `Based on ${total} reviews of the mugs in this set`;
+            this.hidden = false;
+            this.render();
+          }
+
+          parse(html) {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            return [...doc.querySelectorAll('.jdgm-rev')].map((el) => {
+              const time = el.querySelector('.jdgm-rev__timestamp');
+              const body = el.querySelector('.jdgm-rev__body');
+              const reply = el.querySelector('.jdgm-rev__reply-content, .jdgm-rev__reply');
+              return {
+                score: Number(el.querySelector('.jdgm-rev__rating')?.dataset.score) || 0,
+                date: new Date(time?.getAttribute('datetime') || 0),
+                author: (el.querySelector('.jdgm-rev__author')?.textContent || '').trim(),
+                verified: el.dataset.verifiedBuyer === 'true',
+                title: (el.querySelector('.jdgm-rev__title')?.textContent || '').trim(),
+                paragraphs: body ? [...body.querySelectorAll('p')].map((p) => p.textContent.trim()).filter(Boolean) : [],
+                bodyText: body ? body.textContent.trim() : '',
+                reply: reply ? reply.textContent.replace(/\s+/g, ' ').trim() : '',
+                product: el.dataset.productTitle || '',
+                productUrl: el.dataset.productUrl || '',
+              };
+            });
+          }
+
+          el(tag, cls, text) {
+            const node = document.createElement(tag);
+            if (cls) node.className = cls;
+            if (text) node.textContent = text;
+            return node;
+          }
+
+          render() {
+            const list = this.querySelector('[data-list]');
+            const next = this.reviews.slice(this.shown, this.shown + this.perPage);
+            next.forEach((r) => {
+              const li = this.el('li', 'bf-allrev__rev');
+
+              const top = this.el('div', 'bf-allrev__top');
+              const stars = this.el('span', 'bf-allrev__rev-stars');
+              stars.setAttribute('role', 'img');
+              stars.setAttribute('aria-label', `${r.score} star review`);
+              stars.textContent = '★★★★★'.slice(0, r.score);
+              const off = this.el('span', 'bf-allrev__rev-stars-off', '★★★★★'.slice(0, 5 - r.score));
+              stars.appendChild(off);
+              const date = this.el('time', 'bf-allrev__date', r.date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' }));
+              date.setAttribute('datetime', r.date.toISOString());
+              top.append(stars, date);
+
+              const who = this.el('div', 'bf-allrev__who');
+              who.append(this.el('span', 'bf-allrev__author', r.author || 'Anonymous'));
+              if (r.verified) who.append(this.el('span', 'bf-allrev__verified', 'Verified'));
+
+              li.append(top, who);
+              if (r.title) li.append(this.el('p', 'bf-allrev__rtitle', r.title));
+              const body = this.el('div', 'bf-allrev__body');
+              (r.paragraphs.length ? r.paragraphs : [r.bodyText]).filter(Boolean).forEach((t) => body.append(this.el('p', '', t)));
+              li.append(body);
+
+              if (r.product) {
+                const about = this.el('p', 'bf-allrev__about', 'about ');
+                const link = this.el('a', '', r.product);
+                link.href = r.productUrl || '#';
+                about.append(link);
+                li.append(about);
+              }
+              if (r.reply) li.append(this.el('p', 'bf-allrev__reply', r.reply));
+              list.append(li);
+            });
+            this.shown += next.length;
+            this.querySelector('[data-more]').hidden = this.shown >= this.reviews.length;
+          }
+        }
+      );
+    }
+  </script>
+
+  {% style %}
+    /* the per-product Judge.me widget is empty on the set's page: hide it here only */
+    .shopify-section:has(.jdgm-review-widget):not(:has(bf-set-reviews)) {
+      display: none;
+    }
+
+    .bf-allrev {
+      padding-top: calc(var(--bf-allrev-pt) * 0.75);
+      padding-bottom: calc(var(--bf-allrev-pb) * 0.75);
+    }
+
+    .bf-allrev__widget {
+      display: block;
+      max-width: 120rem;
+      margin: 0 auto;
+    }
+
+    .bf-allrev__widget[hidden] {
+      display: none;
+    }
+
+    .bf-allrev__title {
+      margin: 0 0 1rem;
+      text-align: center;
+      font-family: var(--font-body-family);
+      font-style: normal;
+      font-weight: 600;
+      font-size: 2.4rem;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .bf-allrev__summary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .bf-allrev__stars {
+      position: relative;
+      display: inline-block;
+      font-size: 2rem;
+      line-height: 1;
+      letter-spacing: 0.2rem;
+      color: rgba(18, 18, 18, 0.15);
+    }
+
+    .bf-allrev__stars::before {
+      content: '★★★★★';
+    }
+
+    .bf-allrev__stars-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      overflow: hidden;
+      white-space: nowrap;
+      color: #fdca00;
+    }
+
+    .bf-allrev__stars-fill::before {
+      content: '★★★★★';
+    }
+
+    .bf-allrev__avg {
+      font-size: 1.6rem;
+      color: rgb(18, 18, 18);
+    }
+
+    .bf-allrev__note {
+      margin: 0.4rem 0 2.4rem;
+      text-align: center;
+      font-size: 1.4rem;
+      color: rgba(18, 18, 18, 0.65);
+    }
+
+    .bf-allrev__list {
+      margin: 0;
+      padding: 0;
+      border-top: 0.1rem solid rgba(18, 18, 18, 0.1);
+    }
+
+    .bf-allrev__rev {
+      padding: 2rem 0;
+      border-bottom: 0.1rem solid rgba(18, 18, 18, 0.1);
+    }
+
+    .bf-allrev__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .bf-allrev__rev-stars {
+      font-size: 1.6rem;
+      letter-spacing: 0.15rem;
+      color: #fdca00;
+    }
+
+    .bf-allrev__rev-stars-off {
+      color: rgba(18, 18, 18, 0.15);
+    }
+
+    .bf-allrev__date {
+      font-size: 1.3rem;
+      color: rgba(18, 18, 18, 0.5);
+    }
+
+    .bf-allrev__author {
+      font-weight: 600;
+      color: rgb(18, 18, 18);
+    }
+
+    .bf-allrev__who {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    .bf-allrev__verified {
+      padding: 0.2rem 0.8rem;
+      border-radius: 99px;
+      color: rgb(31, 122, 71);
+      background: rgba(47, 143, 87, 0.1);
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .bf-allrev__rtitle {
+      margin: 1.2rem 0 0.4rem;
+      font-weight: 600;
+      color: rgb(18, 18, 18);
+    }
+
+    .bf-allrev__body p {
+      margin: 0;
+      line-height: 1.6;
+      color: rgba(18, 18, 18, 0.75);
+    }
+
+    .bf-allrev__about {
+      margin: 0.8rem 0 0;
+      font-size: 1.3rem;
+      color: rgba(18, 18, 18, 0.55);
+    }
+
+    .bf-allrev__about a {
+      color: rgba(18, 18, 18, 0.75);
+      text-underline-offset: 0.25rem;
+    }
+
+    .bf-allrev__reply {
+      margin: 1rem 0 0;
+      padding: 1rem 1.2rem;
+      border-left: 0.2rem solid rgba(18, 18, 18, 0.15);
+      background: rgba(18, 18, 18, 0.03);
+      font-size: 1.4rem;
+      color: rgba(18, 18, 18, 0.75);
+    }
+
+    .bf-allrev__more-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.4rem;
+    }
+
+    .bf-allrev__more {
+      min-height: 4.4rem;
+      padding: 0 2.4rem;
+      border: 0.1rem solid rgb(18, 18, 18);
+      border-radius: 0.4rem;
+      background: #fff;
+      color: rgb(18, 18, 18);
+      font-family: var(--font-body-family);
+      font-size: 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .bf-allrev__more:hover {
+      background: rgb(18, 18, 18);
+      color: #fff;
+    }
+
+    .bf-allrev__more[hidden] {
+      display: none;
+    }
+
+    @media screen and (min-width: 750px) {
+      .bf-allrev {
+        padding-top: var(--bf-allrev-pt);
+        padding-bottom: var(--bf-allrev-pb);
+      }
+
+      .bf-allrev__title {
+        font-size: 2.8rem;
+      }
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Set reviews",
+  "tag": "section",
+  "class": "section bf-set-reviews-section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "set_product",
+      "label": "Set / bundle product",
+      "info": "This section only shows on this product's page."
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products whose reviews are shown",
+      "limit": 10
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer Reviews"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Reviews shown at first",
+      "min": 3,
+      "max": 15,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "more_label",
+      "label": "Show more button",
+      "default": "Show more reviews"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Space above",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Space below",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Set reviews"
+    }
+  ]
+}
+{% endschema %}
