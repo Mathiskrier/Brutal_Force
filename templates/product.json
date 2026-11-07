@@ -393,7 +393,8 @@
           "type": "badge",
           "settings": {
             "product": "storm-ceramic-mug",
-            "label": "Most popular"
+            "label": "Most popular",
+            "style": "black"
           }
         },
         "badge_camper": {
@@ -401,7 +402,8 @@
           "settings": {
             "product": "brutal-force-mug",
             "label": "Built tough",
-            "sub_label": "premium enamel"
+            "sub_label": "premium enamel",
+            "style": "charcoal"
           }
         }
       },

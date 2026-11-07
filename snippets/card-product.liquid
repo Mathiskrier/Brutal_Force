@@ -9,6 +9,7 @@
   @param {boolean} [show_rating] - Whether to show the product rating. Defaults to `false`.
   @param {string} [custom_badge] - Brutalforce: badge text shown instead of the sale badge (e.g. "Best value").
   @param {string} [custom_badge_sub] - Brutalforce: optional smaller second line of the custom badge.
+  @param {string} [custom_badge_style] - Brutalforce: badge colour, e.g. yellow | black | charcoal.
   @param {boolean} [hide_sale_badge] - Brutalforce: no sale badge (the crossed-out price still shows).
   @param {boolean} [extend_height] - Whether the card fills its available container space. Defaults to `false`.
   @param {boolean} [lazy_load] - Whether to lazy-load product images. Defaults to `true`.
@@ -133,7 +134,7 @@
             </div>
             <div class="card__badge {{ settings.badge_position }}">
               {%- if custom_badge != blank and card_product.available -%}
-                <span class="badge badge--bottom-left bf-badge--value{% if custom_badge_sub != blank %} bf-badge--two-line{% endif %}"><span class="bf-badge__main">{{ custom_badge | escape }}</span>{%- if custom_badge_sub != blank -%}<span class="bf-badge__sub">{{ custom_badge_sub | escape }}</span>{%- endif -%}</span>
+                <span class="badge badge--bottom-left bf-badge--value bf-badge--{{ custom_badge_style | default: 'yellow' }}{% if custom_badge_sub != blank %} bf-badge--two-line{% endif %}"><span class="bf-badge__main">{{ custom_badge | escape }}</span>{%- if custom_badge_sub != blank -%}<span class="bf-badge__sub">{{ custom_badge_sub | escape }}</span>{%- endif -%}</span>
               {%- elsif card_product.available == false -%}
                 <span
                   id="NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}"
@@ -559,7 +560,7 @@
           {% endif %}
           <div class="card__badge {{ settings.badge_position }}">
             {%- if custom_badge != blank and card_product.available -%}
-                <span class="badge badge--bottom-left bf-badge--value{% if custom_badge_sub != blank %} bf-badge--two-line{% endif %}"><span class="bf-badge__main">{{ custom_badge | escape }}</span>{%- if custom_badge_sub != blank -%}<span class="bf-badge__sub">{{ custom_badge_sub | escape }}</span>{%- endif -%}</span>
+                <span class="badge badge--bottom-left bf-badge--value bf-badge--{{ custom_badge_style | default: 'yellow' }}{% if custom_badge_sub != blank %} bf-badge--two-line{% endif %}"><span class="bf-badge__main">{{ custom_badge | escape }}</span>{%- if custom_badge_sub != blank -%}<span class="bf-badge__sub">{{ custom_badge_sub | escape }}</span>{%- endif -%}</span>
               {%- elsif card_product.available == false -%}
               <span
                 id="Badge-{{ section_id }}-{{ card_product.id }}"

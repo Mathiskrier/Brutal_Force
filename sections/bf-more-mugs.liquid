@@ -38,6 +38,7 @@
             endif
             assign badge = ''
             assign badge_sub = ''
+            assign badge_style = 'yellow'
             if is_set
               assign badge = section.settings.set_badge
             endif
@@ -45,6 +46,7 @@
               if b.type == 'badge' and b.settings.product != blank and b.settings.product.id == item.id and b.settings.label != blank
                 assign badge = b.settings.label
                 assign badge_sub = b.settings.sub_label
+                assign badge_style = b.settings.style
               endif
             endfor
           -%}
@@ -59,6 +61,7 @@
               skip_styles: skip_styles,
               custom_badge: badge,
               custom_badge_sub: badge_sub,
+              custom_badge_style: badge_style,
               hide_sale_badge: section.settings.hide_sale_badges,
               product_view_context: 'recommendation'
             -%}
@@ -107,7 +110,8 @@
     padding-right: 0.4rem;
   }
 
-  /* One badge system for this row: Most popular / Built tough / Best value */
+  /* One badge system for this row: same shape, the colour carries the meaning
+     yellow = deal (Best value) - black = bestseller (Most popular) - charcoal = product quality (Built tough) */
   .bf-more .bf-badge--value {
     display: inline-flex;
     flex-direction: column;
@@ -118,6 +122,19 @@
     background: #fce477;
     color: rgb(18, 18, 18);
     line-height: 1.2;
+    --bf-badge-sub: rgba(18, 18, 18, 0.7);
+  }
+
+  .bf-more .bf-badge--black {
+    background: #111111;
+    color: #ffffff;
+    --bf-badge-sub: rgba(255, 255, 255, 0.72);
+  }
+
+  .bf-more .bf-badge--charcoal {
+    background: #4a4e54;
+    color: #f2f2f2;
+    --bf-badge-sub: rgba(242, 242, 242, 0.72);
   }
 
   .bf-more .bf-badge__main {
@@ -132,7 +149,7 @@
     font-size: 1rem;
     font-weight: 400;
     letter-spacing: 0.02rem;
-    color: rgba(18, 18, 18, 0.7);
+    color: var(--bf-badge-sub);
   }
 
   @media screen and (min-width: 750px) {
@@ -226,7 +243,18 @@
       "settings": [
         { "type": "product", "id": "product", "label": "Product" },
         { "type": "text", "id": "label", "label": "Badge", "default": "Most popular" },
-        { "type": "text", "id": "sub_label", "label": "Second line (smaller, optional)" }
+        { "type": "text", "id": "sub_label", "label": "Second line (smaller, optional)" },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Colour",
+          "options": [
+            { "value": "yellow", "label": "Yellow (deal / saving)" },
+            { "value": "black", "label": "Black (bestseller)" },
+            { "value": "charcoal", "label": "Charcoal (product quality)" }
+          ],
+          "default": "black"
+        }
       ]
     }
   ],
