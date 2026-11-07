@@ -37,9 +37,16 @@
               assign is_set = true
             endif
             assign badge = ''
+            assign badge_sub = ''
             if is_set
               assign badge = section.settings.set_badge
             endif
+            for b in section.blocks
+              if b.type == 'badge' and b.settings.product != blank and b.settings.product.id == item.id and b.settings.label != blank
+                assign badge = b.settings.label
+                assign badge_sub = b.settings.sub_label
+              endif
+            endfor
           -%}
           <li class="grid__item bf-more__item{% if is_set %} bf-more__item--set{% endif %}">
             {%- render 'card-product',
@@ -51,6 +58,8 @@
               section_id: section.id,
               skip_styles: skip_styles,
               custom_badge: badge,
+              custom_badge_sub: badge_sub,
+              hide_sale_badge: section.settings.hide_sale_badges,
               product_view_context: 'recommendation'
             -%}
           </li>
@@ -98,13 +107,32 @@
     padding-right: 0.4rem;
   }
 
-  .bf-badge--value {
+  /* One badge system for this row: Most popular / Built tough / Best value */
+  .bf-more .bf-badge--value {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.4rem 0.9rem;
+    border: 0;
+    border-radius: 0.4rem;
     background: #fce477;
     color: rgb(18, 18, 18);
-    border-color: #fce477;
+    line-height: 1.2;
+  }
+
+  .bf-more .bf-badge__main {
+    font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: 0.08rem;
     text-transform: uppercase;
+  }
+
+  .bf-more .bf-badge__sub {
+    margin-top: 0.1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.02rem;
+    color: rgba(18, 18, 18, 0.7);
   }
 
   @media screen and (min-width: 750px) {
@@ -158,6 +186,13 @@
       "default": true
     },
     {
+      "type": "checkbox",
+      "id": "hide_sale_badges",
+      "label": "Hide sale badges (e.g. BLACKWEEK)",
+      "info": "The crossed-out price still shows.",
+      "default": true
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
@@ -182,6 +217,17 @@
       "step": 4,
       "unit": "px",
       "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "label", "label": "Badge", "default": "Most popular" },
+        { "type": "text", "id": "sub_label", "label": "Second line (smaller, optional)" }
+      ]
     }
   ],
   "presets": [

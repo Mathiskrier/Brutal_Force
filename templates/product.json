@@ -138,34 +138,6 @@
         "padding_bottom": 0
       }
     },
-    "rich_text_fhnJ7R": {
-      "type": "rich-text",
-      "blocks": {
-        "button_8LcVPC": {
-          "type": "button",
-          "settings": {
-            "button_label": "See all products",
-            "button_link": "https://brutalforce.life/collections/all",
-            "button_style_secondary": false,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "button_8LcVPC"
-      ],
-      "name": "t:sections.rich-text.presets.name",
-      "settings": {
-        "desktop_content_position": "center",
-        "content_alignment": "center",
-        "color_scheme": "",
-        "full_width": true,
-        "padding_top": 12,
-        "padding_bottom": 52
-      }
-    },
     "collapsible_content_9b89xV": {
       "type": "collapsible-content",
       "blocks": {
@@ -413,8 +385,30 @@
         "show_rating": true,
         "color_scheme": "scheme-1",
         "padding_top": 36,
-        "padding_bottom": 12
-      }
+        "padding_bottom": 12,
+        "hide_sale_badges": true
+      },
+      "blocks": {
+        "badge_storm": {
+          "type": "badge",
+          "settings": {
+            "product": "storm-ceramic-mug",
+            "label": "Most popular"
+          }
+        },
+        "badge_camper": {
+          "type": "badge",
+          "settings": {
+            "product": "brutal-force-mug",
+            "label": "Built tough",
+            "sub_label": "premium enamel"
+          }
+        }
+      },
+      "block_order": [
+        "badge_storm",
+        "badge_camper"
+      ]
     }
   },
   "order": [
@@ -423,7 +417,6 @@
     "collapsible_content_9b89xV",
     "out_in_the_wild",
     "17478606947302e352",
-    "more_mugs",
-    "rich_text_fhnJ7R"
+    "more_mugs"
   ]
 }
