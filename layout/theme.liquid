@@ -287,6 +287,7 @@
     {%- comment -%} Brutalforce: calmer Judge.me review widget (colors, no avatars) {%- endcomment -%}
     {{ 'judgeme-clean.css' | asset_url | stylesheet_tag }}
     {{ 'bf-badges.css' | asset_url | stylesheet_tag }}
+    {%- if template.name == 'index' -%}{{ 'bf-home.css' | asset_url | stylesheet_tag }}{%- endif -%}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}
