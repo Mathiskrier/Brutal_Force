@@ -14,11 +14,24 @@
     assign is_set_page = true
   endif
   assign ids = ''
+  assign total_count = 0
+  assign weighted = 0.0
   for item in section.settings.products
     if item.id != product.id
       assign ids = ids | append: item.id | append: ','
+      assign item_count = item.metafields.reviews.rating_count.value | default: 0
+      if item_count > 0
+        assign item_rating = item.metafields.reviews.rating.value.rating | default: 0
+        assign weighted = item_rating | times: item_count | plus: weighted
+        assign total_count = total_count | plus: item_count
+      endif
     endif
   endfor
+  # same rounding as the rating under the title (snippets/bf-set-rating.liquid)
+  assign avg = 0
+  if total_count > 0
+    assign avg = weighted | divided_by: total_count | round: 2
+  endif
 -%}
 
 {%- if is_set_page and ids != blank -%}
@@ -32,6 +45,7 @@
       data-shop="{{ shop.permanent_domain }}"
       data-ids="{{ ids }}"
       data-per-page="{{ section.settings.per_page }}"
+      data-avg="{{ avg }}"
       hidden
     >
       <h2 class="bf-allrev__title">{{ section.settings.heading | escape }}</h2>
@@ -89,9 +103,10 @@
             if (!this.reviews.length) return; // nothing to show: keep the section hidden
 
             const total = this.reviews.length;
-            const avg = this.reviews.reduce((sum, r) => sum + r.score, 0) / total;
+            // prefer the shop's own rounded average (same number as under the title)
+            const avg = Number(this.dataset.avg) || this.reviews.reduce((sum, r) => sum + r.score, 0) / total;
             this.querySelector('[data-stars-fill]').style.width = `${(avg / 5) * 100}%`;
-            this.querySelector('[data-avg]').textContent = `${avg.toFixed(2).replace(/0$/, '')} out of 5`;
+            this.querySelector('[data-avg]').textContent = `${Number(avg.toFixed(2))} out of 5`;
             this.querySelector('[data-note]').textContent = `Based on ${total} reviews of the mugs in this set`;
             this.hidden = false;
             this.render();
