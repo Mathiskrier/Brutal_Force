@@ -2,7 +2,8 @@
   Brutalforce: "Out in the wild" - real customer photos (social proof).
   Layout: "Featured" photos (people) large on top, the other photos as small square thumbnails.
   Mobile: both rows swipe sideways (scroll-snap) so the section stays short.
-  Layout "Grid" (home page): all photos in one even grid - 2 columns on phones, 4 on desktop.
+  Layout "Grid" (home page): the Featured photos large side by side on top, all other photos
+  in a much smaller square grid below (4 columns, phones and desktop).
   Each "Photo" block renders via snippets/bf-wild-photo.liquid (editor image or pre-compressed
   theme assets). All images are lazy-loaded (loading="lazy"). The CTA scrolls to the
   Add to cart button on product pages and falls back to its link everywhere else.
@@ -10,7 +11,8 @@
 {%- liquid
   assign featured_sizes = '(max-width: 749px) 78vw, (max-width: 989px) 31vw, 380px'
   assign thumb_sizes = '(max-width: 749px) 30vw, (max-width: 989px) 14vw, 170px'
-  assign grid_sizes = '(max-width: 749px) 46vw, (max-width: 989px) 23vw, 260px'
+  assign grid_top_sizes = '(max-width: 749px) 46vw, (max-width: 989px) 40vw, 360px'
+  assign grid_small_sizes = '(max-width: 749px) 23vw, (max-width: 989px) 18vw, 170px'
   assign thumb_count = 0
   for block in section.blocks
     unless block.settings.featured
@@ -31,18 +33,22 @@
     </div>
 
     {%- if section.settings.layout == 'grid' -%}
-      <ul class="bf-wild__grid list-unstyled" role="list">
+      <ul class="bf-wild__grid bf-wild__grid--top list-unstyled" role="list">
         {%- for block in section.blocks -%}
           {%- if block.settings.featured -%}
-            {%- render 'bf-wild-photo', block: block, sizes: grid_sizes, class: 'bf-wild__item--grid' -%}
+            {%- render 'bf-wild-photo', block: block, sizes: grid_top_sizes, class: 'bf-wild__item--top' -%}
           {%- endif -%}
         {%- endfor -%}
-        {%- for block in section.blocks -%}
-          {%- unless block.settings.featured -%}
-            {%- render 'bf-wild-photo', block: block, sizes: grid_sizes, class: 'bf-wild__item--grid' -%}
-          {%- endunless -%}
-        {%- endfor -%}
       </ul>
+      {%- if thumb_count > 0 -%}
+        <ul class="bf-wild__grid bf-wild__grid--small list-unstyled" role="list">
+          {%- for block in section.blocks -%}
+            {%- unless block.settings.featured -%}
+              {%- render 'bf-wild-photo', block: block, sizes: grid_small_sizes, class: 'bf-wild__item--small' -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
     {%- else -%}
     <ul class="bf-wild__featured bf-wild__scroller list-unstyled" role="list">
       {%- for block in section.blocks -%}
@@ -193,20 +199,33 @@
     flex: 0 0 30%;
   }
 
-  /* Grid layout: even portrait tiles (3:4, the photos' own shape), 2 columns on phones */
+  /* Grid layout: big featured photos on top (3:4, their own shape), small square grid below */
   .bf-wild__grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
     gap: 0.8rem;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
+    max-width: 72rem;
   }
 
-  .bf-wild__item--grid {
-    flex: 0 0 calc((100% - 0.8rem) / 2);
+  .bf-wild__grid--top {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bf-wild__grid--small {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+  }
+
+  .bf-wild__item--top {
     aspect-ratio: 3 / 4;
     border-radius: 1rem;
+  }
+
+  .bf-wild__item--small {
+    aspect-ratio: 1 / 1;
+    border-radius: 0.8rem;
   }
 
   .bf-wild__cta-wrap {
@@ -301,15 +320,21 @@
       margin-top: 3.2rem;
     }
 
-    .bf-wild__grid {
+    .bf-wild__grid--top {
       gap: 1.2rem;
-      max-width: 104rem;
-      margin: 0 auto;
     }
 
-    .bf-wild__item--grid {
-      flex-basis: calc((100% - 3 * 1.2rem) / 4);
+    .bf-wild__grid--small {
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+
+    .bf-wild__item--top {
       border-radius: 1.2rem;
+    }
+
+    .bf-wild__item--small {
+      border-radius: 1rem;
     }
   }
 
@@ -344,7 +369,7 @@
         },
         {
           "value": "grid",
-          "label": "Even grid (2 columns on phones, 4 on desktop)"
+          "label": "Featured large on top + small grid below"
         }
       ],
       "default": "rows"

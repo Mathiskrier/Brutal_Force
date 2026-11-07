@@ -575,7 +575,7 @@
             "asset": "wild-05",
             "width": 1125,
             "height": 1500,
-            "featured": true
+            "featured": false
           }
         },
         "photo_01": {
@@ -584,7 +584,8 @@
             "alt": "Enamel Brutal Force mug with black coffee, held up over the coast near Tarifa",
             "asset": "wild-01",
             "width": 844,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         },
         "photo_09": {
@@ -593,7 +594,8 @@
             "alt": "Coffee being poured from a moka pot into a forecast mug",
             "asset": "wild-09",
             "width": 1125,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         },
         "photo_08": {
@@ -612,13 +614,14 @@
             "alt": "Enamel forecast mug on a rooftop ledge at sunset, mountains behind",
             "asset": "wild-04",
             "width": 1125,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         },
         "photo_10": {
           "type": "photo",
           "settings": {
-            "alt": "Rider unpacking a Brutal Force parcel while a forecast mug is held up",
+            "alt": "Rider holding up a forecast mug next to her opened Brutal Force parcel",
             "asset": "wild-10",
             "width": 1129,
             "height": 1500,
@@ -631,7 +634,8 @@
             "alt": "Ceramic forecast mug held in a kitchen next to a coffee machine",
             "asset": "wild-03",
             "width": 844,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         },
         "photo_11": {
@@ -640,7 +644,8 @@
             "alt": "Ceramic forecast mug held up on a sunny terrace with palm trees",
             "asset": "wild-11",
             "width": 1129,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         },
         "photo_06": {
@@ -649,7 +654,8 @@
             "alt": "Ceramic forecast mug full of coffee on a garden table",
             "asset": "wild-06",
             "width": 1125,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         },
         "photo_02": {
@@ -658,14 +664,15 @@
             "alt": "Ceramic forecast mug held on a sofa, showing a 30+ knot forecast",
             "asset": "wild-02",
             "width": 844,
-            "height": 1500
+            "height": 1500,
+            "featured": false
           }
         }
       },
       "block_order": [
-        "photo_05",
-        "photo_08",
         "photo_10",
+        "photo_08",
+        "photo_05",
         "photo_01",
         "photo_09",
         "photo_04",
@@ -677,7 +684,7 @@
       "settings": {
         "heading": "Out in the wild",
         "text": "Real mugs, real mornings, sent in by riders across Europe. No studio, no stock — just the crew.",
-        "button_label": "Get your mug",
+        "button_label": "Find your mug",
         "button_link": "/collections/drinkware",
         "color_scheme": "scheme-1",
         "padding_top": 40,
