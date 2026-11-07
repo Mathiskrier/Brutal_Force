@@ -1757,3 +1757,12 @@ a.product__text {
     transition: none;
   }
 }
+
+/* Brutalforce: on phones/small tablets the Add to cart button (and the payment row under it)
+   use the full width, matching the boxes above; the theme caps them at 44rem otherwise */
+@media screen and (max-width: 749px) {
+  .product__info-container .product-form__buttons,
+  .product__info-container .payment-trust {
+    max-width: none;
+  }
+}
