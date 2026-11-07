@@ -161,6 +161,18 @@
       pointer-events: none;
     }
 
+    /* fill the space below the bar (down to the screen edge) so no page content peeks through
+       between the bar and a cookie banner / preview bar sitting underneath it */
+    .bf-sticky::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      height: var(--bf-sticky-offset, 0px);
+      background: rgb(var(--color-background));
+    }
+
     .bf-sticky.is-visible {
       transform: translateY(0);
       pointer-events: auto;
