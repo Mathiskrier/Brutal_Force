@@ -77,7 +77,11 @@
           </span>
         </button>
       </div>
-      {%- render 'free-shipping-bar' -%}
+      {%- comment -%} Brutalforce: free shipping bar + suggestions, re-rendered together on every cart update {%- endcomment -%}
+      <div class="bf-cart-extras">
+        {%- render 'free-shipping-bar' -%}
+        {%- render 'cart-suggestions' -%}
+      </div>
       <cart-drawer-items
         view-event-payload="{{ cart | standard_event_data: 'view', context: 'dialog' | escape }}"
         view-event-trigger="manual"
@@ -167,13 +171,21 @@
                             -%}
                           </div>
 
-                          {%- if item.original_price != item.final_price -%}
+                          {%- liquid
+                            # Brutalforce: show the compare-at price (e.g. €21,00) struck through, like on the product page
+                            assign bf_was = item.original_price
+                            if item.variant.compare_at_price > bf_was
+                              assign bf_was = item.variant.compare_at_price
+                            endif
+                            assign bf_was_line = bf_was | times: item.quantity
+                          -%}
+                          {%- if bf_was != item.final_price -%}
                             <div class="cart-item__discounted-prices">
                               <span class="visually-hidden">
                                 {{ 'products.product.price.regular_price' | t }}
                               </span>
                               <s class="cart-item__old-price product-option">
-                                {{- item.original_price | money -}}
+                                {{- bf_was | money -}}
                               </s>
                               <span class="visually-hidden">
                                 {{ 'products.product.price.sale_price' | t }}
@@ -249,13 +261,21 @@
                         <td class="cart-item__totals right" role="cell" headers="CartDrawer-ColumnTotal">
                           {%- render 'loading-spinner' -%}
                           <div class="cart-item__price-wrapper">
-                            {%- if item.original_line_price != item.final_line_price -%}
+                            {%- liquid
+                              # Brutalforce: show the compare-at price (e.g. €21,00) struck through, like on the product page
+                              assign bf_was = item.original_price
+                              if item.variant.compare_at_price > bf_was
+                                assign bf_was = item.variant.compare_at_price
+                              endif
+                              assign bf_was_line = bf_was | times: item.quantity
+                            -%}
+                            {%- if bf_was_line != item.final_line_price -%}
                               <div class="cart-item__discounted-prices">
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.regular_price' | t }}
                                 </span>
                                 <s class="cart-item__old-price price price--end">
-                                  {{ item.original_line_price | money }}
+                                  {{ bf_was_line | money }}
                                 </s>
                                 <span class="visually-hidden">
                                   {{ 'products.product.price.sale_price' | t }}

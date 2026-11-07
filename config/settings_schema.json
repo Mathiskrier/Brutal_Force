@@ -1298,6 +1298,41 @@
         "id": "free_shipping_bar_text_unlocked",
         "label": "Message (free shipping reached)",
         "default": "Free shipping unlocked — your order ships free"
+      },
+      {
+        "type": "header",
+        "content": "Cart suggestions"
+      },
+      {
+        "type": "product_list",
+        "id": "cart_suggest_products",
+        "label": "Suggested products (in this order)",
+        "limit": 10,
+        "info": "Up to 3 are shown in the cart drawer, skipping what's already in the cart."
+      },
+      {
+        "type": "product",
+        "id": "cart_suggest_set_product",
+        "label": "Set / bundle product",
+        "info": "Never suggested. If it's in the cart, the products in 'Set contents' aren't suggested either."
+      },
+      {
+        "type": "collection",
+        "id": "cart_suggest_set_collection",
+        "label": "Set contents"
+      },
+      {
+        "type": "text",
+        "id": "cart_suggest_heading_unlock",
+        "label": "Heading below the free shipping amount",
+        "default": "Add one more – it ships free",
+        "info": "Only used while the cart is below the amount AND each suggestion would reach it."
+      },
+      {
+        "type": "text",
+        "id": "cart_suggest_heading",
+        "label": "Heading (otherwise)",
+        "default": "Complete your set"
       }
     ]
   },

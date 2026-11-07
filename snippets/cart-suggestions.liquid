@@ -1,0 +1,100 @@
+{%- doc -%}
+  Brutalforce: "Complete your set" suggestions in the cart drawer, under the free shipping bar.
+  Server-rendered from the SAME live cart as the bar (cart.items_subtotal_price), so the two can
+  never disagree. Re-rendered together with the bar on every cart update (assets/cart.js,
+  assets/cart-suggestions.js).
+  - Products: Theme settings > Free shipping > Cart suggestions (in that order), max 3.
+  - Skips products already in the cart, the set itself, and - if the set is in the cart - the
+    products it contains (Set contents collection).
+  - Heading: the "free shipping" angle ONLY while below the threshold AND every suggestion shown
+    would actually reach it; otherwise the neutral heading. Hidden when nothing is left.
+{%- enddoc -%}
+{%- liquid
+  assign set_product = settings.cart_suggest_set_product
+  assign set_contents = settings.cart_suggest_set_collection
+
+  assign in_cart_ids = ''
+  assign set_in_cart = false
+  for line in cart.items
+    assign in_cart_ids = in_cart_ids | append: ',' | append: line.product_id | append: ','
+    if set_product != blank and line.product_id == set_product.id
+      assign set_in_cart = true
+    endif
+  endfor
+
+  assign excluded_ids = in_cart_ids
+  if set_product != blank
+    assign excluded_ids = excluded_ids | append: ',' | append: set_product.id | append: ','
+  endif
+  if set_in_cart and set_contents != blank
+    for c in set_contents.products
+      assign excluded_ids = excluded_ids | append: ',' | append: c.id | append: ','
+    endfor
+  endif
+
+  assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+  assign remaining_cents = threshold_cents | minus: cart.items_subtotal_price
+
+  assign shown = 0
+  assign min_price = 999999999
+-%}
+{%- capture suggestion_rows -%}
+  {%- for p in settings.cart_suggest_products -%}
+    {%- if shown >= 3 -%}{%- break -%}{%- endif -%}
+    {%- assign key = ',' | append: p.id | append: ',' -%}
+    {%- if excluded_ids contains key or p.available == false -%}{%- continue -%}{%- endif -%}
+    {%- assign v = p.selected_or_first_available_variant -%}
+    {%- if v == blank or v.available == false -%}{%- continue -%}{%- endif -%}
+    {%- assign shown = shown | plus: 1 -%}
+    {%- if v.price < min_price -%}{%- assign min_price = v.price -%}{%- endif -%}
+    {%- liquid
+      assign title_parts = p.title | split: ' - '
+      assign title_name = title_parts | first
+      assign title_detail = ''
+      if title_parts.size > 1
+        assign title_detail = p.title | remove_first: title_name | remove_first: ' - '
+      endif
+    -%}
+    <li class="bf-suggest__item">
+      <a class="bf-suggest__media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+        {%- if p.featured_image != blank -%}
+          {{ p.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', width: 56, height: 56, widths: '80, 120, 160', sizes: '56px', alt: '', class: 'bf-suggest__img' }}
+        {%- endif -%}
+      </a>
+      <div class="bf-suggest__info">
+        <a class="bf-suggest__name" href="{{ p.url }}">{{ title_name | escape }}</a>
+        {%- if title_detail != blank -%}<span class="bf-suggest__detail">{{ title_detail | escape }}</span>{%- endif -%}
+        <span class="bf-suggest__price">
+          {%- if v.compare_at_price > v.price -%}<s>{{ v.compare_at_price | money }}</s> {% endif -%}
+          <span>{{ v.price | money }}</span>
+        </span>
+      </div>
+      <button
+        type="button"
+        class="bf-suggest__add"
+        data-bf-suggest-add
+        data-variant-id="{{ v.id }}"
+        aria-label="Add {{ p.title | escape }} to cart"
+      >
+        <span class="bf-suggest__add-label">+ Add</span>
+        <span class="bf-suggest__spinner" aria-hidden="true"></span>
+      </button>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if cart != empty and shown > 0 -%}
+  {%- liquid
+    assign heading = settings.cart_suggest_heading | default: 'Complete your set'
+    if remaining_cents > 0 and min_price >= remaining_cents and settings.cart_suggest_heading_unlock != blank
+      assign heading = settings.cart_suggest_heading_unlock
+    endif
+  -%}
+  <div class="bf-suggest" data-bf-suggest>
+    <p class="bf-suggest__heading">{{ heading | escape }}</p>
+    <ul class="bf-suggest__list list-unstyled" role="list">
+      {{ suggestion_rows }}
+    </ul>
+    <p class="bf-suggest__error" role="alert" hidden></p>
+  </div>
+{%- endif -%}

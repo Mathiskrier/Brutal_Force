@@ -78,3 +78,175 @@
   max-width: 60rem;
   margin-bottom: 2.4rem;
 }
+
+/* ------------------------------------------------------------------
+   Brutalforce: Check out button in brand black (cart drawer + cart page),
+   matching the black Add to cart on the product page
+   ------------------------------------------------------------------ */
+.cart__checkout-button.button {
+  --color-button: 17, 17, 17;
+  --color-button-text: 255, 255, 255;
+  --alpha-button-background: 1;
+  min-height: 5.2rem;
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04rem;
+}
+
+.cart__checkout-button.button::before,
+.cart__checkout-button.button::after {
+  box-shadow: none;
+}
+
+.cart__checkout-button.button:not([disabled]):hover {
+  --color-button: 51, 51, 51;
+}
+
+/* ------------------------------------------------------------------
+   Brutalforce: "Complete your set" suggestions in the cart drawer
+   (snippets/cart-suggestions.liquid)
+   ------------------------------------------------------------------ */
+.bf-cart-extras:empty {
+  display: none;
+}
+
+.bf-suggest {
+  margin: 0 0 1.2rem;
+  padding: 1.2rem 1.2rem 0.4rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  border-radius: 1rem;
+}
+
+.bf-suggest__heading {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.02rem;
+  color: rgb(var(--color-foreground));
+}
+
+.bf-suggest__list {
+  margin: 0;
+  padding: 0;
+}
+
+.bf-suggest__item {
+  display: grid;
+  grid-template-columns: 4.8rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 0;
+}
+
+.bf-suggest__item + .bf-suggest__item {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.bf-suggest__media {
+  display: block;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background: #fff;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.bf-suggest__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.bf-suggest__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.bf-suggest__name {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bf-suggest__detail {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.bf-suggest__price {
+  font-size: 1.25rem;
+  color: rgb(var(--color-foreground));
+}
+
+.bf-suggest__price s {
+  color: rgba(var(--color-foreground), 0.5);
+}
+
+.bf-suggest__add {
+  position: relative;
+  min-width: 7.2rem;
+  min-height: 3.6rem;
+  padding: 0 1.2rem;
+  border: 0.1rem solid rgb(17, 17, 17);
+  border-radius: 0.4rem;
+  background: #fff;
+  color: rgb(17, 17, 17);
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.bf-suggest__add:hover:not([disabled]) {
+  background: rgb(17, 17, 17);
+  color: #fff;
+}
+
+.bf-suggest__add[disabled] {
+  cursor: default;
+}
+
+.bf-suggest__add.is-loading .bf-suggest__add-label {
+  visibility: hidden;
+}
+
+.bf-suggest__spinner {
+  display: none;
+}
+
+.bf-suggest__add.is-loading .bf-suggest__spinner {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: -0.7rem 0 0 -0.7rem;
+  border: 0.2rem solid rgba(17, 17, 17, 0.2);
+  border-top-color: rgb(17, 17, 17);
+  border-radius: 50%;
+  animation: bf-suggest-spin 0.7s linear infinite;
+}
+
+@keyframes bf-suggest-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bf-suggest__error {
+  margin: 0.4rem 0 0.8rem;
+  font-size: 1.25rem;
+  color: rgb(185, 28, 28);
+}

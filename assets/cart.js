@@ -171,7 +171,8 @@ class CartItems extends window.StandardEvents.createViewEventElement(HTMLElement
           const sourceDrawer = html.querySelector('cart-drawer');
           const drawerInner = drawerWrapper?.querySelector('.drawer__inner');
           const wasEmpty = drawerWrapper?.classList.contains('is-empty');
-          const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+          // Brutalforce: also the free shipping bar + suggestions, so every update path stays consistent
+          const selectors = ['cart-drawer-items', '.cart-drawer__footer', '.bf-cart-extras'];
           for (const selector of selectors) {
             const targetElement = document.querySelector(selector);
             const sourceElement = html.querySelector(selector);
