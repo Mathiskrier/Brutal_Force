@@ -5,9 +5,65 @@
   text-shadow: 0 0.2rem 2.4rem rgba(0, 0, 0, 0.35);
 }
 
-[id$="__image_banner_4ciQib"] .banner__text {
-  letter-spacing: 0.2rem;
-  text-shadow: 0 0.1rem 1.2rem rgba(0, 0, 0, 0.4);
+/* soft dark focus behind the text (on top of the theme's 30% overlay), photo still visible */
+[id$="__image_banner_4ciQib"] .banner__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 65% at 50% 50%, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.2) 55%, rgba(0, 0, 0, 0) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 45%);
+}
+
+/* sub-line: warm, sentence case */
+[id$="__image_banner_4ciQib"] .banner__heading + .banner__text {
+  margin-top: 1.2rem;
+  font-family: var(--font-body-family);
+  font-size: 1.9rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.02rem;
+  text-transform: none;
+  color: #fff;
+  text-shadow: 0 0.1rem 1.2rem rgba(0, 0, 0, 0.45);
+}
+
+/* quiet proof line right under the button */
+[id$="__image_banner_4ciQib"] .banner__buttons + .banner__text {
+  margin-top: 1.2rem;
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  font-weight: 400;
+  letter-spacing: 0.04rem;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.45);
+}
+
+[id$="__image_banner_4ciQib"] .banner__buttons + .banner__text p {
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  [id$="__image_banner_4ciQib"] .banner__heading + .banner__text {
+    font-size: 1.6rem;
+    margin-top: 1rem;
+  }
+
+  [id$="__image_banner_4ciQib"] .banner__buttons {
+    margin-top: 2rem;
+  }
+
+  [id$="__image_banner_4ciQib"] .banner__buttons .button {
+    min-height: 5rem;
+    min-width: 18rem;
+  }
+
+  [id$="__image_banner_4ciQib"] .banner__buttons + .banner__text {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+  }
 }
 
 [id$="__image_banner_4ciQib"] .banner__buttons {

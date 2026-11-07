@@ -13,31 +13,39 @@
         "text_GaQBdW": {
           "type": "text",
           "settings": {
-            "text": "Loved by 700+ riders.",
-            "text_style": "caption-with-letter-spacing"
+            "text": "If wind makes you happy, you’re home.",
+            "text_style": "subtitle"
           }
         },
         "buttons_rQmKFj": {
           "type": "buttons",
           "settings": {
-            "button_label_1": "Shop now",
+            "button_label_1": "Get your mug",
             "button_link_1": "shopify://collections/all",
             "button_style_secondary_1": false,
             "button_label_2": "",
             "button_link_2": "",
             "button_style_secondary_2": false
           }
+        },
+        "text_proof": {
+          "type": "text",
+          "settings": {
+            "text": "Already loved by 700+ riders",
+            "text_style": "body"
+          }
         }
       },
       "block_order": [
         "heading_fVHKkX",
         "text_GaQBdW",
-        "buttons_rQmKFj"
+        "buttons_rQmKFj",
+        "text_proof"
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
         "image": "shopify://shop_images/ruben-lenten.jpg",
-        "image_overlay_opacity": 40,
+        "image_overlay_opacity": 30,
         "image_height": "large",
         "image_behavior": "none",
         "desktop_content_position": "middle-center",
