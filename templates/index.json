@@ -71,7 +71,8 @@
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 40
-      }
+      },
+      "disabled": true
     },
     "rich_text_bRQeXb": {
       "type": "rich-text",
@@ -559,7 +560,7 @@
         "name": "Mathis",
         "role": "Founder, Brutal Force",
         "color_scheme": "scheme-1",
-        "padding_top": 60,
+        "padding_top": 72,
         "padding_bottom": 72
       }
     }
