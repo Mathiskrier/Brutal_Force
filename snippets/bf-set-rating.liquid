@@ -1,0 +1,46 @@
+{%- doc -%}
+  Brutalforce: combined star rating under the title of a set's page (e.g. the 3-Pack),
+  shown instead of Judge.me's own badge (the set has no reviews of its own).
+  Weighted average of the products' review metafields (reviews.rating / reviews.rating_count,
+  synced by Judge.me), so it matches the "Set reviews" list further down. Links to that list.
+
+  @param {collection} reference_collection - The products whose reviews count (e.g. Mugs)
+{%- enddoc -%}
+{%- liquid
+  assign total_count = 0
+  assign weighted = 0.0
+  for item in reference_collection.products limit: 20
+    assign item_count = item.metafields.reviews.rating_count.value | default: 0
+    if item_count > 0
+      assign item_rating = item.metafields.reviews.rating.value.rating | default: 0
+      assign weighted = item_rating | times: item_count | plus: weighted
+      assign total_count = total_count | plus: item_count
+    endif
+  endfor
+-%}
+{%- if total_count > 0 -%}
+  {%- liquid
+    assign avg = weighted | divided_by: total_count | round: 2
+    assign full = avg | floor
+    assign rest = avg | minus: full
+    assign next_star = full | plus: 1
+  -%}
+  <a href="#SetReviews" class="bf-set-rating" aria-label="{{ avg }} out of 5 stars, {{ total_count }} reviews">
+    <span class="jdgm-prev-badge">
+      <span class="jdgm-prev-badge__stars" data-score="{{ avg | append: '' }}">
+        {%- for i in (1..5) -%}
+          {%- if i <= full -%}
+            <span class="jdgm-star jdgm--on"></span>
+          {%- elsif i == next_star and rest >= 0.25 and rest < 0.75 -%}
+            <span class="jdgm-star jdgm--half"></span>
+          {%- elsif i == next_star and rest >= 0.75 -%}
+            <span class="jdgm-star jdgm--on"></span>
+          {%- else -%}
+            <span class="jdgm-star jdgm--off"></span>
+          {%- endif -%}
+        {%- endfor -%}
+      </span>
+      <span class="jdgm-prev-badge__text">{{ total_count }} reviews</span>
+    </span>
+  </a>
+{%- endif -%}

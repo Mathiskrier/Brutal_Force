@@ -23,6 +23,7 @@
 
 {%- if is_set_page and ids != blank -%}
   <div
+    id="SetReviews"
     class="bf-allrev page-width"
     style="--bf-allrev-pt: {{ section.settings.padding_top }}px; --bf-allrev-pb: {{ section.settings.padding_bottom }}px;"
   >
@@ -176,6 +177,7 @@
     }
 
     .bf-allrev {
+      scroll-margin-top: 10rem;
       padding-top: calc(var(--bf-allrev-pt) * 0.75);
       padding-bottom: calc(var(--bf-allrev-pb) * 0.75);
     }

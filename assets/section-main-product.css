@@ -1766,3 +1766,19 @@ a.product__text {
     max-width: none;
   }
 }
+
+/* Brutalforce: combined rating on a set's page (snippets/bf-set-rating.liquid), same look as the Judge.me badge */
+.product__info-container .bf-set-rating {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.product__info-container .bf-set-rating .jdgm-prev-badge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.product__info-container .bf-set-rating .jdgm-star {
+  color: #fdca00;
+}

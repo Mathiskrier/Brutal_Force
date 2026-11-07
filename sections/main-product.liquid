@@ -104,7 +104,14 @@
             {%- for block in section.blocks -%}
               {%- case block.type -%}
                 {%- when '@app' -%}
-                  {% render block %}
+                  {%- if bf_bundle_page and block.id contains 'preview_badge' -%}
+                    {%- comment -%} Brutalforce: the set has no reviews of its own -> combined rating of the mugs {%- endcomment -%}
+                    <div {{ block.shopify_attributes }}>
+                      {%- render 'bf-set-rating', reference_collection: collections['drinkware'] -%}
+                    </div>
+                  {%- else -%}
+                    {% render block %}
+                  {%- endif -%}
                 {%- when 'text' -%}
                   {%- if block.settings.text != blank -%}
                     <p
