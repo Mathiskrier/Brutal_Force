@@ -104,6 +104,17 @@
           "settings": {
             "share_label": "Share with your friends"
           }
+        },
+        "bundle_offer_3pack": {
+          "type": "bundle_offer",
+          "settings": {
+            "product": "happiness-mug-pack",
+            "reference_collection": "ceramic-mugs",
+            "badge": "Best value",
+            "heading": "Can't decide? Get all three.",
+            "subtext": "One for every condition — one for you, one for your crew.",
+            "button_label": "Get the set"
+          }
         }
       },
       "block_order": [
@@ -117,6 +128,7 @@
         "free_shipping_upsell_ceramic",
         "buy_buttons",
         "custom_liquid_YP9TRN",
+        "bundle_offer_3pack",
         "description",
         "share"
       ],

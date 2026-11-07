@@ -1,0 +1,266 @@
+{%- doc -%}
+  Brutalforce: "Get the set" bundle offer (main product block "Bundle offer").
+  Shows the bundle product (e.g. the 3-Pack) with a visible saving:
+    reference price = sum of the products in "Reference collection" (e.g. the 3 ceramic mugs)
+    saving          = reference price - bundle price
+  "+ free shipping" is added when the bundle price reaches Theme settings > Free shipping threshold.
+  Hidden on the bundle product's own page and when the bundle is unavailable.
+  The button links to the bundle's product page (no quick add).
+
+  @param {block} block - The bundle_offer block
+  @param {product} product - The product being viewed
+{%- enddoc -%}
+{%- liquid
+  assign bundle = block.settings.product
+  if bundle == blank
+    assign bundle = all_products['happiness-mug-pack']
+  endif
+-%}
+{%- if bundle != blank and bundle.available and bundle.id != product.id -%}
+  {%- liquid
+    assign bundle_variant = bundle.selected_or_first_available_variant
+    assign bundle_price = bundle_variant.price
+
+    assign reference_collection = block.settings.reference_collection
+    if reference_collection == blank
+      assign reference_collection = collections['ceramic-mugs']
+    endif
+    assign reference_price = 0
+    for item in reference_collection.products limit: 10
+      assign reference_price = reference_price | plus: item.first_available_variant.price
+    endfor
+
+    assign saving = reference_price | minus: bundle_price
+    assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+    assign ships_free = false
+    if bundle_price >= threshold_cents
+      assign ships_free = true
+    endif
+  -%}
+  <div class="bf-bundle" {{ block.shopify_attributes }}>
+    <a class="bf-bundle__media" href="{{ bundle.url }}" tabindex="-1" aria-hidden="true">
+      {%- if bundle.featured_image != blank -%}
+        {{
+          bundle.featured_image
+          | image_url: width: 300
+          | image_tag:
+            loading: 'lazy',
+            width: 120,
+            height: 120,
+            widths: '100, 150, 200, 240, 300',
+            sizes: '(min-width: 750px) 120px, 96px',
+            alt: '',
+            class: 'bf-bundle__img'
+        }}
+      {%- endif -%}
+    </a>
+
+    <div class="bf-bundle__body">
+      {%- if block.settings.badge != blank -%}
+        <span class="bf-bundle__badge">{{ block.settings.badge | escape }}</span>
+      {%- endif -%}
+      {%- if block.settings.heading != blank -%}
+        <p class="bf-bundle__heading">{{ block.settings.heading | escape }}</p>
+      {%- endif -%}
+      {%- if block.settings.subtext != blank -%}
+        <p class="bf-bundle__sub">{{ block.settings.subtext | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="bf-bundle__offer">
+      <div class="bf-bundle__prices">
+        {%- if saving > 0 -%}
+          <s class="bf-bundle__compare">
+            <span class="visually-hidden">Regular price</span>
+            {%- if settings.currency_code_enabled -%}
+              {{- reference_price | money_with_currency -}}
+            {%- else -%}
+              {{- reference_price | money -}}
+            {%- endif -%}
+          </s>
+        {%- endif -%}
+        <span class="bf-bundle__price">
+          {%- if saving > 0 -%}<span class="visually-hidden">Set price</span>{%- endif -%}
+          {%- if settings.currency_code_enabled -%}
+            {{- bundle_price | money_with_currency -}}
+          {%- else -%}
+            {{- bundle_price | money -}}
+          {%- endif -%}
+        </span>
+      </div>
+      {%- if saving > 0 or ships_free -%}
+        <p class="bf-bundle__saving">
+          {%- if saving > 0 -%}Save {{ saving | money }}{%- endif -%}
+          {%- if saving > 0 and ships_free %} + {% endif -%}
+          {%- if ships_free -%}{%- if saving > 0 -%}free shipping{%- else -%}Free shipping{%- endif -%}{%- endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <a class="bf-bundle__button" href="{{ bundle.url }}">
+      <span>{{ block.settings.button_label | default: 'Get the set' | escape }}</span>
+      <span class="bf-bundle__arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
+    </a>
+  </div>
+
+  {%- style -%}
+    .bf-bundle {
+      display: grid;
+      grid-template-columns: 9.6rem minmax(0, 1fr);
+      grid-template-areas:
+        'media body'
+        'offer offer'
+        'button button';
+      gap: 1.4rem 1.4rem;
+      align-items: center;
+      margin-top: 2.4rem;
+      padding: 1.6rem;
+      border: 0.1rem solid rgba(var(--color-foreground), 0.12);
+      border-radius: 1.2rem;
+      background: rgba(var(--color-foreground), 0.03);
+    }
+
+    .bf-bundle__media {
+      grid-area: media;
+      display: block;
+      width: 9.6rem;
+      height: 9.6rem;
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: #fff;
+      border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+    }
+
+    .bf-bundle__img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .bf-bundle__body {
+      grid-area: body;
+      min-width: 0;
+    }
+
+    .bf-bundle__badge {
+      display: inline-block;
+      margin-bottom: 0.6rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 99rem;
+      background: #fce477;
+      color: rgb(18, 18, 18);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.06rem;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+
+    .bf-bundle__heading {
+      margin: 0;
+      font-size: 1.7rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: rgb(var(--color-foreground));
+    }
+
+    .bf-bundle__sub {
+      margin: 0.4rem 0 0;
+      font-size: 1.35rem;
+      line-height: 1.45;
+      color: rgba(var(--color-foreground), 0.68);
+    }
+
+    .bf-bundle__offer {
+      grid-area: offer;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem 1.2rem;
+      padding-top: 1.2rem;
+      border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
+    }
+
+    .bf-bundle__prices {
+      display: flex;
+      align-items: baseline;
+      gap: 0.8rem;
+    }
+
+    .bf-bundle__compare {
+      font-size: 1.4rem;
+      color: rgba(var(--color-foreground), 0.5);
+    }
+
+    .bf-bundle__price {
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: rgb(var(--color-foreground));
+    }
+
+    .bf-bundle__saving {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: rgb(31, 122, 71);
+    }
+
+    /* Secondary style: outlined, calmer than the black Add to cart */
+    .bf-bundle__button {
+      grid-area: button;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      min-height: 4.6rem;
+      padding: 0 2rem;
+      border: 0.15rem solid rgb(18, 18, 18);
+      border-radius: var(--buttons-radius-outset, 0.4rem);
+      background: #fff;
+      color: rgb(18, 18, 18);
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color 0.15s ease;
+    }
+
+    .bf-bundle__button:hover {
+      background: rgba(18, 18, 18, 0.05);
+    }
+
+    .bf-bundle__arrow {
+      display: inline-flex;
+      width: 1.7rem;
+      height: 1.7rem;
+      transition: transform 0.15s ease;
+    }
+
+    .bf-bundle__arrow svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .bf-bundle__button:hover .bf-bundle__arrow {
+      transform: translateX(0.3rem);
+    }
+
+    @media screen and (min-width: 990px) {
+      .bf-bundle {
+        grid-template-columns: 12rem minmax(0, 1fr);
+        padding: 2rem;
+        column-gap: 1.8rem;
+      }
+
+      .bf-bundle__media {
+        width: 12rem;
+        height: 12rem;
+      }
+
+      .bf-bundle__heading {
+        font-size: 1.8rem;
+      }
+    }
+  {%- endstyle -%}
+{%- endif -%}

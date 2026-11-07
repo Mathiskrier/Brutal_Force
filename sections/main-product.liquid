@@ -689,6 +689,8 @@
                   </product-recommendations>
                 {%- when 'icon-with-text' -%}
                   {% render 'icon-with-text', block: block %}
+                {%- when 'bundle_offer' -%}
+                  {%- render 'bf-bundle-offer', block: block, product: product -%}
               {%- endcase -%}
             {%- endfor -%}
             <a href="{{ product.url }}" class="link product__view-details animate-arrow">
@@ -1009,6 +1011,49 @@
           "label": "Sub-line",
           "default": "Add another mug and skip the delivery fee.",
           "info": "[threshold] can be used here too."
+        }
+      ]
+    },
+    {
+      "type": "bundle_offer",
+      "name": "Bundle offer",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Bundle product",
+          "info": "Empty = the 3-Pack (happiness-mug-pack). Hidden on the bundle's own page."
+        },
+        {
+          "type": "collection",
+          "id": "reference_collection",
+          "label": "Reference collection (what the bundle contains)",
+          "info": "Crossed-out price = sum of these products. Empty = Ceramic Mugs."
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "default": "Best value"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Can't decide? Get all three."
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "label": "Sub-line",
+          "default": "One for every condition — one for you, one for your crew."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Get the set"
         }
       ]
     },
