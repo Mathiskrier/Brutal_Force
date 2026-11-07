@@ -546,7 +546,7 @@
               assign bf_ships_free = true
             endif
           -%}
-          {%- if bf_ships_free -%}
+          {%- if bf_ships_free or cart.taxes_included -%}
             <small class="tax-note caption-large rte">
               {%- if cart.taxes_included -%}Taxes included.{%- else -%}Taxes calculated at checkout.{%- endif -%}
             </small>
