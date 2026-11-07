@@ -1,0 +1,12 @@
+{%- doc -%}
+  Brutalforce: a row of 5 stars for one review (sections/bf-home-reviews.liquid).
+
+  @param {number} rating - 1 to 5
+  @param {string} star_svg - the star SVG markup
+  @param {string} size - 'sm' | 'md' | 'lg'
+{%- enddoc -%}
+{%- assign fill = rating | default: 5 | times: 20 -%}
+<div class="bf-hrev__stars bf-hrev__stars--{{ size | default: 'sm' }}" style="--bf-fill: {{ fill }}%;" role="img" aria-label="{{ rating | default: 5 }} out of 5 stars">
+  <span class="bf-hrev__stars-base">{%- for i in (1..5) -%}{{ star_svg }}{%- endfor -%}</span>
+  <span class="bf-hrev__stars-fill">{%- for i in (1..5) -%}{{ star_svg }}{%- endfor -%}</span>
+</div>

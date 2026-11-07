@@ -236,7 +236,8 @@
       "block_order": [
         "ai_gen_block_919877b_DUy4jb"
       ],
-      "settings": {}
+      "settings": {},
+      "disabled": true
     },
     "rich_text_MJ46TF": {
       "type": "rich-text",
@@ -264,7 +265,8 @@
         "full_width": true,
         "padding_top": 16,
         "padding_bottom": 68
-      }
+      },
+      "disabled": true
     },
     "image_with_text_hjFL6p": {
       "type": "image-with-text",
@@ -505,7 +507,8 @@
       ],
       "settings": {
         "include_margins": true
-      }
+      },
+      "disabled": true
     },
     "home_mugs": {
       "type": "bf-more-mugs",
@@ -692,6 +695,52 @@
         "layout": "grid",
         "heading_font": "brand"
       }
+    },
+    "home_reviews": {
+      "type": "bf-home-reviews",
+      "blocks": {
+        "rev_joel": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "I am happy that Instagram showed me this mug. Used it every day so far.",
+            "name": "Joel E."
+          }
+        },
+        "rev_elisa": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Never ordered a mug online except this one. Such a cool design.",
+            "name": "Elisa M."
+          }
+        },
+        "rev_tobi": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Looks exactly like on the pictures. Quality feels superior!",
+            "name": "Tobi"
+          }
+        }
+      },
+      "block_order": [
+        "rev_joel",
+        "rev_elisa",
+        "rev_tobi"
+      ],
+      "settings": {
+        "featured_image": "shopify://shop_images/Untitled_design_15.jpg",
+        "featured_alt": "Lena holding her Brutal Force forecast mug",
+        "featured_rating": 5,
+        "featured_quote": "Hard to not smile when looking at it. My favourite mug of all time.",
+        "featured_name": "Lena W.",
+        "link_label": "Read all reviews",
+        "link_url": "/products/happiness-mug-pack#SetReviews",
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 64
+      }
     }
   },
   "order": [
@@ -706,6 +755,7 @@
     "rich_text_7qChNp",
     "17642696182a54458a",
     "featured_collection",
+    "home_reviews",
     "17642643365026a592",
     "rich_text_MJ46TF",
     "rich_text_7QPYzE",
