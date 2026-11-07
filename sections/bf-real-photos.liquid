@@ -2,6 +2,7 @@
   Brutalforce: "Out in the wild" - real customer photos (social proof).
   Layout: "Featured" photos (people) large on top, the other photos as small square thumbnails.
   Mobile: both rows swipe sideways (scroll-snap) so the section stays short.
+  Layout "Grid" (home page): all photos in one even grid - 2 columns on phones, 4 on desktop.
   Each "Photo" block renders via snippets/bf-wild-photo.liquid (editor image or pre-compressed
   theme assets). All images are lazy-loaded (loading="lazy"). The CTA scrolls to the
   Add to cart button on product pages and falls back to its link everywhere else.
@@ -9,6 +10,7 @@
 {%- liquid
   assign featured_sizes = '(max-width: 749px) 78vw, (max-width: 989px) 31vw, 380px'
   assign thumb_sizes = '(max-width: 749px) 30vw, (max-width: 989px) 14vw, 170px'
+  assign grid_sizes = '(max-width: 749px) 46vw, (max-width: 989px) 23vw, 260px'
   assign thumb_count = 0
   for block in section.blocks
     unless block.settings.featured
@@ -28,6 +30,20 @@
       {%- endif -%}
     </div>
 
+    {%- if section.settings.layout == 'grid' -%}
+      <ul class="bf-wild__grid list-unstyled" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.featured -%}
+            {%- render 'bf-wild-photo', block: block, sizes: grid_sizes, class: 'bf-wild__item--grid' -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- for block in section.blocks -%}
+          {%- unless block.settings.featured -%}
+            {%- render 'bf-wild-photo', block: block, sizes: grid_sizes, class: 'bf-wild__item--grid' -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
     <ul class="bf-wild__featured bf-wild__scroller list-unstyled" role="list">
       {%- for block in section.blocks -%}
         {%- if block.settings.featured -%}
@@ -44,6 +60,7 @@
           {%- endunless -%}
         {%- endfor -%}
       </ul>
+    {%- endif -%}
     {%- endif -%}
 
     {%- if section.settings.button_label != blank -%}
@@ -176,6 +193,22 @@
     flex: 0 0 30%;
   }
 
+  /* Grid layout: even portrait tiles (3:4, the photos' own shape), 2 columns on phones */
+  .bf-wild__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .bf-wild__item--grid {
+    flex: 0 0 calc((100% - 0.8rem) / 2);
+    aspect-ratio: 3 / 4;
+    border-radius: 1rem;
+  }
+
   .bf-wild__cta-wrap {
     display: flex;
     justify-content: center;
@@ -267,6 +300,17 @@
     .bf-wild__cta-wrap {
       margin-top: 3.2rem;
     }
+
+    .bf-wild__grid {
+      gap: 1.2rem;
+      max-width: 104rem;
+      margin: 0 auto;
+    }
+
+    .bf-wild__item--grid {
+      flex-basis: calc((100% - 3 * 1.2rem) / 4);
+      border-radius: 1.2rem;
+    }
   }
 
 {% endstyle %}
@@ -288,6 +332,22 @@
       "id": "text",
       "label": "Text",
       "default": "Real mugs, real mornings, sent in by riders across Europe. No studio, no stock — just the crew."
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "rows",
+          "label": "Large photos + small thumbnails (swipe on phones)"
+        },
+        {
+          "value": "grid",
+          "label": "Even grid (2 columns on phones, 4 on desktop)"
+        }
+      ],
+      "default": "rows"
     },
     {
       "type": "text",

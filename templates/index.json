@@ -562,7 +562,127 @@
         "role": "Founder, Brutal Force",
         "color_scheme": "scheme-1",
         "padding_top": 64,
-        "padding_bottom": 72
+        "padding_bottom": 48
+      }
+    },
+    "home_wild": {
+      "type": "bf-real-photos",
+      "blocks": {
+        "photo_05": {
+          "type": "photo",
+          "settings": {
+            "alt": "Smiling rider holding an enamel forecast mug at an outdoor table",
+            "asset": "wild-05",
+            "width": 1125,
+            "height": 1500,
+            "featured": true
+          }
+        },
+        "photo_01": {
+          "type": "photo",
+          "settings": {
+            "alt": "Enamel Brutal Force mug with black coffee, held up over the coast near Tarifa",
+            "asset": "wild-01",
+            "width": 844,
+            "height": 1500
+          }
+        },
+        "photo_09": {
+          "type": "photo",
+          "settings": {
+            "alt": "Coffee being poured from a moka pot into a forecast mug",
+            "asset": "wild-09",
+            "width": 1125,
+            "height": 1500
+          }
+        },
+        "photo_08": {
+          "type": "photo",
+          "settings": {
+            "alt": "Rider giving a thumbs up while holding a forecast mug outdoors",
+            "asset": "wild-08",
+            "width": 1125,
+            "height": 1500,
+            "featured": true
+          }
+        },
+        "photo_04": {
+          "type": "photo",
+          "settings": {
+            "alt": "Enamel forecast mug on a rooftop ledge at sunset, mountains behind",
+            "asset": "wild-04",
+            "width": 1125,
+            "height": 1500
+          }
+        },
+        "photo_10": {
+          "type": "photo",
+          "settings": {
+            "alt": "Rider unpacking a Brutal Force parcel while a forecast mug is held up",
+            "asset": "wild-10",
+            "width": 1129,
+            "height": 1500,
+            "featured": true
+          }
+        },
+        "photo_03": {
+          "type": "photo",
+          "settings": {
+            "alt": "Ceramic forecast mug held in a kitchen next to a coffee machine",
+            "asset": "wild-03",
+            "width": 844,
+            "height": 1500
+          }
+        },
+        "photo_11": {
+          "type": "photo",
+          "settings": {
+            "alt": "Ceramic forecast mug held up on a sunny terrace with palm trees",
+            "asset": "wild-11",
+            "width": 1129,
+            "height": 1500
+          }
+        },
+        "photo_06": {
+          "type": "photo",
+          "settings": {
+            "alt": "Ceramic forecast mug full of coffee on a garden table",
+            "asset": "wild-06",
+            "width": 1125,
+            "height": 1500
+          }
+        },
+        "photo_02": {
+          "type": "photo",
+          "settings": {
+            "alt": "Ceramic forecast mug held on a sofa, showing a 30+ knot forecast",
+            "asset": "wild-02",
+            "width": 844,
+            "height": 1500
+          }
+        }
+      },
+      "block_order": [
+        "photo_05",
+        "photo_08",
+        "photo_10",
+        "photo_01",
+        "photo_09",
+        "photo_04",
+        "photo_03",
+        "photo_11",
+        "photo_06",
+        "photo_02"
+      ],
+      "settings": {
+        "heading": "Out in the wild",
+        "text": "Real mugs, real mornings, sent in by riders across Europe. No studio, no stock — just the crew.",
+        "button_label": "Get your mug",
+        "button_link": "/collections/drinkware",
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 56,
+        "layout": "grid"
       }
     }
   },
@@ -571,6 +691,7 @@
     "rich_text_tVkgY9",
     "home_mugs",
     "founder_quote",
+    "home_wild",
     "image_with_text_hjFL6p",
     "rich_text_bRQeXb",
     "rich_text_WbaRc3",
