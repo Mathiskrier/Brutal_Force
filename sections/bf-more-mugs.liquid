@@ -111,7 +111,7 @@
   }
 
   /* One badge system for this row: same shape, the colour carries the meaning
-     yellow = deal (Best value) - black = bestseller (Most popular) - charcoal = product quality (Built tough) */
+     yellow = deal (Best value) - black = bestseller (Most popular) - outline = category (Outdoor) */
   .bf-more .bf-badge--value {
     display: inline-flex;
     flex-direction: column;
@@ -129,6 +129,14 @@
     background: #111111;
     color: #ffffff;
     --bf-badge-sub: rgba(255, 255, 255, 0.72);
+  }
+
+  /* outline = product category (e.g. OUTDOOR); inset ring keeps the exact same size as the filled badges */
+  .bf-more .bf-badge--outline {
+    background: transparent;
+    color: #111111;
+    box-shadow: inset 0 0 0 0.1rem #111111;
+    --bf-badge-sub: rgba(17, 17, 17, 0.7);
   }
 
   .bf-more .bf-badge--charcoal {
@@ -251,7 +259,8 @@
           "options": [
             { "value": "yellow", "label": "Yellow (deal / saving)" },
             { "value": "black", "label": "Black (bestseller)" },
-            { "value": "charcoal", "label": "Charcoal (product quality)" }
+            { "value": "charcoal", "label": "Charcoal (product quality)" },
+            { "value": "outline", "label": "Outline (category, e.g. Outdoor)" }
           ],
           "default": "black"
         }

@@ -401,9 +401,8 @@
           "type": "badge",
           "settings": {
             "product": "brutal-force-mug",
-            "label": "Built tough",
-            "sub_label": "premium enamel",
-            "style": "charcoal"
+            "label": "Outdoor",
+            "style": "outline"
           }
         }
       },
