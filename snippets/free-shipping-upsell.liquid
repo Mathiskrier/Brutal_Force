@@ -139,7 +139,7 @@
       {{ upsell_rows }}
     </ul>
     <p class="fs-upsell__note hidden" data-fs-note role="status"></p>
-    {%- comment -%} Quiet "go all the way" link to the set (e.g. the 3-Pack); never competes with the rows above {%- endcomment -%}
+    {%- comment -%} Quiet "go all the way" link to the set (e.g. the 3-Pack); stays quieter than the rows above {%- endcomment -%}
     {%- assign bundle = block.settings.bundle_product -%}
     {%- if bundle != blank and bundle.available and bundle.id != product.id -%}
       {%- liquid
