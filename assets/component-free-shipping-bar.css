@@ -367,3 +367,41 @@
 .cart-item .cart-item__details .cart-item__discounted-prices {
   font-size: 1.3rem;
 }
+
+/* 4. suggestions sized to match the slimmer cart lines (all screens) */
+.bf-suggest {
+  padding: 1rem 1.2rem 0.4rem;
+}
+
+.bf-suggest__heading {
+  font-size: 1.25rem;
+}
+
+.bf-suggest__item {
+  grid-template-columns: 4.2rem minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 0.6rem 0;
+}
+
+.bf-suggest__media {
+  width: 4.2rem;
+  height: 4.2rem;
+}
+
+.bf-suggest__name {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.bf-suggest__detail,
+.bf-suggest__price {
+  font-size: 1.2rem;
+}
+
+.bf-suggest__add {
+  min-width: 6.4rem;
+  min-height: 3.2rem;
+  padding: 0 1rem;
+  border-color: rgba(17, 17, 17, 0.85);
+  font-size: 1.25rem;
+}
