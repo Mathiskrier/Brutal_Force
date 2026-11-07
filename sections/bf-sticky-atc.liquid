@@ -79,14 +79,9 @@
             this.pastButton = false;
             this.lastScan = 0;
 
-            this.observer = new IntersectionObserver(
-              ([entry]) => {
-                // shown only once the main button is ABOVE the screen (scrolled past), not before reaching it
-                this.pastButton = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
-                this.update();
-              },
-              { threshold: 0 }
-            );
+            // also re-checked on every scroll (rAF-throttled): an IntersectionObserver alone misses
+            // jumps from "below the screen" straight to "above the screen" (fast flicks, anchors, reloads)
+            this.observer = new IntersectionObserver(() => this.update(), { threshold: 0 });
             this.observer.observe(this.mainButton);
 
             this.onScroll = () => {
@@ -99,6 +94,7 @@
             };
             window.addEventListener('scroll', this.onScroll, { passive: true });
             window.addEventListener('resize', this.onScroll, { passive: true });
+            this.update();
           }
 
           disconnectedCallback() {
@@ -132,6 +128,8 @@
           }
 
           update() {
+            // shown only once the main button is ABOVE the screen (scrolled past), not before reaching it
+            this.pastButton = this.mainButton.getBoundingClientRect().bottom < 0;
             const drawerOpen = document.querySelector('cart-drawer.active, cart-drawer[open], .drawer.active');
             const show = this.pastButton && !drawerOpen;
             if (show) this.style.setProperty('--bf-sticky-offset', `${this.bottomOffset()}px`);
