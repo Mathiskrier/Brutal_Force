@@ -532,11 +532,25 @@
             {%- endif -%}
           </div>
 
+          {%- render 'cart-summary' -%}
           <div class="totals" role="status">
             <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
             <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
           </div>
 
+          {%- liquid
+            # Brutalforce: once the cart ships free, don't also say "shipping calculated at checkout"
+            assign bf_threshold = settings.free_shipping_threshold | default: 30 | times: 100
+            assign bf_ships_free = false
+            if bf_threshold > 0 and cart.items_subtotal_price >= bf_threshold
+              assign bf_ships_free = true
+            endif
+          -%}
+          {%- if bf_ships_free -%}
+            <small class="tax-note caption-large rte">
+              {%- if cart.taxes_included -%}Taxes included.{%- else -%}Taxes calculated at checkout.{%- endif %} Free shipping is applied automatically at checkout.
+            </small>
+          {%- else -%}
           <small class="tax-note caption-large rte">
             {%- if cart.duties_included and cart.taxes_included -%}
               {%- if shop.shipping_policy.body == blank -%}
@@ -576,6 +590,7 @@
               {%- endif -%}
             {%- endif -%}
           </small>
+          {%- endif -%}
         </div>
 
         <!-- CTAs -->

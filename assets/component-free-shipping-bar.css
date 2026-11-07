@@ -405,3 +405,51 @@
   border-color: rgba(17, 17, 17, 0.85);
   font-size: 1.25rem;
 }
+
+/* ------------------------------------------------------------------
+   Brutalforce: savings + shipping summary above "Estimated total"
+   (snippets/cart-summary.liquid)
+   ------------------------------------------------------------------ */
+.bf-summary {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
+}
+
+.bf-summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.4rem;
+  line-height: 1.6;
+}
+
+.bf-summary__row dt,
+.bf-summary__row dd {
+  margin: 0;
+}
+
+.bf-summary__row--full {
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.bf-summary__row--save {
+  color: rgb(31, 122, 71);
+  font-weight: 600;
+}
+
+.bf-summary__row--shipping dd {
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.bf-summary__row--shipping.is-free dd {
+  color: rgb(31, 122, 71);
+  font-weight: 600;
+  letter-spacing: 0.04rem;
+}
+
+/* cart page: the summary sits in the right-aligned footer column */
+.cart__footer .bf-summary {
+  width: 100%;
+}

@@ -1,0 +1,44 @@
+{%- doc -%}
+  Brutalforce: savings + shipping summary above "Estimated total" (cart drawer + cart page).
+  All numbers come from the live cart in this render:
+    Full price  = sum over lines of (compare-at price, or the price if none/lower) x quantity
+    You save    = Full price - cart.total_price   (compare-at savings + any discounts in the cart)
+    Shipping    = FREE when cart.items_subtotal_price reaches Theme settings > Free shipping
+                  (exactly the same test as the free shipping bar), otherwise "Calculated at checkout"
+  So: Full price - You save = Estimated total, and the shipping line always agrees with the bar.
+{%- enddoc -%}
+{%- liquid
+  assign full_price = 0
+  for item in cart.items
+    assign unit_was = item.original_price
+    if item.variant.compare_at_price > unit_was
+      assign unit_was = item.variant.compare_at_price
+    endif
+    assign full_price = unit_was | times: item.quantity | plus: full_price
+  endfor
+  assign you_save = full_price | minus: cart.total_price
+
+  assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+  assign ships_free = false
+  if threshold_cents > 0 and cart.items_subtotal_price >= threshold_cents
+    assign ships_free = true
+  endif
+-%}
+{%- if cart != empty -%}
+  <dl class="bf-summary">
+    {%- if you_save > 0 -%}
+      <div class="bf-summary__row bf-summary__row--full">
+        <dt>Full price</dt>
+        <dd><s>{{ full_price | money }}</s></dd>
+      </div>
+      <div class="bf-summary__row bf-summary__row--save">
+        <dt>You save</dt>
+        <dd>−{{ you_save | money }}</dd>
+      </div>
+    {%- endif -%}
+    <div class="bf-summary__row bf-summary__row--shipping{% if ships_free %} is-free{% endif %}">
+      <dt>Shipping</dt>
+      <dd>{%- if ships_free -%}FREE{%- else -%}Calculated at checkout{%- endif -%}</dd>
+    </div>
+  </dl>
+{%- endif -%}
