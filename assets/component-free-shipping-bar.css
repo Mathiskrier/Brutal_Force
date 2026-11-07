@@ -356,8 +356,9 @@
 .cart-item .cart-item__name {
   font-family: var(--font-body-family);
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 1.4rem;
+  color: rgb(var(--color-foreground));
   line-height: 1.35;
   letter-spacing: 0;
 }
