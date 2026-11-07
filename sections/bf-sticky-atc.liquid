@@ -1,0 +1,331 @@
+{%- comment -%}
+  Brutalforce: sticky add-to-cart bar (product pages).
+  - Slides in from the bottom only after the main Add to cart button has been scrolled past,
+    and hides again when the visitor scrolls back up to it.
+  - Its own small product form (theme's <product-form>, assets/product-form.js): adds ONLY the
+    viewed product (qty 1) and opens the cart drawer, exactly like the main button. It is not
+    linked to the free shipping box, so ticked upsell mugs are never added from here.
+  - Sits above anything else fixed to the bottom of the screen (cookie banner, preview bar,
+    chat/newsletter widgets) instead of covering it.
+{%- endcomment -%}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+-%}
+{%- if product != blank and variant != blank and variant.available -%}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+  <bf-sticky-atc class="bf-sticky color-{{ section.settings.color_scheme }}" aria-hidden="true">
+    <div class="page-width bf-sticky__inner">
+      <div class="bf-sticky__product">
+        {%- if product.featured_image != blank -%}
+          {{
+            product.featured_image
+            | image_url: width: 120
+            | image_tag:
+              loading: 'lazy',
+              width: 44,
+              height: 44,
+              widths: '60, 90, 120',
+              sizes: '44px',
+              alt: '',
+              class: 'bf-sticky__img'
+          }}
+        {%- endif -%}
+        <div class="bf-sticky__text">
+          <p class="bf-sticky__title">{{ product.title | escape }}</p>
+          <p class="bf-sticky__price">
+            {%- if variant.compare_at_price > variant.price -%}
+              <s class="bf-sticky__compare">{{ variant.compare_at_price | money }}</s>
+            {%- endif -%}
+            <span>{{ variant.price | money }}</span>
+          </p>
+        </div>
+      </div>
+
+      <product-form class="product-form bf-sticky__form" data-section-id="{{ section.id }}" data-hide-errors="false">
+        <div class="product-form__error-message-wrapper" role="alert" hidden>
+          <span class="product-form__error-message"></span>
+        </div>
+        {%- form 'product', product, id: 'BfStickyForm', class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ variant.id }}" class="product-variant-id">
+          <input type="hidden" name="quantity" value="1">
+          <button
+            type="submit"
+            name="add"
+            class="bf-sticky__button"
+            tabindex="-1"
+          >
+            <span>{{ section.settings.button_label | default: 'Add to cart' | escape }}</span>
+            {%- render 'loading-spinner' -%}
+          </button>
+        {%- endform -%}
+      </product-form>
+    </div>
+  </bf-sticky-atc>
+
+  <script>
+    if (!customElements.get('bf-sticky-atc')) {
+      customElements.define(
+        'bf-sticky-atc',
+        class BfStickyAtc extends HTMLElement {
+          connectedCallback() {
+            // the main Add to cart button of the product section
+            this.mainButton =
+              document.querySelector('[id^="ProductSubmitButton-"]:not(.bf-sticky__button)') ||
+              document.querySelector('.product-form__submit');
+            if (!this.mainButton) return;
+
+            this.visible = false;
+            this.pastButton = false;
+            this.lastScan = 0;
+
+            this.observer = new IntersectionObserver(
+              ([entry]) => {
+                // shown only once the main button is ABOVE the screen (scrolled past), not before reaching it
+                this.pastButton = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
+                this.update();
+              },
+              { threshold: 0 }
+            );
+            this.observer.observe(this.mainButton);
+
+            this.onScroll = () => {
+              if (this.ticking) return;
+              this.ticking = true;
+              requestAnimationFrame(() => {
+                this.ticking = false;
+                this.update();
+              });
+            };
+            window.addEventListener('scroll', this.onScroll, { passive: true });
+            window.addEventListener('resize', this.onScroll, { passive: true });
+          }
+
+          disconnectedCallback() {
+            this.observer?.disconnect();
+            window.removeEventListener('scroll', this.onScroll);
+            window.removeEventListener('resize', this.onScroll);
+          }
+
+          // height of other elements fixed to the bottom of the screen (cookie banner, preview bar, widgets)
+          bottomOffset() {
+            const now = Date.now();
+            if (now - this.lastScan < 400 && this.cachedOffset !== undefined) return this.cachedOffset;
+            this.lastScan = now;
+            let offset = 0;
+            const vh = window.innerHeight;
+            const candidates = new Set([
+              ...document.body.children,
+              ...document.querySelectorAll('#shopify-pc__banner, [id^="shopify-pc__"], [id*="cookie" i], [class*="cookie" i]'),
+            ]);
+            candidates.forEach((el) => {
+              if (el === this || el.contains(this) || el.tagName === 'SCRIPT' || el.tagName === 'CART-DRAWER') return;
+              const style = getComputedStyle(el);
+              if (style.position !== 'fixed' || style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return;
+              const rect = el.getBoundingClientRect();
+              if (rect.height <= 0 || rect.width < 120) return;
+              // anchored to the bottom and not a full-screen overlay
+              if (rect.bottom >= vh - 2 && rect.top > vh * 0.35) offset = Math.max(offset, Math.round(vh - rect.top));
+            });
+            this.cachedOffset = offset;
+            return offset;
+          }
+
+          update() {
+            const drawerOpen = document.querySelector('cart-drawer.active, cart-drawer[open], .drawer.active');
+            const show = this.pastButton && !drawerOpen;
+            if (show) this.style.setProperty('--bf-sticky-offset', `${this.bottomOffset()}px`);
+            if (show === this.visible) return;
+            this.visible = show;
+            this.classList.toggle('is-visible', show);
+            this.setAttribute('aria-hidden', String(!show));
+            this.querySelector('.bf-sticky__button')?.setAttribute('tabindex', show ? '0' : '-1');
+            document.body.classList.toggle('bf-sticky-on', show);
+          }
+        }
+      );
+    }
+  </script>
+
+  {% style %}
+    .bf-sticky {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: var(--bf-sticky-offset, 0px);
+      z-index: 3;
+      background: rgb(var(--color-background));
+      border-top: 0.1rem solid rgba(var(--color-foreground), 0.1);
+      box-shadow: 0 -0.4rem 1.6rem rgba(0, 0, 0, 0.06);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      transform: translateY(calc(100% + var(--bf-sticky-offset, 0px) + 1rem));
+      transition: transform 0.25s ease, bottom 0.2s ease;
+      pointer-events: none;
+    }
+
+    .bf-sticky.is-visible {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .bf-sticky__inner {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding-top: 0.8rem;
+      padding-bottom: 0.8rem;
+    }
+
+    .bf-sticky__product {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .bf-sticky__img {
+      flex: none;
+      width: 4.4rem;
+      height: 4.4rem;
+      object-fit: contain;
+      border-radius: 0.6rem;
+      background: #fff;
+      border: 0.1rem solid rgba(var(--color-foreground), 0.08);
+    }
+
+    .bf-sticky__text {
+      min-width: 0;
+    }
+
+    .bf-sticky__title {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bf-sticky__price {
+      margin: 0.1rem 0 0;
+      font-size: 1.3rem;
+      line-height: 1.3;
+    }
+
+    .bf-sticky__compare {
+      margin-right: 0.4rem;
+      color: rgba(var(--color-foreground), 0.5);
+    }
+
+    .bf-sticky__form {
+      flex: none;
+    }
+
+    .bf-sticky__form .form {
+      margin: 0;
+    }
+
+    .bf-sticky__button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 4.4rem;
+      min-width: 12.4rem;
+      padding: 0 1.8rem;
+      border: 0;
+      border-radius: var(--buttons-radius-outset, 0.4rem);
+      background: rgb(17, 17, 17);
+      color: #fff;
+      font-family: var(--font-body-family);
+      font-size: 1.45rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .bf-sticky__button:hover {
+      background: rgb(51, 51, 51);
+    }
+
+    .bf-sticky__button.loading > span {
+      visibility: hidden;
+    }
+
+    .bf-sticky__button .loading__spinner {
+      position: absolute;
+      width: 1.8rem;
+      color: #fff;
+    }
+
+    .bf-sticky .product-form__error-message-wrapper:not([hidden]) {
+      position: absolute;
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 100%;
+      margin-bottom: 0.4rem;
+      padding: 0.6rem 1rem;
+      border-radius: 0.4rem;
+      background: #fff;
+      box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
+      font-size: 1.3rem;
+    }
+
+    /* keep the end of the page reachable behind the bar */
+    body.bf-sticky-on {
+      padding-bottom: 6.4rem;
+    }
+
+    @media screen and (min-width: 750px) {
+      .bf-sticky__inner {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+
+      .bf-sticky__title,
+      .bf-sticky__price {
+        font-size: 1.4rem;
+      }
+
+      .bf-sticky__button {
+        min-width: 18rem;
+        min-height: 4.6rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bf-sticky {
+        transition: none;
+      }
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Sticky add to cart",
+  "tag": "section",
+  "class": "bf-sticky-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Add to cart"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky add to cart"
+    }
+  ]
+}
+{% endschema %}

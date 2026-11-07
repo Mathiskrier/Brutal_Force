@@ -410,6 +410,13 @@
         "badge_storm",
         "badge_camper"
       ]
+    },
+    "sticky_atc": {
+      "type": "bf-sticky-atc",
+      "settings": {
+        "button_label": "Add to cart",
+        "color_scheme": "scheme-1"
+      }
     }
   },
   "order": [
@@ -418,6 +425,7 @@
     "collapsible_content_9b89xV",
     "out_in_the_wild",
     "17478606947302e352",
-    "more_mugs"
+    "more_mugs",
+    "sticky_atc"
   ]
 }
