@@ -1,44 +1,72 @@
 {%- doc -%}
-  Brutalforce: savings + shipping summary above "Estimated total" (cart drawer + cart page).
-  All numbers come from the live cart in this render:
-    Full price  = sum over lines of (compare-at price, or the price if none/lower) x quantity
-    You save    = Full price - cart.total_price   (compare-at savings + any discounts in the cart)
-    Shipping    = FREE when cart.items_subtotal_price reaches Theme settings > Free shipping
-                  (exactly the same test as the free shipping bar), otherwise "Calculated at checkout"
-  So: Full price - You save = Estimated total, and the shipping line always agrees with the bar.
+  Brutalforce: order summary above "Estimated total" (cart drawer + cart page).
+    Full price     = sum of each line's compare-at price (or its regular price if it has none) x qty
+    Shipping       = while the free shipping promo applies (snippets/bf-free-shipping-active.liquid
+                     AND the cart reaches the threshold - same test as the bar): the REAL normal
+                     shipping price for this cart and the visitor's country, struck through, + FREE.
+                     That price is looked up from Shopify (assets/cart-summary.js); if it can't be
+                     looked up, only "FREE" shows and no shipping saving is counted.
+                     Otherwise: "Calculated at checkout".
+    Total savings  = (Full price - what the products actually cost) + that real shipping price
+                     (shipping part only while free shipping applies)
 {%- enddoc -%}
 {%- liquid
+  capture fs_on
+    render 'bf-free-shipping-active'
+  endcapture
+
   assign full_price = 0
+  assign sig = ''
   for item in cart.items
     assign unit_was = item.original_price
     if item.variant.compare_at_price > unit_was
       assign unit_was = item.variant.compare_at_price
     endif
     assign full_price = unit_was | times: item.quantity | plus: full_price
+    assign sig = sig | append: item.variant_id | append: 'x' | append: item.quantity | append: '-'
   endfor
-  assign you_save = full_price | minus: cart.total_price
+  assign product_savings = full_price | minus: cart.total_price
+  if product_savings < 0
+    assign product_savings = 0
+  endif
 
   assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
   assign ships_free = false
-  if threshold_cents > 0 and cart.items_subtotal_price >= threshold_cents
+  if fs_on == 'true' and cart.items_subtotal_price >= threshold_cents
     assign ships_free = true
   endif
+  assign sig = sig | append: cart.total_price | append: '-' | append: cart.currency.iso_code
 -%}
 {%- if cart != empty -%}
-  <dl class="bf-summary">
-    {%- if you_save > 0 -%}
-      <div class="bf-summary__row bf-summary__row--full">
-        <dt>Full price</dt>
-        <dd><s>{{ full_price | money }}</s></dd>
-      </div>
-      <div class="bf-summary__row bf-summary__row--save">
-        <dt>You save</dt>
-        <dd>−{{ you_save | money }}</dd>
-      </div>
-    {%- endif -%}
+  <dl
+    class="bf-summary"
+    data-ship-free="{{ ships_free }}"
+    data-country="{{ localization.country.iso_code }}"
+    data-product-savings="{{ product_savings }}"
+    data-sig="{{ sig | escape }}"
+    data-money-sample="{{ 123456 | money | escape }}"
+  >
+    <div class="bf-summary__row bf-summary__row--full">
+      <dt>Full price</dt>
+      <dd>{{ full_price | money }}</dd>
+    </div>
     <div class="bf-summary__row bf-summary__row--shipping{% if ships_free %} is-free{% endif %}">
       <dt>Shipping</dt>
-      <dd>{%- if ships_free -%}FREE{%- else -%}Calculated at checkout{%- endif -%}</dd>
+      <dd>
+        {%- if ships_free -%}
+          <s class="bf-summary__ship-was" data-ship-was hidden></s>
+          <strong class="bf-summary__free">FREE</strong>
+          {%- if settings.free_shipping_promo_note != blank %}
+            <span class="bf-summary__note">{{ settings.free_shipping_promo_note | escape }}</span>
+          {%- endif -%}
+        {%- else -%}
+          Calculated at checkout
+        {%- endif -%}
+      </dd>
+    </div>
+    <div class="bf-summary__row bf-summary__row--save" data-savings-row{% if product_savings == 0 %} hidden{% endif %}>
+      <dt>Total savings</dt>
+      <dd data-savings>−{{ product_savings | money }}</dd>
     </div>
   </dl>
 {%- endif -%}

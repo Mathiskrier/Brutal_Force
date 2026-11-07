@@ -30,7 +30,8 @@
   assign text_unlocked = settings.free_shipping_bar_text_unlocked | default: 'Free shipping unlocked — your order ships free'
 -%}
 
-{%- if cart != empty and threshold_cents > 0 -%}
+{%- capture fs_on -%}{%- render 'bf-free-shipping-active' -%}{%- endcapture -%}
+{%- if cart != empty and threshold_cents > 0 and fs_on == 'true' -%}
   <div class="fs-bar{% if remaining_cents == 0 %} is-unlocked{% endif %}">
     <p class="fs-bar__message">
       <span class="fs-bar__icon" aria-hidden="true">{{ 'icon-lucide-truck.svg' | inline_asset_content }}</span>

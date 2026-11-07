@@ -1276,6 +1276,25 @@
     "name": "Free shipping",
     "settings": [
       {
+        "type": "checkbox",
+        "id": "free_shipping_promo_enabled",
+        "label": "Free shipping promo active",
+        "default": true,
+        "info": "Turns ALL free shipping messages on/off together: cart bar, cart summary (FREE + shipping saving), product page box, 3-Pack page. Also end the 'FreeShipping' discount in Shopify when the promo ends."
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_promo_end",
+        "label": "Promo end date (optional, YYYY-MM-DD)",
+        "info": "After this date the free shipping messages switch off automatically."
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_promo_note",
+        "label": "Note next to FREE in the cart",
+        "default": "(limited time)"
+      },
+      {
         "type": "number",
         "id": "free_shipping_threshold",
         "label": "Free shipping threshold",

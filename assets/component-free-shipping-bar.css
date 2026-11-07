@@ -459,3 +459,42 @@
   width: 100%;
   justify-content: space-between;
 }
+
+/* summary v2: Full price / Shipping (real price struck + FREE) / Total savings */
+.bf-summary__row[hidden],
+.bf-summary [hidden] {
+  display: none;
+}
+
+.bf-summary__row--full dd {
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.bf-summary__row--shipping dd {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0 0.6rem;
+}
+
+.bf-summary__ship-was {
+  color: rgba(var(--color-foreground), 0.5);
+  font-weight: 400;
+}
+
+.bf-summary__free {
+  color: rgb(31, 122, 71);
+  font-weight: 600;
+  letter-spacing: 0.04rem;
+}
+
+.bf-summary__note {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.bf-summary__row--shipping.is-free dd {
+  color: inherit;
+  font-weight: 400;
+}

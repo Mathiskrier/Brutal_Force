@@ -83,10 +83,11 @@
   {%- endfor -%}
 {%- endcapture -%}
 
+{%- capture fs_on -%}{%- render 'bf-free-shipping-active' -%}{%- endcapture -%}
 {%- if cart != empty and shown > 0 -%}
   {%- liquid
     assign heading = settings.cart_suggest_heading | default: 'Complete your set'
-    if remaining_cents > 0 and min_price >= remaining_cents and settings.cart_suggest_heading_unlock != blank
+    if fs_on == 'true' and remaining_cents > 0 and min_price >= remaining_cents and settings.cart_suggest_heading_unlock != blank
       assign heading = settings.cart_suggest_heading_unlock
     endif
   -%}

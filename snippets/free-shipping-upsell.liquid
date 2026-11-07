@@ -113,6 +113,13 @@
   if block.settings.bundle_product != blank and block.settings.bundle_product.id == product.id
     assign is_set_page = true
   endif
+  # free shipping promo off: no "FREE shipping over €30" box at all (button price stays)
+  capture fs_on
+    render 'bf-free-shipping-active'
+  endcapture
+  if fs_on != 'true'
+    assign is_set_page = true
+  endif
 -%}
 {%- if is_set_page -%}
   {{ 'component-free-shipping-upsell.css' | asset_url | stylesheet_tag }}
@@ -177,7 +184,7 @@
         # "+ free shipping" only when the set itself reaches the free shipping threshold
         assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
         assign free_shipping_html = ''
-        if bundle_price >= threshold_cents
+        if fs_on == 'true' and bundle_price >= threshold_cents
           assign free_shipping_html = ' + <span class="fs-upsell__set-value">free shipping</span>'
         endif
 

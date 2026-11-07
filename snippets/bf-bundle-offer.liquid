@@ -32,8 +32,11 @@
 
     assign saving = reference_price | minus: bundle_price
     assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+    capture fs_on
+      render 'bf-free-shipping-active'
+    endcapture
     assign ships_free = false
-    if bundle_price >= threshold_cents
+    if fs_on == 'true' and bundle_price >= threshold_cents
       assign ships_free = true
     endif
   -%}

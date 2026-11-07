@@ -1,0 +1,23 @@
+{%- comment -%}
+  Brutalforce: THE free shipping promo switch. Outputs "true" or "false" (no whitespace).
+  Theme settings > Free shipping > "Free shipping promo active" + optional "Promo end date".
+  Everything that claims free shipping reads this: the cart bar, the cart summary (FREE line and
+  the shipping part of Total savings), the footer note, the cart suggestions heading, the product
+  page box and the 3-Pack value block. Switch it off (or let the end date pass) and all of it
+  disappears at once. The Shopify discount "FreeShipping" must be ended in Shopify as well.
+  Usage: {%- capture fs_on -%}{%- render 'bf-free-shipping-active' -%}{%- endcapture -%}
+{%- endcomment -%}
+{%- liquid
+  assign active = false
+  if settings.free_shipping_promo_enabled and settings.free_shipping_threshold != blank
+    assign active = true
+    if settings.free_shipping_promo_end != blank
+      assign today = 'now' | date: '%Y-%m-%d'
+      assign end_date = settings.free_shipping_promo_end | date: '%Y-%m-%d'
+      if end_date != blank and today > end_date
+        assign active = false
+      endif
+    endif
+  endif
+  echo active
+-%}

@@ -68,13 +68,16 @@
                   # Brutalforce: once the cart ships free, don't also say "shipping calculated at checkout"
                   assign bf_threshold = settings.free_shipping_threshold | default: 30 | times: 100
                   assign bf_ships_free = false
-                  if bf_threshold > 0 and cart.items_subtotal_price >= bf_threshold
+                  capture bf_fs_on
+                    render 'bf-free-shipping-active'
+                  endcapture
+                  if bf_fs_on == 'true' and bf_threshold > 0 and cart.items_subtotal_price >= bf_threshold
                     assign bf_ships_free = true
                   endif
                 -%}
                 {%- if bf_ships_free -%}
                   <small class="tax-note caption-large rte">
-                    {%- if cart.taxes_included -%}Taxes included.{%- else -%}Taxes calculated at checkout.{%- endif %} Free shipping is applied automatically at checkout.
+                    {%- if cart.taxes_included -%}Taxes included.{%- else -%}Taxes calculated at checkout.{%- endif -%}
                   </small>
                 {%- else -%}
                 <small class="tax-note caption-large rte">
