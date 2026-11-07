@@ -72,7 +72,14 @@
       </ul>
       {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
         <div class="bf-more__cta-wrap">
-          <a class="bf-more__cta" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+          {%- if section.settings.button_style == 'text' -%}
+            <a class="bf-more__link" href="{{ section.settings.button_link }}">
+              {{- section.settings.button_label | escape -}}
+              <span class="bf-more__link-arrow" aria-hidden="true">→</span>
+            </a>
+          {%- else -%}
+            <a class="bf-more__cta" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+          {%- endif -%}
         </div>
       {%- endif -%}
     </div>
@@ -191,6 +198,37 @@
     color: #fff;
   }
 
+  /* quiet text link alternative ("View the collection →") */
+  .bf-more__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    font-family: var(--font-body-family);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgb(17, 17, 17);
+    text-decoration: underline;
+    text-decoration-thickness: 0.1rem;
+    text-underline-offset: 0.4rem;
+  }
+
+  .bf-more__link-arrow {
+    text-decoration: none;
+    transition: transform 0.15s ease;
+  }
+
+  .bf-more__link:hover .bf-more__link-arrow {
+    transform: translateX(0.3rem);
+  }
+
+  /* phones (2 columns): an odd last card sits centred instead of alone on the left */
+  @media screen and (max-width: 749px) {
+    .bf-more__grid {
+      justify-content: center;
+    }
+  }
+
   @media screen and (min-width: 750px) {
     .bf-more {
       padding-top: var(--bf-more-pt);
@@ -247,6 +285,22 @@
       "type": "url",
       "id": "button_link",
       "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "button",
+          "label": "Outlined button"
+        },
+        {
+          "value": "text",
+          "label": "Small text link with arrow"
+        }
+      ],
+      "default": "button"
     },
     {
       "type": "text",
