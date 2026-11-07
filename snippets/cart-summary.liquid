@@ -1,73 +1,78 @@
 {%- doc -%}
   Brutalforce: order summary above "Estimated total" (cart drawer + cart page).
-    Full price     = sum of each line's compare-at price (or its regular price if it has none) x qty
-    Shipping       = while the free shipping promo applies (snippets/bf-free-shipping-active.liquid
-                     AND the cart reaches the threshold - same test as the bar): the REAL normal
-                     shipping price for this cart and the visitor's country, struck through, + FREE.
-                     That price is looked up from Shopify (assets/cart-summary.js); if it can't be
-                     looked up, only "FREE" shows and no shipping saving is counted.
-                     Otherwise: "Calculated at checkout".
-    Total savings  = (Full price - what the products actually cost) + that real shipping price
-                     (shipping part only while free shipping applies)
+
+    Price          €45,00 (struck)  €43,50   [Save €1,50]
+    Shipping       €4,99 (struck)  FREE
+    Total savings  −€6,49
+
+  - Compare-at total = sum of each line's compare-at price (or its regular price if it has none) x qty
+  - Real total       = cart.total_price (what the products cost)
+  - Product savings  = compare-at total - real total  (items without compare-at add 0)
+  - Shipping         = HARDCODED normal shipping (constant below), shown struck + FREE once the cart
+                       reaches the free shipping amount (same test as the bar). Not read from Shopify.
+                       Below that amount: "Calculated at checkout" and no shipping saving.
+  - Total savings    = product savings + the hardcoded shipping (only when shipping is FREE)
+  To change the normal shipping price, edit NORMAL_SHIPPING_CENTS below (499 = €4,99).
 {%- enddoc -%}
 {%- liquid
-  capture fs_on
-    render 'bf-free-shipping-active'
-  endcapture
+  # --- hardcoded normal shipping price (cents) ---
+  assign NORMAL_SHIPPING_CENTS = 499
 
-  assign full_price = 0
-  assign sig = ''
+  assign compare_total = 0
   for item in cart.items
     assign unit_was = item.original_price
     if item.variant.compare_at_price > unit_was
       assign unit_was = item.variant.compare_at_price
     endif
-    assign full_price = unit_was | times: item.quantity | plus: full_price
-    assign sig = sig | append: item.variant_id | append: 'x' | append: item.quantity | append: '-'
+    assign compare_total = unit_was | times: item.quantity | plus: compare_total
   endfor
-  assign product_savings = full_price | minus: cart.total_price
+  assign real_total = cart.total_price
+  assign product_savings = compare_total | minus: real_total
   if product_savings < 0
     assign product_savings = 0
   endif
 
   assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
   assign ships_free = false
-  if fs_on == 'true' and cart.items_subtotal_price >= threshold_cents
+  if threshold_cents > 0 and cart.items_subtotal_price >= threshold_cents
     assign ships_free = true
   endif
-  assign sig = sig | append: cart.total_price | append: '-' | append: cart.currency.iso_code
+
+  assign total_savings = product_savings
+  if ships_free
+    assign total_savings = product_savings | plus: NORMAL_SHIPPING_CENTS
+  endif
 -%}
 {%- if cart != empty -%}
-  <dl
-    class="bf-summary"
-    data-ship-free="{{ ships_free }}"
-    data-promo="{{ fs_on }}|{{ settings.free_shipping_promo_enabled }}|{{ settings.free_shipping_promo_end }}"
-    data-country="{{ localization.country.iso_code }}"
-    data-product-savings="{{ product_savings }}"
-    data-sig="{{ sig | escape }}"
-    data-money-sample="{{ 123456 | money | escape }}"
-  >
-    <div class="bf-summary__row bf-summary__row--full">
-      <dt>Full price</dt>
-      <dd>{{ full_price | money }}</dd>
-    </div>
-    <div class="bf-summary__row bf-summary__row--shipping{% if ships_free %} is-free{% endif %}">
-      <dt>Shipping</dt>
+  <dl class="bf-summary">
+    <div class="bf-summary__row bf-summary__row--price">
+      <dt>Price</dt>
       <dd>
-        {%- if ships_free -%}
-          <s class="bf-summary__ship-was" data-ship-was hidden></s>
-          <strong class="bf-summary__free">FREE</strong>
-          {%- if settings.free_shipping_promo_note != blank %}
-            <span class="bf-summary__note">{{ settings.free_shipping_promo_note | escape }}</span>
-          {%- endif -%}
-        {%- else -%}
-          Calculated at checkout
+        {%- if product_savings > 0 -%}
+          <s class="bf-summary__was">{{ compare_total | money }}</s>
+        {%- endif -%}
+        <span class="bf-summary__now">{{ real_total | money }}</span>
+        {%- if product_savings > 0 -%}
+          <span class="bf-summary__badge">Save {{ product_savings | money }}</span>
         {%- endif -%}
       </dd>
     </div>
-    <div class="bf-summary__row bf-summary__row--save" data-savings-row{% if product_savings == 0 %} hidden{% endif %}>
-      <dt>Total savings</dt>
-      <dd data-savings>−{{ product_savings | money }}</dd>
+    <div class="bf-summary__row bf-summary__row--shipping">
+      <dt>Shipping</dt>
+      <dd>
+        {%- if ships_free -%}
+          <s class="bf-summary__was">{{ NORMAL_SHIPPING_CENTS | money }}</s>
+          <strong class="bf-summary__free">FREE</strong>
+        {%- else -%}
+          <span class="bf-summary__muted">Calculated at checkout</span>
+        {%- endif -%}
+      </dd>
     </div>
+    {%- if total_savings > 0 -%}
+      <div class="bf-summary__row bf-summary__row--save">
+        <dt>Total savings</dt>
+        <dd>−{{ total_savings | money }}</dd>
+      </div>
+    {%- endif -%}
   </dl>
 {%- endif -%}

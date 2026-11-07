@@ -498,3 +498,48 @@
   color: inherit;
   font-weight: 400;
 }
+
+/* summary v3: Price (struck + real + Save badge) / Shipping €4,99 struck FREE / Total savings */
+.bf-summary__row dd {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.2rem 0.6rem;
+  text-align: right;
+}
+
+.bf-summary__was {
+  color: rgba(var(--color-foreground), 0.5);
+  font-weight: 400;
+}
+
+.bf-summary__now {
+  color: rgb(var(--color-foreground));
+}
+
+.bf-summary__badge {
+  align-self: center;
+  padding: 0.1rem 0.7rem;
+  border-radius: 99rem;
+  background: rgba(47, 143, 87, 0.12);
+  color: rgb(31, 122, 71);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.bf-summary__muted {
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.bf-summary__row--price dt,
+.bf-summary__row--shipping dt {
+  color: rgb(var(--color-foreground));
+}
+
+.bf-summary__row--save dd {
+  color: rgb(31, 122, 71);
+  font-weight: 600;
+}
