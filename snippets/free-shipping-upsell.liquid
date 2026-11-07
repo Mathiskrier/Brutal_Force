@@ -139,5 +139,28 @@
       {{ upsell_rows }}
     </ul>
     <p class="fs-upsell__note hidden" data-fs-note role="status"></p>
+    {%- comment -%} Quiet "go all the way" link to the set (e.g. the 3-Pack); never competes with the rows above {%- endcomment -%}
+    {%- assign bundle = block.settings.bundle_product -%}
+    {%- if bundle != blank and bundle.available and bundle.id != product.id -%}
+      {%- liquid
+        assign bundle_price = bundle.selected_or_first_available_variant.price
+        assign reference_price = 0
+        for item in upsell_collection.products limit: 10
+          assign reference_price = reference_price | plus: item.first_available_variant.price
+        endfor
+        assign bundle_saving = reference_price | minus: bundle_price
+        assign bundle_price_html = bundle_price | money_without_trailing_zeros | prepend: '<strong>' | append: '</strong>'
+        assign bundle_saving_html = bundle_saving | money_without_trailing_zeros | prepend: '<strong>' | append: '</strong>'
+        assign bundle_text = block.settings.bundle_text | default: 'Want all three? Get the set for [price] and save [saving]' | escape
+        if bundle_saving <= 0
+          assign bundle_text = bundle_text | split: ' and save' | first
+        endif
+        assign bundle_text = bundle_text | replace: '[price]', bundle_price_html | replace: '[saving]', bundle_saving_html
+      -%}
+      <a class="fs-upsell__set" href="{{ bundle.url }}">
+        <span>{{ bundle_text }}</span>
+        <span class="fs-upsell__set-arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
+      </a>
+    {%- endif -%}
   </free-shipping-upsell>
 {%- endif -%}

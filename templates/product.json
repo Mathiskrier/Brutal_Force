@@ -66,7 +66,9 @@
             "collection": "ceramic-mugs",
             "heading": "FREE shipping over [threshold]",
             "heading_emphasis": "FREE",
-            "subtext": "Add another mug and skip the delivery fee."
+            "subtext": "Add another mug and skip the delivery fee.",
+            "bundle_product": "happiness-mug-pack",
+            "bundle_text": "Want all three? Get the set for [price] and save [saving]"
           }
         },
         "variant_picker": {
@@ -104,17 +106,6 @@
           "settings": {
             "share_label": "Share with your friends"
           }
-        },
-        "bundle_offer_3pack": {
-          "type": "bundle_offer",
-          "settings": {
-            "product": "happiness-mug-pack",
-            "reference_collection": "ceramic-mugs",
-            "badge": "Best value",
-            "heading": "Can't decide? Get all three.",
-            "subtext": "One for every condition — one for you, one for your crew.",
-            "button_label": "Get the set"
-          }
         }
       },
       "block_order": [
@@ -128,7 +119,6 @@
         "free_shipping_upsell_ceramic",
         "buy_buttons",
         "custom_liquid_YP9TRN",
-        "bundle_offer_3pack",
         "description",
         "share"
       ],
