@@ -21,8 +21,28 @@
         {%- endif -%}
       </h1>
 
-      {%- if section.settings.show_collection_description -%}
+      {%- liquid
+        assign bf_is_renamed = false
+        if section.settings.rename_collection != blank and section.settings.rename_collection.id == collection.id
+          assign bf_is_renamed = true
+        endif
+      -%}
+      {%- if bf_is_renamed and section.settings.rename_intro != blank -%}
+        <p class="collection-hero__description bf-collection-intro">{{ section.settings.rename_intro | escape }}</p>
+      {%- elsif section.settings.show_collection_description -%}
         <div class="collection-hero__description rte">{{ collection.description }}</div>
+      {%- endif -%}
+      {%- if bf_is_renamed and section.settings.rename_hide_sections != blank -%}
+        {%- comment -%} Brutalforce: on this collection only, hide other template sections (e.g. trust band, review carousel) {%- endcomment -%}
+        {%- assign bf_hide = section.settings.rename_hide_sections | split: ',' -%}
+        <style>
+          {%- for key in bf_hide -%}
+            {%- assign k = key | strip -%}
+            {%- if k != blank -%}[id$="__{{ k }}"]{% unless forloop.last %},{% endunless %}{%- endif -%}
+          {%- endfor -%}
+          { display: none !important; }
+          .bf-collection-intro { max-width: 60rem; margin-top: 1rem; font-size: 1.6rem; line-height: 1.55; color: rgba(var(--color-foreground), 0.75); }
+        </style>
       {%- endif -%}
     </div>
 
@@ -90,6 +110,17 @@
       "id": "rename_title",
       "label": "Heading",
       "info": "Only the heading on the page changes; the collection name in Shopify stays."
+    },
+    {
+      "type": "text",
+      "id": "rename_intro",
+      "label": "Intro line (this collection only)"
+    },
+    {
+      "type": "text",
+      "id": "rename_hide_sections",
+      "label": "Hide these sections on this collection",
+      "info": "Advanced: section IDs from the template, comma separated."
     }
   ]
 }
