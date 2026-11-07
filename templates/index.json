@@ -58,20 +58,10 @@
           "settings": {
             "text": "<h2><strong>You’re here for a </strong><em><strong>reason</strong></em><strong>. <br/>The wind brought you.</strong></h2>"
           }
-        },
-        "text_short": {
-          "type": "text",
-          "settings": {
-            "text": "<p>People outside the sport won’t get it.<br/><strong>But riders do.</strong> One look, one smile — same language.</p>"
-          }
         }
       },
       "block_order": [
-        "text_wKPTLW",
-        "text_short"
-      ],
-      "custom_css": [
-        "p {font-size: 2rem;}"
+        "text_wKPTLW"
       ],
       "name": "t:sections.rich-text.presets.name",
       "settings": {
@@ -321,7 +311,8 @@
         "color_scheme": "",
         "padding_top": 24,
         "padding_bottom": 48
-      }
+      },
+      "disabled": true
     },
     "rich_text_7QPYzE": {
       "type": "rich-text",
@@ -559,11 +550,24 @@
         "padding_top": 36,
         "padding_bottom": 48
       }
+    },
+    "founder_quote": {
+      "type": "bf-founder-quote",
+      "settings": {
+        "quote": "This isn’t just a mug. It’s made to <strong>put a smile on your face</strong> — to bring a piece of our passion into everyday life, on the days we forget what we’re really living for.",
+        "alt": "Mathis, founder of Brutal Force, kitesurfing",
+        "name": "Mathis",
+        "role": "Founder, Brutal Force",
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 72
+      }
     }
   },
   "order": [
     "image_banner_4ciQib",
     "rich_text_tVkgY9",
+    "founder_quote",
     "image_with_text_hjFL6p",
     "rich_text_bRQeXb",
     "rich_text_WbaRc3",

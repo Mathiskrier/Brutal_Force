@@ -1,0 +1,252 @@
+{%- comment -%}
+  Brutalforce: founder quote (home page).
+  Quote first (the hero of the section), then a medium photo of the founder, then a small attribution.
+  The photo uses the editor image if one is picked, otherwise the pre-compressed theme assets
+  "founder-mathis-600/900/1200.webp" + "founder-mathis-900.jpg". Always lazy-loaded.
+  Typographic quotation marks are added around the quote automatically.
+{%- endcomment -%}
+<div
+  class="bf-founder color-{{ section.settings.color_scheme }} gradient"
+  style="--bf-founder-pt: {{ section.settings.padding_top }}px; --bf-founder-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <figure class="page-width bf-founder__inner">
+    {%- if section.settings.quote != blank -%}
+      <blockquote class="bf-founder__quote">
+        <p>{{ section.settings.quote }}</p>
+      </blockquote>
+    {%- endif -%}
+
+    <div class="bf-founder__photo">
+      {%- if section.settings.image != blank -%}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            loading: 'lazy',
+            decoding: 'async',
+            widths: '400, 600, 800, 1000, 1200',
+            sizes: '(min-width: 750px) 560px, calc(100vw - 3rem)',
+            alt: section.settings.alt,
+            class: 'bf-founder__img'
+        }}
+      {%- else -%}
+        <picture>
+          <source
+            type="image/webp"
+            srcset="{{ 'founder-mathis-600.webp' | asset_url }} 600w, {{ 'founder-mathis-900.webp' | asset_url }} 900w, {{ 'founder-mathis-1200.webp' | asset_url }} 1200w"
+            sizes="(min-width: 750px) 560px, calc(100vw - 3rem)"
+          >
+          <img
+            src="{{ 'founder-mathis-900.jpg' | asset_url }}"
+            alt="{{ section.settings.alt | escape }}"
+            width="1200"
+            height="900"
+            loading="lazy"
+            decoding="async"
+            class="bf-founder__img"
+          >
+        </picture>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.name != blank or section.settings.role != blank -%}
+      <figcaption class="bf-founder__caption">
+        {%- if section.settings.name != blank -%}
+          <span class="bf-founder__name">{{ section.settings.name | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.name != blank and section.settings.role != blank %} — {% endif -%}
+        {%- if section.settings.role != blank -%}
+          <span class="bf-founder__role">{{ section.settings.role | escape }}</span>
+        {%- endif -%}
+      </figcaption>
+    {%- endif -%}
+  </figure>
+</div>
+
+{% style %}
+  .bf-founder {
+    padding-top: calc(var(--bf-founder-pt) * 0.7);
+    padding-bottom: calc(var(--bf-founder-pb) * 0.7);
+  }
+
+  .bf-founder__inner {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bf-founder__quote {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    max-width: 76rem;
+  }
+
+  .bf-founder__quote p {
+    margin: 0;
+    font-family: var(--font-body-family);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 2.2rem;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    color: rgb(var(--color-foreground));
+    text-wrap: balance;
+  }
+
+  /* typographic quotation marks in the brand (heading) font */
+  .bf-founder__quote p::before,
+  .bf-founder__quote p::after {
+    font-family: var(--font-heading-family);
+    font-style: var(--font-heading-style);
+    font-weight: var(--font-heading-weight);
+    font-size: 1.15em;
+    line-height: 0;
+    color: rgb(var(--color-foreground));
+  }
+
+  .bf-founder__quote p::before {
+    content: '“';
+    margin-right: 0.08em;
+  }
+
+  .bf-founder__quote p::after {
+    content: '”';
+    margin-left: 0.06em;
+  }
+
+  /* a soft marker line under the emphasised words (bold in the editor) */
+  .bf-founder__quote strong {
+    font-weight: inherit;
+    background: linear-gradient(transparent 62%, rgba(252, 228, 119, 0.85) 62%, rgba(252, 228, 119, 0.85) 92%, transparent 92%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .bf-founder__photo {
+    width: 100%;
+    max-width: 56rem;
+    margin-top: 3.2rem;
+    border-radius: 1.6rem;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: rgba(var(--color-foreground), 0.04);
+  }
+
+  .bf-founder__photo picture,
+  .bf-founder__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bf-founder__caption {
+    margin-top: 1.4rem;
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    color: rgba(var(--color-foreground), 0.62);
+  }
+
+  .bf-founder__name {
+    font-weight: 600;
+    color: rgb(var(--color-foreground));
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-founder {
+      padding-top: var(--bf-founder-pt);
+      padding-bottom: var(--bf-founder-pb);
+    }
+
+    .bf-founder__quote p {
+      font-size: 3rem;
+      line-height: 1.4;
+    }
+
+    .bf-founder__photo {
+      margin-top: 4.8rem;
+    }
+
+    .bf-founder__caption {
+      margin-top: 1.8rem;
+      font-size: 1.5rem;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Founder quote",
+  "tag": "section",
+  "class": "section bf-founder-section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "quote",
+      "label": "Quote",
+      "info": "Quotation marks are added automatically. Bold words get a soft yellow marker line.",
+      "default": "This isn’t just a mug. It’s made to <strong>put a smile on your face</strong> — to bring a piece of our passion into everyday life, on the days we forget what we’re really living for."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Photo",
+      "info": "Optional. Without a photo, the founder photo stored in the theme is used. Landscape 4:3 works best."
+    },
+    {
+      "type": "text",
+      "id": "alt",
+      "label": "Photo description (alt text)",
+      "default": "Mathis, founder of Brutal Force, kitesurfing"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "Name",
+      "default": "Mathis"
+    },
+    {
+      "type": "text",
+      "id": "role",
+      "label": "Role",
+      "default": "Founder, Brutal Force"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Space above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Space below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "Founder quote"
+    }
+  ]
+}
+{% endschema %}
