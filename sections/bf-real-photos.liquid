@@ -25,7 +25,9 @@
   <div class="page-width">
     <div class="bf-wild__header">
       {%- if section.settings.heading != blank -%}
-        <h2 class="bf-wild__heading">{{ section.settings.heading | escape }}</h2>
+        <h2 class="bf-wild__heading{% if section.settings.heading_font == 'brand' %} bf-wild__heading--brand h1{% endif %}">
+          {{- section.settings.heading | escape -}}
+        </h2>
       {%- endif -%}
       {%- if section.settings.text != blank -%}
         <p class="bf-wild__text">{{ section.settings.text | escape }}</p>
@@ -121,6 +123,16 @@
     font-size: 2.4rem;
     line-height: 1.25;
     letter-spacing: -0.01em;
+  }
+
+  /* brand heading font (bold italic display font, like the other home section titles) */
+  .bf-wild__heading--brand {
+    font-family: var(--font-heading-family);
+    font-style: var(--font-heading-style);
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--font-heading-scale) * 3rem);
+    line-height: 1.3;
+    letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
   }
 
   .bf-wild__text {
@@ -286,6 +298,10 @@
       font-size: 2.8rem;
     }
 
+    .bf-wild__heading--brand {
+      font-size: calc(var(--font-heading-scale) * 4rem);
+    }
+
     .bf-wild__text {
       font-size: 1.6rem;
     }
@@ -353,6 +369,22 @@
       "id": "heading",
       "label": "Heading",
       "default": "Out in the wild"
+    },
+    {
+      "type": "select",
+      "id": "heading_font",
+      "label": "Heading font",
+      "options": [
+        {
+          "value": "body",
+          "label": "Clean (body font)"
+        },
+        {
+          "value": "brand",
+          "label": "Brand (bold italic heading font)"
+        }
+      ],
+      "default": "body"
     },
     {
       "type": "text",
