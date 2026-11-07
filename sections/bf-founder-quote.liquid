@@ -2,7 +2,7 @@
   Brutalforce: founder quote (home page).
   Quote first (the hero of the section), then a medium photo of the founder, then a small attribution.
   The photo uses the editor image if one is picked, otherwise the pre-compressed theme assets
-  "founder-mathis-600/900/1200.webp" + "founder-mathis-900.jpg". Always lazy-loaded (below the fold).
+  "founder-mathis-sq-400/600/800.webp" + "founder-mathis-sq-600.jpg" (square, shown as a circle). Always lazy-loaded (below the fold).
   Typographic quotation marks are added around the quote automatically.
 {%- endcomment -%}
 <div
@@ -24,8 +24,8 @@
           | image_tag:
             loading: 'lazy',
             decoding: 'async',
-            widths: '400, 600, 800, 1000, 1200',
-            sizes: '(min-width: 750px) 560px, calc(100vw - 3rem)',
+            widths: '300, 400, 600, 800',
+            sizes: '(min-width: 750px) 240px, 200px',
             alt: section.settings.alt,
             class: 'bf-founder__img'
         }}
@@ -33,14 +33,14 @@
         <picture>
           <source
             type="image/webp"
-            srcset="{{ 'founder-mathis-600.webp' | asset_url }} 600w, {{ 'founder-mathis-900.webp' | asset_url }} 900w, {{ 'founder-mathis-1200.webp' | asset_url }} 1200w"
-            sizes="(min-width: 750px) 560px, calc(100vw - 3rem)"
+            srcset="{{ 'founder-mathis-sq-400.webp' | asset_url }} 400w, {{ 'founder-mathis-sq-600.webp' | asset_url }} 600w, {{ 'founder-mathis-sq-800.webp' | asset_url }} 800w"
+            sizes="(min-width: 750px) 240px, 200px"
           >
           <img
-            src="{{ 'founder-mathis-900.jpg' | asset_url }}"
+            src="{{ 'founder-mathis-sq-600.jpg' | asset_url }}"
             alt="{{ section.settings.alt | escape }}"
-            width="1200"
-            height="900"
+            width="600"
+            height="600"
             loading="lazy"
             decoding="async"
             class="bf-founder__img"
@@ -54,7 +54,6 @@
         {%- if section.settings.name != blank -%}
           <span class="bf-founder__name">{{ section.settings.name | escape }}</span>
         {%- endif -%}
-        {%- if section.settings.name != blank and section.settings.role != blank %} — {% endif -%}
         {%- if section.settings.role != blank -%}
           <span class="bf-founder__role">{{ section.settings.role | escape }}</span>
         {%- endif -%}
@@ -126,12 +125,12 @@
   }
 
   .bf-founder__photo {
-    width: 100%;
-    max-width: 56rem;
+    width: 20rem;
+    max-width: 100%;
     margin-top: 3.2rem;
-    border-radius: 1.6rem;
+    border-radius: 50%;
     overflow: hidden;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     background: rgba(var(--color-foreground), 0.04);
   }
 
@@ -143,18 +142,27 @@
     object-fit: cover;
   }
 
+  /* name on its own line, role small and quiet underneath */
   .bf-founder__caption {
-    margin-top: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    margin-top: 1.6rem;
     font-family: var(--font-body-family);
-    font-size: 1.4rem;
     line-height: 1.4;
-    letter-spacing: 0.02em;
-    color: rgba(var(--color-foreground), 0.62);
   }
 
   .bf-founder__name {
+    font-size: 1.7rem;
     font-weight: 600;
     color: rgb(var(--color-foreground));
+  }
+
+  .bf-founder__role {
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+    color: rgba(var(--color-foreground), 0.6);
   }
 
   @media screen and (min-width: 750px) {
@@ -169,12 +177,20 @@
     }
 
     .bf-founder__photo {
-      margin-top: 4.8rem;
+      width: 24rem;
+      margin-top: 4rem;
     }
 
     .bf-founder__caption {
       margin-top: 1.8rem;
-      font-size: 1.5rem;
+    }
+
+    .bf-founder__name {
+      font-size: 1.8rem;
+    }
+
+    .bf-founder__role {
+      font-size: 1.4rem;
     }
   }
 {% endstyle %}
@@ -196,7 +212,7 @@
       "type": "image_picker",
       "id": "image",
       "label": "Photo",
-      "info": "Optional. Without a photo, the founder photo stored in the theme is used. Landscape 4:3 works best."
+      "info": "Optional. Without a photo, the founder photo stored in the theme is used. Shown as a circle; a square photo with the face in the middle works best."
     },
     {
       "type": "text",
