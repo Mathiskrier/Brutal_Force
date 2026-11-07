@@ -158,8 +158,7 @@
         assign bundle_text = bundle_text | replace: '[price]', bundle_price_html | replace: '[saving]', bundle_saving_html
       -%}
       <a class="fs-upsell__set" href="{{ bundle.url }}">
-        <span>{{ bundle_text }}</span>
-        <span class="fs-upsell__set-arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
+        <span class="fs-upsell__set-text">{{ bundle_text }}&nbsp;<span class="fs-upsell__set-arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span></span>
       </a>
     {%- endif -%}
   </free-shipping-upsell>
