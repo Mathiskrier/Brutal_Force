@@ -168,8 +168,22 @@
                       style="--animation-order: {{ forloop.index }};"
                     {% endif %}
                   >
+                    {%- liquid
+                      # Brutalforce: sorting badge (Badge blocks), same system as the product page row
+                      assign bf_badge = ''
+                      assign bf_badge_style = 'yellow'
+                      for b in section.blocks
+                        if b.type == 'badge' and b.settings.product != blank and b.settings.product.id == product.id and b.settings.label != blank
+                          assign bf_badge = b.settings.label
+                          assign bf_badge_style = b.settings.style
+                        endif
+                      endfor
+                    -%}
                     {% render 'card-product',
                       card_product: product,
+                      custom_badge: bf_badge,
+                      custom_badge_style: bf_badge_style,
+                      hide_sale_badge: section.settings.hide_sale_badges,
                       media_aspect_ratio: section.settings.image_ratio,
                       image_shape: section.settings.image_shape,
                       show_secondary_image: section.settings.show_secondary_image,
@@ -184,6 +198,50 @@
                   </li>
                   {%- assign skip_card_product_styles = true -%}
                 {%- endfor -%}
+                {%- liquid
+                  # Brutalforce: show an extra product (e.g. the 3-Pack) at the end of one collection,
+                  # without adding it to that collection in Shopify
+                  assign bf_extra = section.settings.extra_product
+                  assign bf_show_extra = false
+                  if bf_extra != blank and bf_extra.available and section.settings.extra_on_collection != blank and section.settings.extra_on_collection.id == collection.id and paginate.current_page == paginate.pages
+                    assign bf_show_extra = true
+                    for p in collection.products
+                      if p.id == bf_extra.id
+                        assign bf_show_extra = false
+                      endif
+                    endfor
+                  endif
+                  assign bf_badge = ''
+                  assign bf_badge_style = 'yellow'
+                  for b in section.blocks
+                    if b.type == 'badge' and b.settings.product != blank and b.settings.product.id == bf_extra.id and b.settings.label != blank
+                      assign bf_badge = b.settings.label
+                      assign bf_badge_style = b.settings.style
+                    endif
+                  endfor
+                -%}
+                {%- if bf_show_extra -%}
+                  <li class="grid__item">
+                    {% render 'card-product',
+                      card_product: bf_extra,
+                      custom_badge: bf_badge,
+                      custom_badge_style: bf_badge_style,
+                      hide_sale_badge: section.settings.hide_sale_badges,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      image_shape: section.settings.image_shape,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      lazy_load: true,
+                      skip_styles: true,
+                      quick_add: section.settings.quick_add,
+                      section_id: section.id,
+                      product_view_context: 'collection'
+                    %}
+                  </li>
+                  {%- comment -%} the theme's "x products" count doesn't know about the extra card {%- endcomment -%}
+                  <style>#ProductCount, #ProductCountDesktop, .product-count { display: none; }</style>
+                {%- endif -%}
               </ul>
 
               {%- if paginate.pages > 1 -%}
@@ -409,6 +467,71 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Brutalforce"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_sale_badges",
+      "label": "Hide sale badges (e.g. BLACKWEEK)",
+      "default": false,
+      "info": "The crossed-out price still shows."
+    },
+    {
+      "type": "product",
+      "id": "extra_product",
+      "label": "Extra product at the end of a collection",
+      "info": "e.g. the 3-Pack on the Mugs collection, without adding it to the collection."
+    },
+    {
+      "type": "collection",
+      "id": "extra_on_collection",
+      "label": "Show the extra product on this collection"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Badge",
+          "default": "Most popular"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Colour",
+          "options": [
+            {
+              "value": "yellow",
+              "label": "Yellow (deal / value)"
+            },
+            {
+              "value": "black",
+              "label": "Black (bestseller)"
+            },
+            {
+              "value": "outline",
+              "label": "Outline (category)"
+            },
+            {
+              "value": "charcoal",
+              "label": "Charcoal"
+            }
+          ],
+          "default": "black"
+        }
+      ]
     }
   ]
 }

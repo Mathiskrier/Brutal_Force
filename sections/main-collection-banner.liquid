@@ -14,7 +14,11 @@
     <div class="collection-hero__text-wrapper">
       <h1 class="collection-hero__title">
         <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
-        {{- collection.title | escape -}}
+        {%- if section.settings.rename_collection != blank and section.settings.rename_collection.id == collection.id and section.settings.rename_title != blank -%}
+          {{- section.settings.rename_title | escape -}}
+        {%- else -%}
+          {{- collection.title | escape -}}
+        {%- endif -%}
       </h1>
 
       {%- if section.settings.show_collection_description -%}
@@ -71,6 +75,21 @@
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Brutalforce"
+    },
+    {
+      "type": "collection",
+      "id": "rename_collection",
+      "label": "Show a different heading on this collection"
+    },
+    {
+      "type": "text",
+      "id": "rename_title",
+      "label": "Heading",
+      "info": "Only the heading on the page changes; the collection name in Shopify stays."
     }
   ]
 }
