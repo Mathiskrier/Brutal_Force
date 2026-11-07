@@ -639,3 +639,154 @@
     overscroll-behavior: contain;
   }
 }
+
+/* ==================================================================
+   Brutalforce: compact cart (drawer + cart page) - spacing only
+   ================================================================== */
+
+/* drawer header */
+.cart-drawer .drawer__header {
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+}
+
+/* 1. cart lines: tighter rows, less air between items */
+.cart-drawer .cart-items td {
+  padding-top: 1.1rem;
+}
+
+.cart-drawer .cart-item {
+  row-gap: 0.6rem;
+}
+
+.cart-drawer .cart-item:last-child {
+  margin-bottom: 0.8rem;
+}
+
+.cart-drawer .cart-items thead th {
+  padding-bottom: 0.4rem;
+}
+
+.cart-item .cart-item__details > * + * {
+  margin-top: 0.3rem;
+}
+
+.cart-item .cart-item__name {
+  line-height: 1.3;
+}
+
+@media screen and (max-width: 749px) {
+  .cart-items .cart-item {
+    gap: 0.6rem 1rem;
+    margin-bottom: 1.8rem;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  #main-cart-items .cart-items td {
+    padding-top: 2.4rem;
+  }
+}
+
+/* 2. free shipping bar: same frame + progress, less padding, one line where it fits */
+.fs-bar {
+  padding: 0.9rem 1.2rem 1rem;
+}
+
+.drawer__inner .fs-bar {
+  margin-bottom: 1rem;
+}
+
+.fs-bar__message {
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.3rem;
+  line-height: 1.35;
+  letter-spacing: 0.01rem;
+}
+
+.fs-bar__icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.fs-bar.is-unlocked {
+  padding-top: 0.8rem;
+  padding-bottom: 0.9rem;
+}
+
+.fs-bar.is-unlocked .fs-bar__message {
+  margin-bottom: 0.6rem;
+}
+
+/* 3. summary: Price / Shipping / You save as one tight group */
+.bf-summary {
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.bf-summary__row {
+  line-height: 1.4;
+}
+
+.bf-summary__row + .bf-summary__row {
+  margin-top: 0.2rem;
+}
+
+.bf-summary__row--save {
+  margin-top: 0.4rem;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* footer spacing */
+.cart-drawer .drawer__footer {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.cart-drawer__footer > * + * {
+  margin-top: 0.6rem;
+}
+
+.cart-drawer .tax-note {
+  margin: 0.6rem 0 1rem auto;
+}
+
+.cart-drawer .cart__dynamic-checkout-buttons {
+  margin-top: 0.8rem;
+}
+
+/* 4. suggestions + trust band: less padding */
+.bf-suggest {
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem 0.2rem;
+}
+
+.bf-suggest__heading {
+  margin-bottom: 0.1rem;
+}
+
+.bf-suggest__item {
+  padding: 0.45rem 0;
+}
+
+.bf-trust {
+  margin-top: 0.8rem;
+  padding: 0.7rem 1rem;
+}
+
+.bf-trust__line + .bf-trust__line {
+  margin-top: 0.3rem;
+}
+
+@media screen and (max-width: 749px) {
+  .bf-suggest__item {
+    grid-template-columns: 3.6rem minmax(0, 1fr) auto;
+  }
+
+  .bf-suggest__media {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+}
