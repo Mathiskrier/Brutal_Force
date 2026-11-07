@@ -300,3 +300,69 @@
     font-size: 1.25rem;
   }
 }
+
+/* ------------------------------------------------------------------
+   Brutalforce: calmer cart lines (drawer + cart page)
+   ------------------------------------------------------------------ */
+
+/* 1. compact, quiet quantity stepper */
+.cart-item .quantity {
+  width: 9.6rem;
+  min-height: 3.2rem;
+}
+
+.cart-item .quantity:after {
+  box-shadow: 0 0 0 0.1rem rgba(var(--color-foreground), 0.18);
+  border-radius: 0.6rem;
+}
+
+.cart-item .quantity__button {
+  width: 3rem;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.cart-item .quantity__button .svg-wrapper {
+  width: 0.9rem;
+}
+
+.cart-item .quantity__input {
+  font-size: 1.3rem;
+  font-weight: 500;
+  opacity: 1;
+  padding: 0;
+}
+
+.cart-item cart-remove-button .button {
+  min-width: 3.2rem;
+  min-height: 3.2rem;
+  color: rgba(var(--color-foreground), 0.55);
+}
+
+.cart-item cart-remove-button .button:hover {
+  color: rgb(var(--color-foreground));
+}
+
+.cart-item cart-remove-button .svg-wrapper {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.cart-item cart-remove-button {
+  margin-left: 0.4rem;
+}
+
+/* 2. line-item titles: body font, smaller, lighter (secondary to the price) */
+.cart-item .cart-item__name.h4,
+.cart-item .cart-item__name {
+  font-family: var(--font-body-family);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.4rem;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.cart-item .cart-item__details .product-option,
+.cart-item .cart-item__details .cart-item__discounted-prices {
+  font-size: 1.3rem;
+}
