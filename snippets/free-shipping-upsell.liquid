@@ -105,7 +105,28 @@
   {%- endfor -%}
 {%- endcapture -%}
 
-{%- if shown > 0 -%}
+{%- liquid
+  # On the set's own page (e.g. the 3-Pack) the box is not shown: the set already ships free and
+  # "add another mug" makes no sense there. The element stays (hidden, empty) so the main button
+  # still reads "Add to cart · €46,00".
+  assign is_set_page = false
+  if block.settings.bundle_product != blank and block.settings.bundle_product.id == product.id
+    assign is_set_page = true
+  endif
+-%}
+{%- if is_set_page -%}
+  {{ 'component-free-shipping-upsell.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'free-shipping-upsell.js' | asset_url }}" defer="defer"></script>
+  <free-shipping-upsell
+    class="fs-upsell"
+    id="FreeShippingUpsell-{{ section_id }}"
+    data-section-id="{{ section_id }}"
+    data-seed="{{ seed_cents }}"
+    data-money-format="{{ shop.money_format | escape }}"
+    hidden
+    {{ block.shopify_attributes }}
+  ></free-shipping-upsell>
+{%- elsif shown > 0 -%}
   {{ 'component-free-shipping-upsell.css' | asset_url | stylesheet_tag }}
   <script src="{{ 'free-shipping-upsell.js' | asset_url }}" defer="defer"></script>
 

@@ -1,0 +1,151 @@
+{%- doc -%}
+  Brutalforce: price area of a set's own product page (e.g. the 3-Pack), rendered instead of the
+  normal price block (see sections/main-product.liquid, bf_bundle_page).
+  Reference price = sum of the products in the reference collection (3 x single mug), so the
+  crossed-out price and the saving are always correct, whatever the set's compare-at price says.
+
+  @param {product} product - The set product being viewed
+  @param {collection} reference_collection - What the set contains (e.g. Ceramic Mugs)
+{%- enddoc -%}
+{%- liquid
+  assign set_price = product.selected_or_first_available_variant.price
+  assign reference_price = 0
+  for item in reference_collection.products limit: 10
+    assign reference_price = reference_price | plus: item.first_available_variant.price
+  endfor
+  assign saving = reference_price | minus: set_price
+  assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
+  assign ships_free = false
+  if set_price >= threshold_cents
+    assign ships_free = true
+  endif
+-%}
+<div class="bf-value">
+  <div class="bf-value__prices">
+    {%- if saving > 0 -%}
+      <s class="bf-value__compare">
+        <span class="visually-hidden">Price if bought separately</span>
+        {%- if settings.currency_code_enabled -%}
+          {{- reference_price | money_with_currency -}}
+        {%- else -%}
+          {{- reference_price | money -}}
+        {%- endif -%}
+      </s>
+    {%- endif -%}
+    <span class="bf-value__price">
+      {%- if saving > 0 -%}<span class="visually-hidden">Set price</span>{%- endif -%}
+      {%- if settings.currency_code_enabled -%}
+        {{- set_price | money_with_currency -}}
+      {%- else -%}
+        {{- set_price | money -}}
+      {%- endif -%}
+    </span>
+    <span class="bf-value__badge">Best value</span>
+  </div>
+
+  {%- if cart.taxes_included -%}
+    <p class="bf-value__tax">{{ 'products.product.taxes_included' | t }}</p>
+  {%- endif -%}
+
+  {%- if saving > 0 or ships_free -%}
+    <p class="bf-value__saving">
+      <span class="bf-value__saving-icon" aria-hidden="true">{{- 'icon-lucide-check.svg' | inline_asset_content -}}</span>
+      <span>
+        {%- if saving > 0 -%}Save {{ saving | money }}{%- endif -%}
+        {%- if saving > 0 and ships_free %} + {% endif -%}
+        {%- if ships_free -%}{%- if saving > 0 -%}free shipping{%- else -%}Free shipping{%- endif -%}{%- endif -%}
+      </span>
+    </p>
+  {%- endif -%}
+
+  <p class="bf-value__pitch">Three mugs, three forecasts — one for every condition. The best-value way to get the full set.</p>
+</div>
+
+{%- style -%}
+  .bf-value {
+    margin: 0.2rem 0 0.4rem;
+  }
+
+  .bf-value__prices {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+  }
+
+  .bf-value__compare {
+    font-size: 1.5rem;
+    color: rgba(var(--color-foreground), 0.5);
+  }
+
+  .bf-value__price {
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: rgb(var(--color-foreground));
+  }
+
+  .bf-value__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 1rem;
+    border-radius: 0.4rem;
+    background: #fce477;
+    color: rgb(18, 18, 18);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .bf-value__tax {
+    margin: 0.2rem 0 0;
+    font-size: 1.1rem;
+    color: rgba(var(--color-foreground), 0.6);
+  }
+
+  .bf-value__saving {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 1.2rem 0 0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 99rem;
+    background: rgba(47, 143, 87, 0.12);
+    color: rgb(31, 122, 71);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .bf-value__saving-icon {
+    display: inline-flex;
+    flex: none;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .bf-value__saving-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 2.5;
+  }
+
+  .bf-value__pitch {
+    margin: 1.2rem 0 0;
+    font-size: 1.5rem;
+    line-height: 1.55;
+    color: rgba(var(--color-foreground), 0.75);
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-value__price {
+      font-size: 2.4rem;
+    }
+
+    .bf-value__compare {
+      font-size: 1.6rem;
+    }
+  }
+{%- endstyle -%}

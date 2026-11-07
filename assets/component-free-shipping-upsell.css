@@ -11,6 +11,10 @@
   background: rgba(var(--fs-tint), 0.07);
 }
 
+.fs-upsell[hidden] {
+  display: none;
+}
+
 .fs-upsell__header {
   display: flex;
   align-items: flex-start;
