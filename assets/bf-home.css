@@ -31,7 +31,7 @@
 }
 
 /* quiet proof line right under the button */
-[id$="__image_banner_4ciQib"] .banner__buttons + .banner__text {
+[id$="__image_banner_4ciQib"] .banner__proof {
   margin-top: 1.2rem;
   font-family: var(--font-body-family);
   font-size: 1.3rem;
@@ -41,9 +41,7 @@
   text-shadow: 0 0.1rem 1rem rgba(0, 0, 0, 0.45);
 }
 
-[id$="__image_banner_4ciQib"] .banner__buttons + .banner__text p {
-  margin: 0;
-}
+
 
 @media screen and (max-width: 749px) {
   [id$="__image_banner_4ciQib"] .banner__heading + .banner__text {
@@ -60,7 +58,7 @@
     min-width: 18rem;
   }
 
-  [id$="__image_banner_4ciQib"] .banner__buttons + .banner__text {
+  [id$="__image_banner_4ciQib"] .banner__proof {
     font-size: 1.25rem;
     margin-top: 1rem;
   }

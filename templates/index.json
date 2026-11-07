@@ -25,22 +25,15 @@
             "button_style_secondary_1": false,
             "button_label_2": "",
             "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        },
-        "text_proof": {
-          "type": "text",
-          "settings": {
-            "text": "Already loved by 700+ riders",
-            "text_style": "body"
+            "button_style_secondary_2": false,
+            "below_text": "Already loved by 700+ riders"
           }
         }
       },
       "block_order": [
         "heading_fVHKkX",
         "text_GaQBdW",
-        "buttons_rQmKFj",
-        "text_proof"
+        "buttons_rQmKFj"
       ],
       "name": "t:sections.image-banner.presets.name",
       "settings": {
