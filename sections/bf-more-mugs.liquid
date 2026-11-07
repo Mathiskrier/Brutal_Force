@@ -80,15 +80,22 @@
 
   /* Set card: same card, but clearly "the set": badge + soft yellow frame */
   .bf-more__item--set .card-wrapper {
-    border-radius: calc(var(--card-corner-radius) + 0.4rem);
-    box-shadow: 0 0 0 0.2rem #fce477;
-    background: rgba(252, 228, 119, 0.12);
+    height: 100%;
+    padding: 0.6rem 0.6rem 0.8rem;
+    border-radius: 1.2rem;
+    box-shadow: inset 0 0 0 0.15rem #fce477;
+    background: rgba(252, 228, 119, 0.14);
+  }
+
+  .bf-more__item--set .card__inner,
+  .bf-more__item--set .card__media {
+    border-radius: 0.8rem;
+    overflow: hidden;
   }
 
   .bf-more__item--set .card__content {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 1rem;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
   }
 
   .bf-badge--value {
