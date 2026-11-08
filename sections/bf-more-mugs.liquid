@@ -25,8 +25,17 @@
 {%- if shown > 0 -%}
   <div class="bf-more color-{{ section.settings.color_scheme }} gradient" style="--bf-more-pt: {{ section.settings.padding_top }}px; --bf-more-pb: {{ section.settings.padding_bottom }}px;">
     <div class="page-width">
-      {%- if section.settings.heading != blank -%}
-        <h2 class="bf-more__heading">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+        <div class="bf-more__header">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="bf-more__heading{% if section.settings.heading_font == 'brand' %} bf-more__heading--brand h1{% endif %}">
+              {{- section.settings.heading | escape -}}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.subheading != blank -%}
+            <p class="bf-more__sub">{{ section.settings.subheading | escape }}</p>
+          {%- endif -%}
+        </div>
       {%- endif -%}
       <ul class="grid product-grid grid--{{ columns }}-col-desktop grid--2-col-tablet-down bf-more__grid" role="list">
         {%- assign skip_styles = false -%}
@@ -90,6 +99,36 @@
   .bf-more {
     padding-top: calc(var(--bf-more-pt) * 0.75);
     padding-bottom: calc(var(--bf-more-pb) * 0.75);
+  }
+
+  .bf-more__header {
+    max-width: 64rem;
+    margin: 0 auto 2.4rem;
+    text-align: center;
+  }
+
+  .bf-more__header .bf-more__heading {
+    margin-bottom: 0;
+  }
+
+  /* brand heading font (bold italic display font, like the other home section titles) */
+  .bf-more__heading--brand {
+    font-family: var(--font-heading-family);
+    font-style: var(--font-heading-style);
+    font-weight: var(--font-heading-weight);
+    font-size: calc(var(--font-heading-scale) * 3rem);
+    line-height: 1.25;
+    letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
+    text-wrap: balance;
+  }
+
+  .bf-more__sub {
+    margin: 1rem 0 0;
+    font-family: var(--font-body-family);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    color: rgba(var(--color-foreground), 0.65);
+    text-wrap: balance;
   }
 
   .bf-more__heading {
@@ -239,6 +278,19 @@
       margin-bottom: 3.2rem;
       font-size: 2.8rem;
     }
+
+    .bf-more__header {
+      margin-bottom: 4rem;
+    }
+
+    .bf-more__heading--brand {
+      font-size: calc(var(--font-heading-scale) * 4rem);
+    }
+
+    .bf-more__sub {
+      margin-top: 1.2rem;
+      font-size: 1.8rem;
+    }
   }
 {% endstyle %}
 
@@ -253,6 +305,21 @@
       "id": "heading",
       "label": "Heading",
       "default": "Didn't find your mug yet?"
+    },
+    {
+      "type": "select",
+      "id": "heading_font",
+      "label": "Heading font",
+      "options": [
+        { "value": "body", "label": "Clean (body font)" },
+        { "value": "brand", "label": "Brand (bold italic heading font)" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Line under the heading (optional)"
     },
     {
       "type": "product_list",
