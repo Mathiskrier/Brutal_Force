@@ -835,7 +835,7 @@
       "settings": {
         "image": "shopify://shop_images/ruben-lenten.jpg",
         "focal": "50% 50%",
-        "overlay": 35,
+        "overlay": 40,
         "heading": "Ready to find yours?",
         "text": "Pick your windspeed and join the crew.",
         "button_label": "Shop the mugs",
