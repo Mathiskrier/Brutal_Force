@@ -82,8 +82,8 @@
         </div>
         <p class="bf-hrev__rating-text">
           <strong>{{ review_rating }} out of 5</strong> · from {{ review_count }} reviews
-          <span class="bf-hrev__rating-source">· Reviews collected by Judge.me</span>
         </p>
+        <p class="bf-hrev__rating-text bf-hrev__rating-source">Reviews collected by Judge.me</p>
       </div>
     {%- endif -%}
 
@@ -386,8 +386,9 @@
     color: rgb(var(--color-foreground));
   }
 
+  /* phones: source on its own line; desktop: same line after a dot */
   .bf-hrev__rating-source {
-    white-space: nowrap;
+    flex-basis: 100%;
   }
 
   /* 2. featured review */
@@ -660,6 +661,15 @@
 
     .bf-hrev__rating-text {
       font-size: 1.5rem;
+    }
+
+    .bf-hrev__rating-source {
+      flex-basis: auto;
+    }
+
+    .bf-hrev__rating-source::before {
+      content: '·';
+      margin-right: 1rem;
     }
 
     .bf-hrev__featured {
