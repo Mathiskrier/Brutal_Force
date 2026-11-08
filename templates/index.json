@@ -388,7 +388,8 @@
         "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
-      }
+      },
+      "disabled": true
     },
     "slideshow_tq7Jmz": {
       "type": "slideshow",
@@ -688,15 +689,14 @@
       ],
       "settings": {
         "heading": "700+ happy riders",
-        "text": "Real riders, real mornings, real smiles — the forecast you love, following you off the water and into everyday life.",
+        "text": "Got yours? Tag @brutalforce_wind with #windmug — you might end up here.",
         "button_label": "Find your mug",
         "button_link": "/collections/drinkware",
         "color_scheme": "scheme-1",
         "padding_top": 44,
         "padding_bottom": 56,
         "layout": "grid",
-        "heading_font": "brand",
-        "text_rich": "Got yours? Tag <a href=\"https://www.instagram.com/brutalforce_wind/\" target=\"_blank\" title=\"Brutal Force on Instagram\">@brutalforce_wind</a> with #windmug — you might end up here."
+        "heading_font": "brand"
       }
     },
     "home_reviews": {
@@ -829,6 +829,18 @@
         "padding_top": 48,
         "padding_bottom": 52
       }
+    },
+    "home_closing": {
+      "type": "bf-closing-cta",
+      "settings": {
+        "image": "shopify://shop_images/ruben-lenten.jpg",
+        "focal": "50% 50%",
+        "overlay": 35,
+        "heading": "Ready to find yours?",
+        "text": "Pick your windspeed and join the crew.",
+        "button_label": "Shop the mugs",
+        "button_link": "shopify://collections/drinkware"
+      }
     }
   },
   "order": [
@@ -851,6 +863,7 @@
     "featured_collection_TG68Bi",
     "slideshow_tq7Jmz",
     "home_trust",
+    "home_closing",
     "ss_feature_1_ztQ7CN",
     "176426421365c70811",
     "1747862327ed848f5c"
