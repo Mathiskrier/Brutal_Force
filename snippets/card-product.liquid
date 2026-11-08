@@ -132,6 +132,13 @@
                 </a>
               </h3>
             </div>
+            {%- if card_product.available -%}
+              {%- capture bf_card_pct -%}{%- render 'bf-deal-percent', compare_at_price: card_product.compare_at_price, price: card_product.price -%}{%- endcapture -%}
+              {%- if bf_card_pct != blank -%}
+                {%- comment -%} Brutalforce: compact deal pill (real % of this product), top-right of the card {%- endcomment -%}
+                <span class="bf-deal-pill"><span class="visually-hidden">Discount </span>−{{ bf_card_pct }}%</span>
+              {%- endif -%}
+            {%- endif -%}
             <div class="card__badge {{ settings.badge_position }}">
               {%- if custom_badge != blank and card_product.available -%}
                 <span class="badge badge--bottom-left bf-badge--value bf-badge--{{ custom_badge_style | default: 'yellow' }}{% if custom_badge_sub != blank %} bf-badge--two-line{% endif %}"><span class="bf-badge__main">{{ custom_badge | escape }}</span>{%- if custom_badge_sub != blank -%}<span class="bf-badge__sub">{{ custom_badge_sub | escape }}</span>{%- endif -%}</span>

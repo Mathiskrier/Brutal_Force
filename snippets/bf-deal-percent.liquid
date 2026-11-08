@@ -1,0 +1,32 @@
+{%- doc -%}
+  Brutalforce: THE deal percentage. Outputs the real discount as a whole number (e.g. 20), or nothing.
+  - Calculated from the product's own prices: (compare-at - price) / compare-at, ROUNDED DOWN,
+    so a badge never claims more than the real discount (13.79% shows as 13).
+  - Nothing when: deal signals are switched off (Theme settings > Deal signals), the end date has
+    passed, there is no compare-at price, or the discount is below the minimum %.
+  Every deal badge/pill reads this, so switching it off removes all of them at once.
+
+  @param {number} compare_at_price - Compare-at price in cents
+  @param {number} price - Selling price in cents
+{%- enddoc -%}
+{%- liquid
+  assign bf_deal_on = false
+  if settings.deal_signals_enabled
+    assign bf_deal_on = true
+    if settings.deal_end_date != blank
+      assign bf_today = 'now' | date: '%Y-%m-%d'
+      assign bf_end = settings.deal_end_date | date: '%Y-%m-%d'
+      if bf_end != blank and bf_today > bf_end
+        assign bf_deal_on = false
+      endif
+    endif
+  endif
+  if bf_deal_on and compare_at_price > price and compare_at_price > 0
+    assign bf_saving = compare_at_price | minus: price | times: 100
+    assign bf_pct = bf_saving | divided_by: compare_at_price
+    assign bf_min = settings.deal_min_percent | default: 5
+    if bf_pct >= bf_min
+      echo bf_pct
+    endif
+  endif
+-%}

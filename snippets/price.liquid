@@ -112,9 +112,21 @@
       {%- endif -%}
     </div>
     {%- if show_badges -%}
-      <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
-        {%- render 'sale-badge-text' -%}
-      </span>
+      {%- capture bf_deal_pct -%}{%- render 'bf-deal-percent', compare_at_price: compare_at_price, price: price -%}{%- endcapture -%}
+      {%- if bf_deal_pct != blank -%}
+        {%- comment -%} Brutalforce: deal badge, e.g. BLACK WEEK · −20% (real % of this product) {%- endcomment -%}
+        <span class="badge price__badge-sale bf-deal-badge">
+          {%- if settings.deal_label != blank -%}
+            <span class="bf-deal-badge__label">{{ settings.deal_label | escape }}</span>
+            <span class="bf-deal-badge__dot" aria-hidden="true">·</span>
+          {%- endif -%}
+          <span class="bf-deal-badge__pct">−{{ bf_deal_pct }}%</span>
+        </span>
+      {%- else -%}
+        <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
+          {%- render 'sale-badge-text' -%}
+        </span>
+      {%- endif -%}
 
       <span class="badge price__badge-sold-out color-{{ settings.sold_out_badge_color_scheme }}">
         {{ 'products.product.sold_out' | t }}
