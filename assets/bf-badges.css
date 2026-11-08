@@ -65,11 +65,16 @@
 }
 
 /* product cards: quiet grey "%" tag right after the sale price (no number) */
+.price .bf-sale-wrap {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
 .price .bf-deal-tag {
   display: inline-flex;
   flex: none;
   margin-left: 0.6rem;
-  vertical-align: 0.1rem;
   align-items: center;
   justify-content: center;
   min-width: 2rem;

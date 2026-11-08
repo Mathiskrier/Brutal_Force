@@ -104,12 +104,18 @@
           </span>
         {%- endunless -%}
         <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
-        <span class="price-item price-item--sale price-item--last">
-          {{ money_price }}
-        </span>
         {%- if deal_tag -%}
-          {%- comment -%} Brutalforce: quiet grey "%" deal tag right after the sale price (product cards) {%- endcomment -%}
-          <span class="bf-deal-tag"><span aria-hidden="true">%</span><span class="visually-hidden">On sale</span></span>
+          {%- comment -%} Brutalforce: quiet grey "%" deal tag right after the sale price (product cards); kept together with it {%- endcomment -%}
+          <span class="bf-sale-wrap">
+            <span class="price-item price-item--sale price-item--last">
+              {{ money_price }}
+            </span>
+            <span class="bf-deal-tag"><span aria-hidden="true">%</span><span class="visually-hidden">On sale</span></span>
+          </span>
+        {%- else -%}
+          <span class="price-item price-item--sale price-item--last">
+            {{ money_price }}
+          </span>
         {%- endif -%}
       </div>
       {%- if product.selected_or_first_available_variant.unit_price_measurement -%}
