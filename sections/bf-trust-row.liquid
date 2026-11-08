@@ -15,6 +15,7 @@
 {%- if show_trow -%}
 <div
   class="bf-trow color-{{ section.settings.color_scheme }} gradient"
+  data-only-collection="{{ section.settings.only_collection.handle }}"
   style="--bf-trow-pt: {{ section.settings.padding_top }}px; --bf-trow-pb: {{ section.settings.padding_bottom }}px;"
 >
   <div class="page-width">
