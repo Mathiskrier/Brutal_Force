@@ -132,14 +132,6 @@
                 </a>
               </h3>
             </div>
-            {%- if card_product.available -%}
-              {%- capture bf_card_pct -%}{%- render 'bf-deal-percent', compare_at_price: card_product.compare_at_price, price: card_product.price -%}{%- endcapture -%}
-              {%- assign bf_card_pct_num = bf_card_pct | plus: 0 -%}
-              {%- if bf_card_pct != blank and bf_card_pct_num >= settings.deal_number_min -%}
-                {%- comment -%} Brutalforce: compact deal pill (real % of this product), top-right of the card {%- endcomment -%}
-                <span class="bf-deal-pill"><span class="visually-hidden">Discount </span>−{{ bf_card_pct }}%</span>
-              {%- endif -%}
-            {%- endif -%}
             <div class="card__badge {{ settings.badge_position }}">
               {%- if custom_badge != blank and card_product.available -%}
                 <span class="badge badge--bottom-left bf-badge--value bf-badge--{{ custom_badge_style | default: 'yellow' }}{% if custom_badge_sub != blank %} bf-badge--two-line{% endif %}"><span class="bf-badge__main">{{ custom_badge | escape }}</span>{%- if custom_badge_sub != blank -%}<span class="bf-badge__sub">{{ custom_badge_sub | escape }}</span>{%- endif -%}</span>
@@ -222,7 +214,23 @@
                 </p>
               {%- endif -%}
 
-              {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+              {%- liquid
+                assign bf_card_pct = ''
+                if card_product.available
+                  capture bf_card_pct
+                    render 'bf-deal-percent', compare_at_price: card_product.compare_at_price, price: card_product.price
+                  endcapture
+                endif
+              -%}
+              {%- if bf_card_pct != blank -%}
+                {%- comment -%} Brutalforce: quiet grey "%" deal tag beside the price (no number) {%- endcomment -%}
+                <div class="bf-price-row">
+                  {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+                  <span class="bf-deal-tag" title="On sale"><span aria-hidden="true">%</span><span class="visually-hidden">On sale</span></span>
+                </div>
+              {%- else -%}
+                {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+              {%- endif -%}
               {%- if card_product.quantity_price_breaks_configured? -%}
                 {% if card_product.variants_count == 1 and quick_add == 'bulk' %}
                   {% liquid
