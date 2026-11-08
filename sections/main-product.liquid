@@ -223,7 +223,12 @@
                     {%- endif -%}
                   </p>
                 {%- when 'description' -%}
-                  {%- if product.description != blank -%}
+                  {%- comment -%} Brutalforce: optional theme-side description (per template), else the product's own {%- endcomment -%}
+                  {%- if block.settings.custom_description != blank -%}
+                    <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
+                      {{ block.settings.custom_description }}
+                    </div>
+                  {%- elsif product.description != blank -%}
                     <div class="product__description rte quick-add-hidden" {{ block.shopify_attributes }}>
                       {{ product.description }}
                     </div>
@@ -993,7 +998,15 @@
     {
       "type": "description",
       "name": "t:sections.main-product.blocks.description.name",
-      "limit": 1
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "custom_description",
+          "label": "Description for this template (optional)",
+          "info": "Replaces the product description on pages using this template only. Leave empty to show the product's own description."
+        }
+      ]
     },
     {
       "type": "share",
@@ -2498,6 +2511,13 @@
           "id": "heading_4",
           "label": "Heading 4",
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "item_4_promo_only",
+          "label": "Item 4: only while the free shipping promo is on",
+          "info": "Theme settings > Free shipping. Use for a free shipping line.",
+          "default": false
         }
       ]
     }

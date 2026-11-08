@@ -29,6 +29,15 @@
   if block.settings.heading_4 == empty or block.settings.heading_4 == blank
     assign heading_4_empty = true
   endif
+  # Brutalforce: item 4 can be a promo line (e.g. free shipping), hidden when the promo is off
+  if block.settings.item_4_promo_only and heading_4_empty == false
+    capture fs_on
+      render 'bf-free-shipping-active'
+    endcapture
+    if fs_on != 'true'
+      assign heading_4_empty = true
+    endif
+  endif
 
   if heading_1_empty == false and block.settings.icon_1 != 'none' or block.settings.image_1 != null
     assign text_only_all_items = false

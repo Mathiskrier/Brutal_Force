@@ -87,7 +87,9 @@
               <span class="bf-more__link-arrow" aria-hidden="true">→</span>
             </a>
           {%- else -%}
-            <a class="bf-more__cta" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+            <a class="bf-more__cta{% if section.settings.button_style == 'solid' %} bf-more__cta--solid{% endif %}" href="{{ section.settings.button_link }}">
+              {{- section.settings.button_label | escape -}}
+            </a>
           {%- endif -%}
         </div>
       {%- endif -%}
@@ -237,6 +239,17 @@
     color: #fff;
   }
 
+  /* solid brand-black button */
+  .bf-more__cta--solid {
+    background: rgb(17, 17, 17);
+    color: #fff;
+  }
+
+  .bf-more__cta--solid:hover {
+    background: rgb(51, 51, 51);
+    border-color: rgb(51, 51, 51);
+  }
+
   /* quiet text link alternative ("View the collection →") */
   .bf-more__link {
     display: inline-flex;
@@ -362,6 +375,10 @@
         {
           "value": "button",
           "label": "Outlined button"
+        },
+        {
+          "value": "solid",
+          "label": "Solid black button"
         },
         {
           "value": "text",
