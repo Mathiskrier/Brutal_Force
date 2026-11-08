@@ -1,7 +1,7 @@
 {%- comment -%}
   Brutalforce: gift call-to-action banner (home page). Text only, everything left-aligned in a
   soft brand-green card (logo green #02E65D softened). Hierarchy: heading > checks > button.
-  Desktop: two balanced columns (message | checks + button). Phones: one column:
+  Desktop (990px+): two balanced columns (message | checks + button). Phones/tablets: one column:
   title, one line, a short check list (one column), one button.
   "Point" blocks marked "Promo" only show while the free shipping promo is on
   (snippets/bf-free-shipping-active.liquid), so time-limited claims disappear with the promo.
@@ -136,6 +136,7 @@
     font-size: 1.6rem;
     font-weight: 600;
     letter-spacing: 0.02rem;
+    white-space: nowrap;
     text-decoration: none;
     transition: background-color 0.15s ease;
   }
@@ -166,7 +167,17 @@
       padding-bottom: var(--bf-gift-pb);
     }
 
-    /* desktop: two balanced columns - message left, checks + button right, both centred */
+    .bf-gift__text {
+      font-size: 1.7rem;
+    }
+
+    .bf-gift__card {
+      padding: 4.8rem 5.6rem;
+    }
+  }
+
+  /* desktop: two balanced columns - message left, checks + button right, both centred */
+  @media screen and (min-width: 990px) {
     .bf-gift__card {
       display: grid;
       grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
@@ -179,10 +190,6 @@
     .bf-gift__action {
       padding-left: 6.4rem;
       border-left: 0.1rem solid rgba(18, 18, 18, 0.14);
-    }
-
-    .bf-gift__text {
-      font-size: 1.7rem;
     }
 
     .bf-gift__points {
