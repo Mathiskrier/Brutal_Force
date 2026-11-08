@@ -2,7 +2,17 @@
   Brutalforce: "Why riders trust us" - three trust points with thin outline icons (Lucide, the same
   set as the product page bullets, cart and footer). Title in the brand heading font, point titles
   in semibold body font, descriptions in the body font. Phones: one column, icon left of the text (email kept on one line).
+  Optional "Only on this collection": on a shared collection template, show it on one collection only.
 {%- endcomment -%}
+{%- liquid
+  assign show_trow = true
+  if section.settings.only_collection != blank
+    if collection == blank or collection.handle != section.settings.only_collection.handle
+      assign show_trow = false
+    endif
+  endif
+-%}
+{%- if show_trow -%}
 <div
   class="bf-trow color-{{ section.settings.color_scheme }} gradient"
   style="--bf-trow-pt: {{ section.settings.padding_top }}px; --bf-trow-pb: {{ section.settings.padding_bottom }}px;"
@@ -33,6 +43,8 @@
     </ul>
   </div>
 </div>
+
+{%- endif -%}
 
 {% style %}
   .bf-trow {
@@ -183,6 +195,12 @@
       "id": "heading",
       "label": "Heading",
       "default": "Why riders trust us"
+    },
+    {
+      "type": "collection",
+      "id": "only_collection",
+      "label": "Only on this collection (optional)",
+      "info": "For collection pages: leave empty to show on every collection."
     },
     {
       "type": "color_scheme",
