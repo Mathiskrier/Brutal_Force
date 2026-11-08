@@ -4,7 +4,8 @@
      judgeme.all_reviews_rating / all_reviews_count; fallback: weighted average of the products'
      review metafields - same logic as snippets/bf-cart-trust.liquid).
   2. Featured review (settings): photo, stars, quote, name.
-  3. "Review" blocks: hand-picked real reviews (copied from Judge.me), shown statically - no slider.
+  3. Review slider: live Judge.me reviews (all published reviews, filtered, pinned ones first);
+     the "Review" blocks are the fallback when Judge.me can't be reached.
   4. Optional small text link to all reviews.
 {%- endcomment -%}
 {%- liquid
@@ -56,6 +57,9 @@
           <span class="bf-hrev__avg">{{ review_rating }}</span>
           <span class="bf-hrev__out">out of 5 · from {{ review_count }} reviews</span>
         </p>
+        <p class="bf-hrev__source">
+          Reviews collected by <span class="bf-hrev__source-brand">Judge.me</span>
+        </p>
       </div>
     {%- endif -%}
 
@@ -86,8 +90,33 @@
       </figure>
     {%- endif -%}
 
-    {%- if section.blocks.size > 0 -%}
-      <ul class="bf-hrev__list list-unstyled" role="list">
+    {%- comment -%}
+      Review slider. The blocks are the fallback (shown until / unless the live Judge.me reviews load).
+      With "Live Judge.me reviews" on, bf-jdgm-reviews loads ALL published reviews from Judge.me's public
+      all-reviews endpoint (the one its own All Reviews widget uses), filters them and fills the slider:
+      pinned reviews first, then the rest newest first.
+    {%- endcomment -%}
+    <bf-jdgm-reviews
+      class="bf-hrev__slider"
+      data-shop="{{ shop.permanent_domain }}"
+      data-live="{{ section.settings.live_reviews }}"
+      data-pinned="{{ section.settings.pinned_ids | strip_newlines | escape }}"
+      data-hidden="{{ section.settings.hidden_ids | strip_newlines | escape }}"
+      data-min-rating="{{ section.settings.min_rating }}"
+      data-english="{{ section.settings.english_only }}"
+    >
+      <div class="bf-hrev__slider-head">
+        <p class="bf-hrev__slider-label" data-label>{{ section.settings.slider_label | escape }}</p>
+        <div class="bf-hrev__arrows">
+          <button type="button" class="bf-hrev__arrow" data-dir="-1" aria-label="Previous reviews">
+            <span aria-hidden="true">←</span>
+          </button>
+          <button type="button" class="bf-hrev__arrow" data-dir="1" aria-label="Next reviews">
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+      <ul class="bf-hrev__track list-unstyled" role="list" data-track tabindex="0" aria-label="Customer reviews">
         {%- for block in section.blocks -%}
           <li class="bf-hrev__card" {{ block.shopify_attributes }}>
             {%- render 'bf-review-stars', rating: block.settings.rating, star_svg: star_svg, size: 'sm' -%}
@@ -98,7 +127,8 @@
           </li>
         {%- endfor -%}
       </ul>
-    {%- endif -%}
+      <template data-star>{%- render 'bf-review-stars', rating: 5, star_svg: star_svg, size: 'sm' -%}</template>
+    </bf-jdgm-reviews>
 
     {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
       <div class="bf-hrev__more">
@@ -110,6 +140,181 @@
     {%- endif -%}
   </div>
 </div>
+
+<script>
+  if (!customElements.get('bf-jdgm-reviews')) {
+    customElements.define(
+      'bf-jdgm-reviews',
+      class BfJdgmReviews extends HTMLElement {
+        connectedCallback() {
+          this.track = this.querySelector('[data-track]');
+          this.querySelectorAll('.bf-hrev__arrow').forEach((b) =>
+            b.addEventListener('click', () => this.scrollByCards(Number(b.dataset.dir)))
+          );
+          this.track.addEventListener('scroll', () => this.updateArrows(), { passive: true });
+          window.addEventListener('resize', () => this.updateArrows(), { passive: true });
+          this.updateArrows();
+          if (this.dataset.live !== 'true') return;
+          // load only when the section comes near the screen (keeps the first page load light)
+          const io = new IntersectionObserver((entries) => {
+            if (entries.some((e) => e.isIntersecting)) {
+              io.disconnect();
+              this.load();
+            }
+          }, { rootMargin: '600px 0px' });
+          io.observe(this);
+        }
+
+        scrollByCards(dir) {
+          const card = this.track.querySelector('.bf-hrev__card');
+          if (!card) return;
+          const step = (card.getBoundingClientRect().width + 16) * (window.innerWidth >= 750 ? 3 : 1);
+          this.track.scrollBy({ left: dir * step, behavior: 'smooth' });
+        }
+
+        updateArrows() {
+          const t = this.track;
+          const [prev, next] = this.querySelectorAll('.bf-hrev__arrow');
+          if (!prev || !next) return;
+          const max = t.scrollWidth - t.clientWidth - 2;
+          prev.disabled = t.scrollLeft <= 2;
+          next.disabled = t.scrollLeft >= max;
+          this.classList.toggle('is-static', max <= 0);
+        }
+
+        list(value) {
+          return (value || '').split(/[\s,]+/).map((x) => x.trim()).filter(Boolean);
+        }
+
+        async load() {
+          const shop = encodeURIComponent(this.dataset.shop);
+          const reviews = [];
+          try {
+            for (let page = 1; page <= 10; page++) {
+              const url = `https://api.judge.me/reviews/all_reviews_js_based?url=${shop}&shop_domain=${shop}&platform=shopify&page=${page}&per_page=25&review_type=all-reviews`;
+              const res = await fetch(url);
+              if (!res.ok) break;
+              const data = await res.json();
+              const doc = new DOMParser().parseFromString(data.html || '', 'text/html');
+              const items = [...doc.querySelectorAll('.jdgm-rev')];
+              if (!items.length) break;
+              items.forEach((el) => reviews.push(this.parse(el)));
+              if (items.length < 25) break;
+            }
+          } catch (e) {
+            return; // keep the fallback cards
+          }
+          const shown = this.filter(reviews);
+          if (shown.length < 3) return;
+          this.render(shown);
+        }
+
+        parse(el) {
+          const text = (sel) => (el.querySelector(sel)?.textContent || '').replace(/\s+/g, ' ').trim();
+          return {
+            id: el.dataset.reviewId || '',
+            rating: Number(el.querySelector('.jdgm-rev__rating')?.dataset.score || 0),
+            author: text('.jdgm-rev__author'),
+            title: text('.jdgm-rev__title'),
+            body: text('.jdgm-rev__body'),
+            product: text('.jdgm-rev__prod-link'),
+            date: el.querySelector('.jdgm-rev__timestamp')?.dataset.content || '',
+            verified: el.dataset.verifiedBuyer === 'true',
+          };
+        }
+
+        filter(all) {
+          const hidden = new Set(this.list(this.dataset.hidden));
+          const pinned = this.list(this.dataset.pinned);
+          const minRating = Number(this.dataset.minRating || 4);
+          // rough language check so only English reviews show (German / French / Dutch words)
+          const foreign = /\b(und|ist|sehr|die|der|das|nicht|tasse|gut|zufrieden|lieferung|bin|habe|für|schnell|geschenk|produit|très|livraison|superbe|fidèle|rapide|perfecte|geil|mega|lekker|mooi)\b/i;
+          const ok = all.filter(
+            (r) =>
+              r.id &&
+              !hidden.has(r.id) &&
+              r.rating >= minRating &&
+              r.body.length >= 15 &&
+              (this.dataset.english !== 'true' || !foreign.test(`${r.title} ${r.body}`))
+          );
+          const rank = (r) => {
+            const i = pinned.indexOf(r.id);
+            return i === -1 ? Infinity : i;
+          };
+          return ok.sort((a, b) => rank(a) - rank(b) || (b.date > a.date ? 1 : b.date < a.date ? -1 : 0));
+        }
+
+        shortName(name) {
+          const parts = name.split(/\s+/).filter(Boolean);
+          if (parts.length < 2) return name;
+          return `${parts[0]} ${parts[parts.length - 1].charAt(0).toUpperCase()}.`;
+        }
+
+        render(reviews) {
+          const starTpl = this.querySelector('template[data-star]');
+          const frag = document.createDocumentFragment();
+          reviews.forEach((r) => {
+            const li = document.createElement('li');
+            li.className = 'bf-hrev__card';
+            const stars = starTpl.content.firstElementChild.cloneNode(true);
+            stars.style.setProperty('--bf-fill', `${r.rating * 20}%`);
+            stars.setAttribute('aria-label', `${r.rating} out of 5 stars`);
+            const top = document.createElement('div');
+            top.className = 'bf-hrev__card-top';
+            top.appendChild(stars);
+            if (r.verified) {
+              const v = document.createElement('span');
+              v.className = 'bf-hrev__verified';
+              v.textContent = '✓ Verified buyer';
+              top.appendChild(v);
+            }
+            li.appendChild(top);
+            if (r.title && r.title.toLowerCase() !== r.body.toLowerCase()) {
+              const t = document.createElement('p');
+              t.className = 'bf-hrev__title';
+              t.textContent = r.title;
+              li.appendChild(t);
+            }
+            const q = document.createElement('p');
+            q.className = 'bf-hrev__body';
+            q.textContent = r.body;
+            li.appendChild(q);
+            const meta = document.createElement('div');
+            meta.className = 'bf-hrev__meta';
+            const name = document.createElement('span');
+            name.className = 'bf-hrev__author';
+            name.textContent = this.shortName(r.author || 'Anonymous');
+            meta.appendChild(name);
+            if (r.date) {
+              const d = new Date(r.date);
+              if (!isNaN(d)) {
+                const time = document.createElement('time');
+                time.className = 'bf-hrev__date';
+                time.dateTime = r.date.slice(0, 10);
+                time.textContent = d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+                meta.appendChild(time);
+              }
+            }
+            li.appendChild(meta);
+            if (r.product) {
+              const p = document.createElement('p');
+              p.className = 'bf-hrev__product';
+              p.textContent = r.product;
+              li.appendChild(p);
+            }
+            frag.appendChild(li);
+          });
+          this.track.replaceChildren(frag);
+          this.track.scrollLeft = 0;
+          const label = this.querySelector('[data-label]');
+          if (label) label.textContent = label.textContent.replace('[count]', reviews.length);
+          this.classList.add('is-live');
+          this.updateArrows();
+        }
+      }
+    );
+  }
+</script>
 
 {% style %}
   .bf-hrev {
@@ -258,18 +463,94 @@
     color: rgb(var(--color-foreground));
   }
 
-  /* 3. supporting reviews */
-  .bf-hrev__list {
+  .bf-hrev__source {
+    margin: 0;
+    font-size: 1.3rem;
+    color: rgba(var(--color-foreground), 0.55);
+  }
+
+  .bf-hrev__source-brand {
+    font-weight: 600;
+    color: rgba(var(--color-foreground), 0.8);
+    text-decoration: none;
+  }
+
+  /* 3. review slider (swipe on phones, arrows on desktop, next card peeks in) */
+  .bf-hrev__slider {
+    display: block;
     width: 100%;
-    max-width: 88rem;
-    margin: 1.6rem 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    max-width: 112rem;
+    margin-top: 3.2rem;
+  }
+
+  .bf-hrev__slider-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .bf-hrev__slider-label {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: rgba(var(--color-foreground), 0.75);
+  }
+
+  .bf-hrev__arrows {
+    display: none;
+    gap: 0.8rem;
+  }
+
+  .bf-hrev__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border: 0.1rem solid rgba(var(--color-foreground), 0.2);
+    border-radius: 50%;
+    background: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    font-size: 1.7rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .bf-hrev__arrow:hover:not(:disabled) {
+    border-color: rgb(var(--color-foreground));
+  }
+
+  .bf-hrev__arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .bf-hrev__slider.is-static .bf-hrev__arrows {
+    display: none;
+  }
+
+  .bf-hrev__track {
+    display: flex;
     gap: 1.2rem;
+    margin: 0 -1.5rem;
+    padding: 0.2rem 1.5rem 0.8rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 1.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    outline: none;
+  }
+
+  .bf-hrev__track::-webkit-scrollbar {
+    display: none;
   }
 
   .bf-hrev__card {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
     padding: 2rem;
@@ -278,6 +559,66 @@
     background: rgb(var(--color-background));
   }
 
+  .bf-hrev__card-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem 1rem;
+  }
+
+  .bf-hrev__verified {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgb(31, 122, 71);
+  }
+
+  .bf-hrev__title {
+    margin: 1.2rem 0 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: rgb(var(--color-foreground));
+  }
+
+  .bf-hrev__body {
+    flex: 1 1 auto;
+    margin: 0.6rem 0 0;
+    font-size: 1.5rem;
+    line-height: 1.55;
+    color: rgba(var(--color-foreground), 0.8);
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bf-hrev__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.8rem;
+    margin-top: 1.4rem;
+    font-size: 1.4rem;
+  }
+
+  .bf-hrev__author {
+    font-weight: 600;
+    color: rgb(var(--color-foreground));
+  }
+
+  .bf-hrev__date {
+    font-size: 1.3rem;
+    color: rgba(var(--color-foreground), 0.5);
+  }
+
+  .bf-hrev__product {
+    margin: 0.4rem 0 0;
+    font-size: 1.25rem;
+    color: rgba(var(--color-foreground), 0.55);
+  }
+
+  /* fallback cards (before live reviews load) */
   .bf-hrev__quote {
     margin: 1rem 0 0;
     padding: 0;
@@ -372,18 +713,25 @@
       font-size: 1.6rem;
     }
 
-    .bf-hrev__list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .bf-hrev__slider {
+      margin-top: 4rem;
+    }
+
+    .bf-hrev__arrows {
+      display: inline-flex;
+    }
+
+    .bf-hrev__track {
       gap: 1.6rem;
-      margin-top: 1.6rem;
+      margin: 0;
+      padding: 0.2rem 0 0.8rem;
+      scroll-padding: 0;
     }
 
+    /* 3 cards + a peek of the 4th */
     .bf-hrev__card {
+      flex-basis: calc((100% - 3 * 1.6rem) / 3.25);
       padding: 2.4rem;
-    }
-
-    .bf-hrev__name--sm {
-      font-size: 1.4rem;
     }
 
     .bf-hrev__more {
@@ -437,6 +785,50 @@
       "type": "text",
       "id": "featured_name",
       "label": "Name"
+    },
+    {
+      "type": "header",
+      "content": "Review slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "live_reviews",
+      "label": "Live Judge.me reviews",
+      "info": "Loads all published Judge.me reviews into the slider. The Review blocks below are shown only if Judge.me can't be reached.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "slider_label",
+      "label": "Label above the slider",
+      "info": "[count] = number of reviews shown.",
+      "default": "[count] reviews from riders"
+    },
+    {
+      "type": "textarea",
+      "id": "pinned_ids",
+      "label": "Show these reviews first (Judge.me review IDs)",
+      "info": "One ID per line, in order. The rest follow, newest first."
+    },
+    {
+      "type": "textarea",
+      "id": "hidden_ids",
+      "label": "Never show these reviews (Judge.me review IDs)"
+    },
+    {
+      "type": "range",
+      "id": "min_rating",
+      "label": "Minimum stars",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "english_only",
+      "label": "English reviews only",
+      "default": true
     },
     {
       "type": "header",

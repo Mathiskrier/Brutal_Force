@@ -738,7 +738,13 @@
         "link_label": "",
         "color_scheme": "scheme-1",
         "padding_top": 56,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "live_reviews": true,
+        "slider_label": "[count] reviews from riders",
+        "min_rating": 4,
+        "english_only": true,
+        "pinned_ids": "57bd47ec-3f7d-414b-aee6-8dd6272cf0e7\ne180c5ca-632d-48a8-a2bc-a38b803ea5e4\n481e2577-e49d-463b-bc2b-3a0a9d4f8e6a\nb8a20ebf-3d39-49d0-b16d-5b5c9380eecb\nbc1f9d66-5202-47d3-8537-513a039032ab\nd0319ce1-e9f6-4718-9366-35cc4a8dfad2",
+        "hidden_ids": "25f52829-596c-4e14-8461-d282f78e10f9\nfc27ad70-4125-4879-8693-abc49068bd9f"
       }
     }
   },
