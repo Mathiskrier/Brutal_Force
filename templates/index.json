@@ -760,7 +760,7 @@
           "settings": {
             "icon": "truck",
             "title": "Ships from Europe",
-            "text": "<p>Tracked delivery, usually arrives within a week. No customs, no surprises.</p>"
+            "text": "<p>Tracked delivery, usually arrives within a week. No customs within the EU.</p>"
           }
         },
         "trust_support": {
