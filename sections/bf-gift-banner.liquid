@@ -1,5 +1,6 @@
 {%- comment -%}
-  Brutalforce: gift call-to-action banner (home page). Text only, centred in a brand-yellow card:
+  Brutalforce: gift call-to-action banner (home page). Text only, everything left-aligned in a
+  soft brand-green card (logo green #02E65D softened):
   title, one line, a short check list (one column), one button.
   "Point" blocks marked "Promo" only show while the free shipping promo is on
   (snippets/bf-free-shipping-active.liquid), so time-limited claims disappear with the promo.
@@ -55,14 +56,14 @@
   .bf-gift__card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    max-width: 88rem;
+    align-items: flex-start;
+    max-width: 72rem;
     margin: 0 auto;
-    padding: 4rem 2.4rem;
+    padding: 3.6rem 2.8rem 4rem;
     border-radius: 1.6rem;
-    background: var(--bf-gift-bg, #fce477);
+    background: var(--bf-gift-bg, #74f1a6);
     color: rgb(18, 18, 18);
-    text-align: center;
+    text-align: left;
   }
 
   .bf-gift__heading {
@@ -72,22 +73,21 @@
 
   .bf-gift__text {
     margin: 1.2rem 0 0;
-    max-width: 52rem;
+    max-width: 48rem;
     font-family: var(--font-body-family);
     font-size: 1.6rem;
     line-height: 1.6;
     color: rgba(18, 18, 18, 0.85);
   }
 
-  /* check list: left-aligned rows inside a centred block, so the ticks line up */
+  /* check list, aligned with the text above */
   .bf-gift__points {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 1.2rem;
     margin: 2.4rem 0 0;
     padding: 0;
-    text-align: left;
   }
 
   .bf-gift__point {
@@ -95,8 +95,8 @@
     align-items: center;
     gap: 1rem;
     font-family: var(--font-body-family);
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 1.6rem;
+    font-weight: 600;
     line-height: 1.4;
     color: rgb(18, 18, 18);
   }
@@ -124,8 +124,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.8rem;
-    align-self: stretch;
-    margin-top: 2.8rem;
+    margin-top: 3.2rem;
     min-height: 5rem;
     padding: 0 3.2rem;
     border-radius: var(--buttons-radius-outset, 0.4rem);
@@ -166,7 +165,7 @@
     }
 
     .bf-gift__card {
-      padding: 5.6rem 6.4rem;
+      padding: 5.6rem 6.4rem 6rem;
     }
 
     .bf-gift__text {
@@ -174,17 +173,12 @@
     }
 
     .bf-gift__points {
-      gap: 1.2rem;
+      gap: 1.4rem;
       margin-top: 2.8rem;
     }
 
-    .bf-gift__point {
-      font-size: 1.6rem;
-    }
-
     .bf-gift__button {
-      align-self: center;
-      margin-top: 3.2rem;
+      margin-top: 3.6rem;
     }
   }
 {% endstyle %}
@@ -221,7 +215,7 @@
       "type": "color",
       "id": "background",
       "label": "Card colour",
-      "default": "#fce477"
+      "default": "#74f1a6"
     },
     {
       "type": "range",

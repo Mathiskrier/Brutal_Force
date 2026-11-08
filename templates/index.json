@@ -802,14 +802,14 @@
         "pt_deals": {
           "type": "point",
           "settings": {
-            "text": "Limited-time deals across the collection",
+            "text": "Limited-time deals",
             "promo": true
           }
         },
         "pt_real": {
           "type": "point",
           "settings": {
-            "text": "No fake smiles — just real mugs",
+            "text": "No fake smiles",
             "promo": false
           }
         }
@@ -821,10 +821,10 @@
       ],
       "settings": {
         "heading": "Gift season is here",
-        "text": "For the partner or friend obsessed with the wind — kiter, windsurfer or winger, they’ll get it the second they see it.",
+        "text": "For the partner or friend obsessed with the wind. They’ll get it the second they see it.",
         "button_label": "Get the perfect gift",
         "button_link": "shopify://collections/drinkware",
-        "background": "#fce477",
+        "background": "#74f1a6",
         "padding_top": 48,
         "padding_bottom": 52
       }
