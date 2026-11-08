@@ -417,7 +417,8 @@
       "type": "bf-sticky-atc",
       "settings": {
         "button_label": "Add to cart",
-        "color_scheme": "scheme-1"
+        "color_scheme": "scheme-1",
+        "show_from": ".bf-story"
       }
     },
     "set_reviews": {
