@@ -486,7 +486,8 @@
         "content_width": 120,
         "border_thickness": 0,
         "lazy": true
-      }
+      },
+      "disabled": true
     },
     "176426421365c70811": {
       "type": "_blocks",
@@ -746,6 +747,46 @@
         "pinned_ids": "57bd47ec-3f7d-414b-aee6-8dd6272cf0e7\ne180c5ca-632d-48a8-a2bc-a38b803ea5e4\n481e2577-e49d-463b-bc2b-3a0a9d4f8e6a\nb8a20ebf-3d39-49d0-b16d-5b5c9380eecb\nbc1f9d66-5202-47d3-8537-513a039032ab\nd0319ce1-e9f6-4718-9366-35cc4a8dfad2",
         "hidden_ids": "25f52829-596c-4e14-8461-d282f78e10f9\nfc27ad70-4125-4879-8693-abc49068bd9f"
       }
+    },
+    "home_trust": {
+      "type": "bf-trust-row",
+      "blocks": {
+        "trust_ship": {
+          "type": "point",
+          "settings": {
+            "icon": "truck",
+            "title": "Ships from Europe",
+            "text": "<p>Tracked delivery, usually arrives within a week. No customs, no surprises.</p>"
+          }
+        },
+        "trust_support": {
+          "type": "point",
+          "settings": {
+            "icon": "message-circle",
+            "title": "Real support",
+            "text": "<p>Questions? We usually reply within a few hours. <a href=\"mailto:contact@brutal-force.com\" title=\"Email Brutal Force\">contact@brutal-force.com</a></p>"
+          }
+        },
+        "trust_checkout": {
+          "type": "point",
+          "settings": {
+            "icon": "shield-check",
+            "title": "Secure checkout",
+            "text": "<p>SSL-encrypted. Pay with PayPal, Apple Pay &amp; more.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "trust_ship",
+        "trust_support",
+        "trust_checkout"
+      ],
+      "settings": {
+        "heading": "Why riders trust us",
+        "color_scheme": "scheme-2",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
     }
   },
   "order": [
@@ -766,6 +807,7 @@
     "rich_text_7QPYzE",
     "featured_collection_TG68Bi",
     "slideshow_tq7Jmz",
+    "home_trust",
     "ss_feature_1_ztQ7CN",
     "176426421365c70811",
     "1747862327ed848f5c"
