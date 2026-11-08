@@ -1389,6 +1389,17 @@
         "step": 1,
         "unit": "%",
         "default": 5
+      },
+      {
+        "type": "range",
+        "id": "deal_number_min",
+        "label": "Show the −X% number from",
+        "min": 5,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "default": 20,
+        "info": "Below this, the product page badge shows only the label (e.g. BLACK WEEK) and cards get no −X% pill. The crossed-out price still shows the discount."
       }
     ]
   },

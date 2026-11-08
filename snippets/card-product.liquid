@@ -134,7 +134,8 @@
             </div>
             {%- if card_product.available -%}
               {%- capture bf_card_pct -%}{%- render 'bf-deal-percent', compare_at_price: card_product.compare_at_price, price: card_product.price -%}{%- endcapture -%}
-              {%- if bf_card_pct != blank -%}
+              {%- assign bf_card_pct_num = bf_card_pct | plus: 0 -%}
+              {%- if bf_card_pct != blank and bf_card_pct_num >= settings.deal_number_min -%}
                 {%- comment -%} Brutalforce: compact deal pill (real % of this product), top-right of the card {%- endcomment -%}
                 <span class="bf-deal-pill"><span class="visually-hidden">Discount </span>−{{ bf_card_pct }}%</span>
               {%- endif -%}

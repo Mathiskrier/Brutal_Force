@@ -116,11 +116,22 @@
       {%- if bf_deal_pct != blank -%}
         {%- comment -%} Brutalforce: deal badge, e.g. BLACK WEEK · −20% (real % of this product) {%- endcomment -%}
         <span class="badge price__badge-sale bf-deal-badge">
+          {%- liquid
+            assign bf_pct_num = bf_deal_pct | plus: 0
+            assign bf_show_num = false
+            if bf_pct_num >= settings.deal_number_min
+              assign bf_show_num = true
+            endif
+          -%}
           {%- if settings.deal_label != blank -%}
             <span class="bf-deal-badge__label">{{ settings.deal_label | escape }}</span>
-            <span class="bf-deal-badge__dot" aria-hidden="true">·</span>
           {%- endif -%}
-          <span class="bf-deal-badge__pct">−{{ bf_deal_pct }}%</span>
+          {%- if bf_show_num -%}
+            {%- if settings.deal_label != blank -%}<span class="bf-deal-badge__dot" aria-hidden="true">·</span>{%- endif -%}
+            <span class="bf-deal-badge__pct">−{{ bf_deal_pct }}%</span>
+          {%- elsif settings.deal_label == blank -%}
+            <span class="bf-deal-badge__pct">{{ 'products.product.on_sale' | t }}</span>
+          {%- endif -%}
         </span>
       {%- else -%}
         <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
