@@ -1,87 +1,87 @@
 {
-  "name": "t:sections.header.name",
-  "type": "header",
-  "sections": {
-    "announcement_bar_ybHaWT": {
-      "type": "announcement-bar",
-      "name": "t:sections.announcement-bar.presets.name",
-      "settings": {
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "color_scheme": "scheme-da322085-9904-4103-be0b-a17e7219cb83",
-        "show_line_separator": true,
-        "show_social": false,
-        "enable_country_selector": false,
-        "enable_language_selector": false
-      },
-      "disabled": true
-    },
-    "header": {
-      "type": "header",
-      "settings": {
-        "logo_position": "middle-center",
-        "mobile_logo_position": "center",
-        "menu": "main-menu",
-        "menu_type_desktop": "mega",
-        "sticky_header_type": "on-scroll-up",
-        "show_line_separator": false,
-        "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-1",
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "margin_bottom": 0,
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
-    },
-    "bf_top_bar": {
-      "type": "bf-announcement",
-      "blocks": {
-        "msg_deal": {
-          "type": "message",
-          "settings": {
-            "text": "Black Week — deals across the collection",
-            "deal_badge": true,
-            "promo_only": false,
-            "hide_after": ""
-          }
-        },
-        "msg_ship": {
-          "type": "message",
-          "settings": {
-            "text": "Free shipping over €30",
-            "deal_badge": false,
-            "promo_only": true,
-            "hide_after": ""
-          }
-        },
-        "msg_eu": {
-          "type": "message",
-          "settings": {
-            "text": "Ships from Europe · tracked",
-            "deal_badge": false,
-            "promo_only": false,
-            "hide_after": ""
-          }
-        }
-      },
-      "block_order": [
-        "msg_deal",
-        "msg_ship",
-        "msg_eu"
-      ],
-      "settings": {
-        "link": "shopify://collections/drinkware",
-        "interval": 5,
-        "background": "#121212",
-        "text_color": "#ffffff",
-        "badge_color": "#02e65d"
-      }
-    }
+ "name": "t:sections.header.name",
+ "type": "header",
+ "sections": {
+  "announcement_bar_ybHaWT": {
+   "type": "announcement-bar",
+   "name": "t:sections.announcement-bar.presets.name",
+   "settings": {
+    "auto_rotate": false,
+    "change_slides_speed": 5,
+    "color_scheme": "scheme-da322085-9904-4103-be0b-a17e7219cb83",
+    "show_line_separator": true,
+    "show_social": false,
+    "enable_country_selector": false,
+    "enable_language_selector": false
+   },
+   "disabled": true
   },
-  "order": [
-    "bf_top_bar",
-    "announcement_bar_ybHaWT",
-    "header"
-  ]
+  "header": {
+   "type": "header",
+   "settings": {
+    "logo_position": "middle-center",
+    "mobile_logo_position": "center",
+    "menu": "main-menu",
+    "menu_type_desktop": "mega",
+    "sticky_header_type": "on-scroll-up",
+    "show_line_separator": false,
+    "color_scheme": "scheme-1",
+    "menu_color_scheme": "scheme-1",
+    "enable_country_selector": true,
+    "enable_language_selector": true,
+    "margin_bottom": 0,
+    "padding_top": 0,
+    "padding_bottom": 0
+   }
+  },
+  "bf_top_bar": {
+   "type": "bf-announcement",
+   "blocks": {
+    "msg_deal": {
+     "type": "message",
+     "settings": {
+      "text": "Black Week — deals across the collection",
+      "deal_badge": true,
+      "promo_only": false,
+      "hide_after": ""
+     }
+    },
+    "msg_ship": {
+     "type": "message",
+     "settings": {
+      "text": "Free shipping over €30",
+      "deal_badge": false,
+      "promo_only": true,
+      "hide_after": ""
+     }
+    },
+    "msg_eu": {
+     "type": "message",
+     "settings": {
+      "text": "Ships from Europe · tracked",
+      "deal_badge": false,
+      "promo_only": false,
+      "hide_after": ""
+     }
+    }
+   },
+   "block_order": [
+    "msg_deal",
+    "msg_ship",
+    "msg_eu"
+   ],
+   "settings": {
+    "link": "shopify://collections/drinkware",
+    "interval": 5,
+    "background": "#121212",
+    "text_color": "#ffffff",
+    "badge_color": "#02e65d"
+   }
+  }
+ },
+ "order": [
+  "bf_top_bar",
+  "announcement_bar_ybHaWT",
+  "header"
+ ]
 }
