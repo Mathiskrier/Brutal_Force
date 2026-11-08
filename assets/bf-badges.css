@@ -72,8 +72,21 @@
   gap: 0.4rem 0.8rem;
 }
 
-.bf-price-row .price {
+.bf-price-row {
+  flex-wrap: nowrap;
+}
+
+/* the price takes only its own width, so the tag sits right beside it */
+.card-information > .bf-price-row > .price,
+.bf-price-row > .price {
+  flex: 0 1 auto;
+  width: auto;
   margin: 0;
+}
+
+.bf-price-row > .bf-deal-tag {
+  align-self: flex-end;
+  margin-bottom: 0.3rem;
 }
 
 .bf-deal-tag {
