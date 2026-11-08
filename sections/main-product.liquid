@@ -122,8 +122,39 @@
                     </p>
                   {%- endif -%}
                 {%- when 'title' -%}
+                  {%- comment -%}
+                    Brutalforce: display only - "Storm Mug - 30+ knots" shows as "Storm Mug" + a "30+ knots" pill.
+                    Split on " - " or " – "; the pill only appears when the second part contains "knots"
+                    (e.g. "Wind Mug – Premium Enamel" and the 3-Pack keep their full title). The product name
+                    itself is unchanged; the knots stay in the H1 for screen readers and search engines.
+                  {%- endcomment -%}
+                  {%- liquid
+                    assign bf_title_name = product.title
+                    assign bf_title_knots = ''
+                    assign bf_title_parts = ''
+                    if product.title contains ' - '
+                      assign bf_title_parts = product.title | split: ' - '
+                    elsif product.title contains ' – '
+                      assign bf_title_parts = product.title | split: ' – '
+                    endif
+                    if bf_title_parts.size == 2
+                      assign bf_title_second = bf_title_parts.last | strip | downcase
+                      if bf_title_second contains 'knots'
+                        assign bf_title_name = bf_title_parts.first | strip
+                        assign bf_title_knots = bf_title_parts.last | strip
+                      endif
+                    endif
+                  -%}
                   <div class="product__title" {{ block.shopify_attributes }}>
-                    <h1>{{ product.title | escape }}</h1>
+                    <h1>
+                      {{- bf_title_name | escape -}}
+                      {%- if bf_title_knots != blank -%}
+                        <span class="visually-hidden"> – {{ bf_title_knots | escape }}</span>
+                      {%- endif -%}
+                    </h1>
+                    {%- if bf_title_knots != blank -%}
+                      <p class="bf-knots-pill" aria-hidden="true">{{ bf_title_knots | escape }}</p>
+                    {%- endif -%}
                     <a href="{{ product.url }}" class="product__title">
                       <h2 class="h1">
                         {{ product.title | escape }}
