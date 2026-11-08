@@ -29,7 +29,9 @@
           {{- section.settings.heading | escape -}}
         </h2>
       {%- endif -%}
-      {%- if section.settings.text != blank -%}
+      {%- if section.settings.text_rich != blank -%}
+        <p class="bf-wild__text">{{ section.settings.text_rich }}</p>
+      {%- elsif section.settings.text != blank -%}
         <p class="bf-wild__text">{{ section.settings.text | escape }}</p>
       {%- endif -%}
     </div>
@@ -140,6 +142,19 @@
     color: rgba(var(--color-foreground), 0.65);
     font-size: 1.5rem;
     line-height: 1.55;
+  }
+
+  .bf-wild__text a {
+    color: rgb(var(--color-foreground));
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 0.1rem;
+    text-underline-offset: 0.3rem;
+    white-space: nowrap;
+  }
+
+  .bf-wild__text a:hover {
+    text-decoration-thickness: 0.2rem;
   }
 
   .bf-wild__featured,
@@ -385,6 +400,12 @@
         }
       ],
       "default": "body"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "text_rich",
+      "label": "Text with links (optional)",
+      "info": "Replaces the text below when filled. Use it for links, e.g. to Instagram."
     },
     {
       "type": "text",

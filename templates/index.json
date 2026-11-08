@@ -687,7 +687,7 @@
         "photo_02"
       ],
       "settings": {
-        "heading": "700+ smiles",
+        "heading": "700+ happy riders",
         "text": "Real riders, real mornings, real smiles — the forecast you love, following you off the water and into everyday life.",
         "button_label": "Find your mug",
         "button_link": "/collections/drinkware",
@@ -695,7 +695,8 @@
         "padding_top": 40,
         "padding_bottom": 56,
         "layout": "grid",
-        "heading_font": "brand"
+        "heading_font": "brand",
+        "text_rich": "Got yours? Tag <a href=\"https://www.instagram.com/brutalforce_wind/\" target=\"_blank\" title=\"Brutal Force on Instagram\">@brutalforce_wind</a> with #windmug — you might end up here."
       }
     },
     "home_reviews": {
