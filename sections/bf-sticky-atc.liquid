@@ -102,10 +102,9 @@
 
             // hide as soon as the cart drawer opens (opening it locks page scrolling, so no scroll event fires)
             const drawer = document.querySelector('cart-drawer');
-            if (drawer) {
-              this.drawerObserver = new MutationObserver(() => this.update());
-              this.drawerObserver.observe(drawer, { attributes: true, attributeFilter: ['class', 'open'] });
-            }
+            this.drawerObserver = new MutationObserver(() => this.update());
+            if (drawer) this.drawerObserver.observe(drawer, { attributes: true, attributeFilter: ['class', 'open'] });
+            this.drawerObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
             this.update();
           }
 
@@ -143,14 +142,16 @@
           update() {
             // shown only once the main button is ABOVE the screen (scrolled past), not before reaching it
             this.pastButton = this.mainButton.getBoundingClientRect().bottom < 0;
-            // ...and only from the "Born in Tarifa" section on (it has entered the screen); hidden again above it
+            // ...and only once the "Born in Tarifa" section has reached the middle of the screen; hidden again above it
             if (this.showFrom === undefined) {
               this.showFrom = this.dataset.showFrom ? document.querySelector(this.dataset.showFrom) : null;
             }
             const reachedSection = this.showFrom
-              ? this.showFrom.getBoundingClientRect().top < window.innerHeight * 0.85
+              ? this.showFrom.getBoundingClientRect().top < window.innerHeight * 0.5
               : true;
-            const drawerOpen = document.querySelector('cart-drawer.active, cart-drawer[open], .drawer.active');
+            const drawerOpen =
+              document.querySelector('cart-drawer.active, cart-drawer[open], .drawer.active') ||
+              /overflow-hidden/.test(document.body.className);
             const show = this.pastButton && reachedSection && !drawerOpen;
             if (show) this.style.setProperty('--bf-sticky-offset', `${this.bottomOffset()}px`);
             if (show === this.visible) return;
@@ -315,6 +316,17 @@
     }
 
     body.bf-sticky-on:has(cart-drawer.active) {
+      padding-bottom: 0;
+    }
+
+    /* same, for every browser: the theme locks page scrolling (overflow-hidden* class) while a drawer is open */
+    body[class*='overflow-hidden'] .bf-sticky {
+      transform: translateY(calc(100% + var(--bf-sticky-offset, 0px) + 1rem));
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    body.bf-sticky-on[class*='overflow-hidden'] {
       padding-bottom: 0;
     }
 
