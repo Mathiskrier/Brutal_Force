@@ -1,81 +1,47 @@
 {%- comment -%}
-  Brutalforce: gift call-to-action banner (home page).
-  Split layout on a soft brand-yellow background: text + button, and a real photo.
-  Phones: photo on top (short 16:10 crop), then title, text, promo line, button.
-  The promo line only shows while the free shipping promo is on
-  (snippets/bf-free-shipping-active.liquid), so it disappears with the promo.
-  Photo: editor image if picked, otherwise a pre-compressed theme asset set
-  ("<asset>-400.webp / -800.webp / -1200.webp" + "<asset>-800.jpg"), lazy-loaded.
+  Brutalforce: gift call-to-action banner (home page). Text only, centred in a brand-yellow card:
+  title, one line, a short check list, button.
+  "Point" blocks marked "Promo" only show while the free shipping promo is on
+  (snippets/bf-free-shipping-active.liquid), so time-limited claims disappear with the promo.
 {%- endcomment -%}
 {%- liquid
   capture fs_on
     render 'bf-free-shipping-active'
   endcapture
-  assign show_promo = false
-  if section.settings.promo != blank
-    if section.settings.promo_only_when_active == false or fs_on == 'true'
-      assign show_promo = true
-    endif
-  endif
-  assign asset = section.settings.asset | strip
-  assign sizes = '(min-width: 750px) 460px, calc(100vw - 3rem)'
 -%}
 <div
   class="bf-gift"
-  style="--bf-gift-pt: {{ section.settings.padding_top }}px; --bf-gift-pb: {{ section.settings.padding_bottom }}px;"
+  style="--bf-gift-pt: {{ section.settings.padding_top }}px; --bf-gift-pb: {{ section.settings.padding_bottom }}px; --bf-gift-bg: {{ section.settings.background }};"
 >
   <div class="page-width">
     <div class="bf-gift__card">
-      <div class="bf-gift__media">
-        {%- if section.settings.image != blank -%}
-          {{
-            section.settings.image
-            | image_url: width: 1200
-            | image_tag:
-              loading: 'lazy',
-              decoding: 'async',
-              widths: '400, 600, 800, 1000, 1200',
-              sizes: sizes,
-              alt: section.settings.alt,
-              class: 'bf-gift__img'
-          }}
-        {%- elsif asset != blank -%}
-          <picture>
-            <source
-              type="image/webp"
-              srcset="{{ asset | append: '-400.webp' | asset_url }} 400w, {{ asset | append: '-800.webp' | asset_url }} 800w, {{ asset | append: '-1200.webp' | asset_url }} 1125w"
-              sizes="{{ sizes }}"
-            >
-            <img
-              src="{{ asset | append: '-800.jpg' | asset_url }}"
-              alt="{{ section.settings.alt | escape }}"
-              width="1125"
-              height="1500"
-              loading="lazy"
-              decoding="async"
-              class="bf-gift__img"
-            >
-          </picture>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="bf-gift__heading h1">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <p class="bf-gift__text">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
 
-      <div class="bf-gift__content">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="bf-gift__heading h1">{{ section.settings.heading | escape }}</h2>
-        {%- endif -%}
-        {%- if section.settings.text != blank -%}
-          <p class="bf-gift__text">{{ section.settings.text | escape }}</p>
-        {%- endif -%}
-        {%- if show_promo -%}
-          <p class="bf-gift__promo">{{ section.settings.promo | escape }}</p>
-        {%- endif -%}
-        {%- if section.settings.button_label != blank -%}
-          <a class="bf-gift__button" href="{{ section.settings.button_link | default: '/collections/drinkware' }}">
-            <span>{{ section.settings.button_label | escape }}</span>
-            <span class="bf-gift__arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
-          </a>
-        {%- endif -%}
-      </div>
+      {%- capture points -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.text == blank -%}{%- continue -%}{%- endif -%}
+          {%- if block.settings.promo and fs_on != 'true' -%}{%- continue -%}{%- endif -%}
+          <li class="bf-gift__point" {{ block.shopify_attributes }}>
+            <span class="bf-gift__check" aria-hidden="true">{{- 'icon-lucide-check.svg' | inline_asset_content -}}</span>
+            <span>{{ block.settings.text | escape }}</span>
+          </li>
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- if points != blank -%}
+        <ul class="bf-gift__points list-unstyled" role="list">{{ points }}</ul>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank -%}
+        <a class="bf-gift__button" href="{{ section.settings.button_link | default: '/collections/drinkware' }}">
+          <span>{{ section.settings.button_label | escape }}</span>
+          <span class="bf-gift__arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
+        </a>
+      {%- endif -%}
     </div>
   </div>
 </div>
@@ -89,39 +55,14 @@
   .bf-gift__card {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    max-width: 88rem;
+    margin: 0 auto;
+    padding: 4rem 2.4rem;
     border-radius: 1.6rem;
-    background: #fdf3c4; /* soft tint of the brand yellow */
+    background: var(--bf-gift-bg, #fce477);
     color: rgb(18, 18, 18);
-  }
-
-  .bf-gift__media {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 16 / 10;
-    background: rgba(18, 18, 18, 0.06);
-  }
-
-  .bf-gift__media picture {
-    display: block;
-  }
-
-  /* the photo fills the frame without stretching it (portrait photo, cropped) */
-  .bf-gift__img {
-    position: absolute;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 55%;
-  }
-
-  .bf-gift__content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 2.8rem 2.4rem 3.2rem;
+    text-align: center;
   }
 
   .bf-gift__heading {
@@ -131,21 +72,51 @@
 
   .bf-gift__text {
     margin: 1.2rem 0 0;
+    max-width: 52rem;
     font-family: var(--font-body-family);
     font-size: 1.6rem;
     line-height: 1.6;
     color: rgba(18, 18, 18, 0.85);
-    max-width: 46rem;
   }
 
-  /* the promo: supporting, smaller and quieter than the gift message */
-  .bf-gift__promo {
-    margin: 1.2rem 0 0;
+  /* check list: left-aligned rows inside a centred block, so the ticks line up */
+  .bf-gift__points {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 2.4rem 0 0;
+    padding: 0;
+    text-align: left;
+  }
+
+  .bf-gift__point {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     font-family: var(--font-body-family);
-    font-size: 1.35rem;
-    line-height: 1.5;
-    color: rgba(18, 18, 18, 0.62);
-    max-width: 46rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: rgb(18, 18, 18);
+  }
+
+  .bf-gift__check {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: rgb(18, 18, 18);
+    color: #fff;
+  }
+
+  .bf-gift__check svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    stroke-width: 3;
   }
 
   .bf-gift__button {
@@ -153,7 +124,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.8rem;
-    margin-top: 2.4rem;
+    align-self: stretch;
+    margin-top: 2.8rem;
     min-height: 5rem;
     padding: 0 3.2rem;
     border-radius: var(--buttons-radius-outset, 0.4rem);
@@ -187,12 +159,6 @@
     transform: translateX(0.3rem);
   }
 
-  @media screen and (max-width: 749px) {
-    .bf-gift__button {
-      align-self: stretch;
-    }
-  }
-
   @media screen and (min-width: 750px) {
     .bf-gift {
       padding-top: var(--bf-gift-pt);
@@ -200,21 +166,6 @@
     }
 
     .bf-gift__card {
-      flex-direction: row-reverse;
-      align-items: stretch;
-      max-width: 112rem;
-      margin: 0 auto;
-    }
-
-    .bf-gift__media {
-      flex: 0 0 42%;
-      aspect-ratio: auto;
-      min-height: 42rem;
-    }
-
-    .bf-gift__content {
-      flex: 1 1 auto;
-      justify-content: center;
       padding: 5.6rem 6.4rem;
     }
 
@@ -222,11 +173,16 @@
       font-size: 1.7rem;
     }
 
-    .bf-gift__promo {
-      font-size: 1.4rem;
+    .bf-gift__points {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem 2.8rem;
+      margin-top: 2.8rem;
     }
 
     .bf-gift__button {
+      align-self: center;
       margin-top: 3.2rem;
     }
   }
@@ -250,19 +206,6 @@
       "label": "Text"
     },
     {
-      "type": "textarea",
-      "id": "promo",
-      "label": "Promo line (smaller)",
-      "info": "Time-limited offer wording."
-    },
-    {
-      "type": "checkbox",
-      "id": "promo_only_when_active",
-      "label": "Show the promo line only while the free shipping promo is on",
-      "info": "Theme settings > Free shipping. Switch the promo off and this line disappears.",
-      "default": true
-    },
-    {
       "type": "text",
       "id": "button_label",
       "label": "Button label",
@@ -274,22 +217,10 @@
       "label": "Button link"
     },
     {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Photo",
-      "info": "Optional. Without a photo, the built-in photo below is used."
-    },
-    {
-      "type": "text",
-      "id": "asset",
-      "label": "Built-in photo (asset name)",
-      "info": "Advanced: name of a pre-compressed photo set, e.g. wild-04.",
-      "default": "wild-04"
-    },
-    {
-      "type": "text",
-      "id": "alt",
-      "label": "Photo description (alt text)"
+      "type": "color",
+      "id": "background",
+      "label": "Card colour",
+      "default": "#fce477"
     },
     {
       "type": "range",
@@ -310,6 +241,27 @@
       "step": 4,
       "unit": "px",
       "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Check point",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "checkbox",
+          "id": "promo",
+          "label": "Promo (time-limited)",
+          "info": "Shown only while the free shipping promo is on (Theme settings > Free shipping).",
+          "default": false
+        }
+      ]
     }
   ],
   "presets": [
