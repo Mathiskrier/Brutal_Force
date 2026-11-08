@@ -4,6 +4,7 @@
   @param {product} [product] - The product to price. Required unless `placeholder` is true.
   @param {boolean} [placeholder] - Whether to render the placeholder amount of 1999 minor currency units. Defaults to false.
   @param {boolean} [use_variant] - Whether to use the selected or first available variant's price instead of the product's price. Defaults to false.
+  @param {boolean} [deal_tag] - Brutalforce: show the grey "%" deal tag after the sale price.
   @param {boolean} [show_badges] - Whether to show sale and sold-out badges when applicable. Defaults to false.
   @param {string} [price_class] - An additional class for the price wrapper.
   @param {boolean} [show_compare_at_price] - Whether to show a compare-at price with volume pricing when applicable. Defaults to false.
@@ -103,18 +104,51 @@
           </span>
         {%- endunless -%}
         <span class="visually-hidden visually-hidden--inline">{{ 'products.product.price.sale_price' | t }}</span>
-        <span class="price-item price-item--sale price-item--last">
-          {{ money_price }}
-        </span>
+        {%- if deal_tag -%}
+          {%- comment -%} Brutalforce: quiet grey "%" deal tag right after the sale price (product cards); kept together with it {%- endcomment -%}
+          <span class="bf-sale-wrap">
+            <span class="price-item price-item--sale price-item--last">
+              {{ money_price }}
+            </span>
+            <span class="bf-deal-tag"><span aria-hidden="true">%</span><span class="visually-hidden">On sale</span></span>
+          </span>
+        {%- else -%}
+          <span class="price-item price-item--sale price-item--last">
+            {{ money_price }}
+          </span>
+        {%- endif -%}
       </div>
       {%- if product.selected_or_first_available_variant.unit_price_measurement -%}
         {% render 'unit-price', price: product.selected_or_first_available_variant.unit_price, measurement: product.selected_or_first_available_variant.unit_price_measurement %}
       {%- endif -%}
     </div>
     {%- if show_badges -%}
-      <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
-        {%- render 'sale-badge-text' -%}
-      </span>
+      {%- capture bf_deal_pct -%}{%- render 'bf-deal-percent', compare_at_price: compare_at_price, price: price -%}{%- endcapture -%}
+      {%- if bf_deal_pct != blank -%}
+        {%- comment -%} Brutalforce: deal badge, e.g. BLACK WEEK · −20% (real % of this product) {%- endcomment -%}
+        <span class="badge price__badge-sale bf-deal-badge">
+          {%- liquid
+            assign bf_pct_num = bf_deal_pct | plus: 0
+            assign bf_show_num = false
+            if bf_pct_num >= settings.deal_number_min
+              assign bf_show_num = true
+            endif
+          -%}
+          {%- if settings.deal_label != blank -%}
+            <span class="bf-deal-badge__label">{{ settings.deal_label | escape }}</span>
+          {%- endif -%}
+          {%- if bf_show_num -%}
+            {%- if settings.deal_label != blank -%}<span class="bf-deal-badge__dot" aria-hidden="true">·</span>{%- endif -%}
+            <span class="bf-deal-badge__pct">−{{ bf_deal_pct }}%</span>
+          {%- elsif settings.deal_label == blank -%}
+            <span class="bf-deal-badge__pct">{{ 'products.product.on_sale' | t }}</span>
+          {%- endif -%}
+        </span>
+      {%- else -%}
+        <span class="badge price__badge-sale color-{{ settings.sale_badge_color_scheme }}">
+          {%- render 'sale-badge-text' -%}
+        </span>
+      {%- endif -%}
 
       <span class="badge price__badge-sold-out color-{{ settings.sold_out_badge_color_scheme }}">
         {{ 'products.product.sold_out' | t }}

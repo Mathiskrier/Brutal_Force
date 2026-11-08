@@ -34,3 +34,105 @@
   background: #4a4e54;
   color: #f2f2f2;
 }
+
+/* ===== Brutalforce deal signals (Theme settings > Deal signals) ===== */
+
+/* product page: BLACK WEEK · −20% next to the price */
+.price .bf-deal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: #111111;
+  color: #ffffff;
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.08rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.price .bf-deal-badge__dot {
+  opacity: 0.6;
+}
+
+.price .bf-deal-badge__pct {
+  color: #4bfe85; /* brand green */
+  letter-spacing: 0.02rem;
+}
+
+/* product cards: quiet grey "%" tag right after the sale price (no number) */
+.price .bf-sale-wrap {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.price .bf-deal-tag {
+  display: inline-flex;
+  flex: none;
+  margin-left: 0.6rem;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border-radius: 0.4rem;
+  background: rgba(var(--color-foreground), 0.08);
+  color: rgba(var(--color-foreground), 0.62);
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media screen and (min-width: 750px) {
+  .price .bf-deal-badge {
+    padding: 0.6rem 1.3rem;
+    font-size: 1.35rem;
+  }
+}
+
+/* ===== the set card (3-Pack): same yellow "best value" frame on home rows and the collection grid ===== */
+.bf-grid__item--set .card-wrapper {
+  height: 100%;
+  padding: 0.6rem 0.6rem 0.8rem;
+  border-radius: 1.2rem;
+  box-shadow: inset 0 0 0 0.15rem #fce477;
+  background: rgba(252, 228, 119, 0.14);
+}
+
+.bf-grid__item--set .card__inner,
+.bf-grid__item--set .card__media {
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+.bf-grid__item--set .card__content {
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+}
+
+/* phones: the set card takes the full row, with a wider image so it doesn't get too tall */
+@media screen and (max-width: 749px) {
+  .grid > .bf-grid__item--set,
+  .grid > .bf-more__item--set {
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .bf-grid__item--set .card__inner.ratio,
+  .bf-more__item--set .card__inner.ratio {
+    --ratio-percent: 62% !important;
+  }
+
+  .bf-grid__item--set .card__media .media img,
+  .bf-more__item--set .card__media .media img {
+    object-fit: contain;
+    background: #ffffff;
+  }
+}

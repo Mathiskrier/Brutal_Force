@@ -35,7 +35,9 @@
           "type": "text",
           "settings": {
             "text": "{{ product.metafields.custom.hook.value }}",
-            "text_style": "body"
+            "text_style": "body",
+            "override_product": "brutal-force-mug",
+            "override_text": "Built for the van, the beach and every outdoor morning. A little wind, wherever you wake up."
           }
         },
         "price": {

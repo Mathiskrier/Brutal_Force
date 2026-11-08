@@ -113,12 +113,17 @@
                     {% render block %}
                   {%- endif -%}
                 {%- when 'text' -%}
-                  {%- if block.settings.text != blank -%}
+                  {%- comment -%} Brutalforce: optional per-product override (theme-side) of this text {%- endcomment -%}
+                  {%- assign bf_text = block.settings.text -%}
+                  {%- if block.settings.override_product != blank and block.settings.override_product.id == product.id and block.settings.override_text != blank -%}
+                    {%- assign bf_text = block.settings.override_text -%}
+                  {%- endif -%}
+                  {%- if bf_text != blank -%}
                     <p
                       class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
                       {{ block.shopify_attributes }}
                     >
-                      {{- block.settings.text -}}
+                      {{- bf_text -}}
                     </p>
                   {%- endif -%}
                 {%- when 'title' -%}
@@ -858,6 +863,17 @@
           ],
           "default": "body",
           "label": "t:sections.main-product.blocks.text.settings.text_style.label"
+        },
+        {
+          "type": "product",
+          "id": "override_product",
+          "label": "Override for product (optional)",
+          "info": "On this product's page, show the text below instead."
+        },
+        {
+          "type": "inline_richtext",
+          "id": "override_text",
+          "label": "Override text"
         }
       ]
     },

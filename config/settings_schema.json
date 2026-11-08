@@ -1356,6 +1356,54 @@
     ]
   },
   {
+    "name": "Deal signals",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Black Week style deal signals: the badge next to the price on product pages (e.g. BLACK WEEK · −20%) and the small −X% pill on product cards. The % is calculated per product from its compare-at and selling price (rounded down). Switch off here and they all disappear together."
+      },
+      {
+        "type": "checkbox",
+        "id": "deal_signals_enabled",
+        "label": "Show deal signals",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "deal_label",
+        "label": "Occasion label (product page badge)",
+        "default": "Black Week",
+        "info": "Shown before the %, e.g. BLACK WEEK · −20%. Leave empty to show only the %."
+      },
+      {
+        "type": "text",
+        "id": "deal_end_date",
+        "label": "Hide after (YYYY-MM-DD, optional)"
+      },
+      {
+        "type": "range",
+        "id": "deal_min_percent",
+        "label": "Minimum discount to show",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "unit": "%",
+        "default": 5
+      },
+      {
+        "type": "range",
+        "id": "deal_number_min",
+        "label": "Show the −X% number from",
+        "min": 5,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "default": 20,
+        "info": "Below this, the product page badge shows only the label (e.g. BLACK WEEK) and cards get no −X% pill. The crossed-out price still shows the discount."
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.brand_information.name",
     "settings": [
       {
