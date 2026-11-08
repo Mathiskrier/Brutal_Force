@@ -94,11 +94,19 @@
             };
             window.addEventListener('scroll', this.onScroll, { passive: true });
             window.addEventListener('resize', this.onScroll, { passive: true });
+
+            // hide as soon as the cart drawer opens (opening it locks page scrolling, so no scroll event fires)
+            const drawer = document.querySelector('cart-drawer');
+            if (drawer) {
+              this.drawerObserver = new MutationObserver(() => this.update());
+              this.drawerObserver.observe(drawer, { attributes: true, attributeFilter: ['class', 'open'] });
+            }
             this.update();
           }
 
           disconnectedCallback() {
             this.observer?.disconnect();
+            this.drawerObserver?.disconnect();
             window.removeEventListener('scroll', this.onScroll);
             window.removeEventListener('resize', this.onScroll);
           }
@@ -286,6 +294,16 @@
     /* keep the end of the page reachable behind the bar */
     body.bf-sticky-on {
       padding-bottom: 6.4rem;
+    }
+
+    /* never show the bar (or keep its extra space) while the cart drawer is open */
+    body:has(cart-drawer.active) .bf-sticky {
+      transform: translateY(calc(100% + var(--bf-sticky-offset, 0px) + 1rem));
+      pointer-events: none;
+    }
+
+    body.bf-sticky-on:has(cart-drawer.active) {
+      padding-bottom: 0;
     }
 
     @media screen and (min-width: 750px) {
