@@ -100,8 +100,8 @@
       class="bf-hrev__slider"
       data-shop="{{ shop.permanent_domain }}"
       data-live="{{ section.settings.live_reviews }}"
-      data-pinned="{{ section.settings.pinned_ids | strip_newlines | escape }}"
-      data-hidden="{{ section.settings.hidden_ids | strip_newlines | escape }}"
+      data-pinned="{{ section.settings.pinned_ids | newline_to_br | strip_newlines | replace: '<br />', ',' | escape }}"
+      data-hidden="{{ section.settings.hidden_ids | newline_to_br | strip_newlines | replace: '<br />', ',' | escape }}"
       data-min-rating="{{ section.settings.min_rating }}"
       data-english="{{ section.settings.english_only }}"
     >
