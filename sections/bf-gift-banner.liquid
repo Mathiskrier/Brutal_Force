@@ -1,6 +1,7 @@
 {%- comment -%}
   Brutalforce: gift call-to-action banner (home page). Text only, everything left-aligned in a
-  soft brand-green card (logo green #02E65D softened):
+  soft brand-green card (logo green #02E65D softened). Hierarchy: heading > checks > button.
+  Desktop: two balanced columns (message | checks + button). Phones: one column:
   title, one line, a short check list (one column), one button.
   "Point" blocks marked "Promo" only show while the free shipping promo is on
   (snippets/bf-free-shipping-active.liquid), so time-limited claims disappear with the promo.
@@ -16,13 +17,16 @@
 >
   <div class="page-width">
     <div class="bf-gift__card">
+      <div class="bf-gift__intro">
       {%- if section.settings.heading != blank -%}
         <h2 class="bf-gift__heading h1">{{ section.settings.heading | escape }}</h2>
       {%- endif -%}
       {%- if section.settings.text != blank -%}
         <p class="bf-gift__text">{{ section.settings.text | escape }}</p>
       {%- endif -%}
+      </div>
 
+      <div class="bf-gift__action">
       {%- capture points -%}
         {%- for block in section.blocks -%}
           {%- if block.settings.text == blank -%}{%- continue -%}{%- endif -%}
@@ -43,6 +47,7 @@
           <span class="bf-gift__arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
         </a>
       {%- endif -%}
+      </div>
     </div>
   </div>
 </div>
@@ -90,33 +95,30 @@
     padding: 0;
   }
 
+  /* supporting level: plain tick in a deep brand green, medium-weight dark grey text */
   .bf-gift__point {
     display: flex;
     align-items: center;
     gap: 1rem;
     font-family: var(--font-body-family);
     font-size: 1.6rem;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.4;
-    color: rgb(18, 18, 18);
+    color: rgba(18, 18, 18, 0.82);
   }
 
   .bf-gift__check {
     flex: none;
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 50%;
-    background: rgb(18, 18, 18);
-    color: #fff;
+    width: 1.8rem;
+    height: 1.8rem;
+    color: #0a7a3c;
   }
 
   .bf-gift__check svg {
-    width: 1.3rem;
-    height: 1.3rem;
-    stroke-width: 3;
+    width: 100%;
+    height: 100%;
+    stroke-width: 2.5;
   }
 
   .bf-gift__button {
@@ -164,8 +166,19 @@
       padding-bottom: var(--bf-gift-pb);
     }
 
+    /* desktop: two balanced columns - message left, checks + button right, both centred */
     .bf-gift__card {
-      padding: 5.6rem 6.4rem 6rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      align-items: center;
+      column-gap: 6.4rem;
+      max-width: 104rem;
+      padding: 5.6rem 6.4rem;
+    }
+
+    .bf-gift__action {
+      padding-left: 6.4rem;
+      border-left: 0.1rem solid rgba(18, 18, 18, 0.14);
     }
 
     .bf-gift__text {
@@ -174,11 +187,11 @@
 
     .bf-gift__points {
       gap: 1.4rem;
-      margin-top: 2.8rem;
+      margin-top: 0;
     }
 
     .bf-gift__button {
-      margin-top: 3.6rem;
+      margin-top: 3.2rem;
     }
   }
 {% endstyle %}
