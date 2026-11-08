@@ -183,7 +183,8 @@
         }
 
         list(value) {
-          return (value || '').split(/[\s,]+/).map((x) => x.trim()).filter(Boolean);
+          // Judge.me review IDs are UUIDs: pick them out however they are separated
+          return (value || '').toLowerCase().match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g) || [];
         }
 
         async load() {
