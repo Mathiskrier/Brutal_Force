@@ -1,7 +1,8 @@
 {%- comment -%}
   Brutalforce: sticky add-to-cart bar (product pages).
-  - Slides in from the bottom only after the main Add to cart button has been scrolled past,
-    and hides again when the visitor scrolls back up to it.
+  - Slides in from the bottom only after the main Add to cart button has been scrolled past AND
+    the "Born in Tarifa" section (setting "Appear from this section") has come into view;
+    hides again when the visitor scrolls back up above it, and while the cart drawer is open.
   - Its own small product form (theme's <product-form>, assets/product-form.js): adds ONLY the
     viewed product (qty 1) and opens the cart drawer, exactly like the main button. It is not
     linked to the free shipping box, so ticked upsell mugs are never added from here.
@@ -14,7 +15,11 @@
 {%- if product != blank and variant != blank and variant.available -%}
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
-  <bf-sticky-atc class="bf-sticky color-{{ section.settings.color_scheme }}" aria-hidden="true">
+  <bf-sticky-atc
+    class="bf-sticky color-{{ section.settings.color_scheme }}"
+    aria-hidden="true"
+    data-show-from="{{ section.settings.show_from | escape }}"
+  >
     <div class="page-width bf-sticky__inner">
       <div class="bf-sticky__product">
         {%- if product.featured_image != blank -%}
@@ -138,8 +143,15 @@
           update() {
             // shown only once the main button is ABOVE the screen (scrolled past), not before reaching it
             this.pastButton = this.mainButton.getBoundingClientRect().bottom < 0;
+            // ...and only from the "Born in Tarifa" section on (it has entered the screen); hidden again above it
+            if (this.showFrom === undefined) {
+              this.showFrom = this.dataset.showFrom ? document.querySelector(this.dataset.showFrom) : null;
+            }
+            const reachedSection = this.showFrom
+              ? this.showFrom.getBoundingClientRect().top < window.innerHeight * 0.85
+              : true;
             const drawerOpen = document.querySelector('cart-drawer.active, cart-drawer[open], .drawer.active');
-            const show = this.pastButton && !drawerOpen;
+            const show = this.pastButton && reachedSection && !drawerOpen;
             if (show) this.style.setProperty('--bf-sticky-offset', `${this.bottomOffset()}px`);
             if (show === this.visible) return;
             this.visible = show;
@@ -342,6 +354,13 @@
       "id": "button_label",
       "label": "Button label",
       "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "show_from",
+      "label": "Appear from this section (advanced)",
+      "info": "CSS selector of the section where the bar starts to show, e.g. .bf-story (Born in Tarifa). Empty = right after the Add to cart button.",
+      "default": ".bf-story"
     },
     {
       "type": "color_scheme",
