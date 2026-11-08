@@ -4,6 +4,7 @@
   @param {product} [product] - The product to price. Required unless `placeholder` is true.
   @param {boolean} [placeholder] - Whether to render the placeholder amount of 1999 minor currency units. Defaults to false.
   @param {boolean} [use_variant] - Whether to use the selected or first available variant's price instead of the product's price. Defaults to false.
+  @param {boolean} [deal_tag] - Brutalforce: show the grey "%" deal tag after the sale price.
   @param {boolean} [show_badges] - Whether to show sale and sold-out badges when applicable. Defaults to false.
   @param {string} [price_class] - An additional class for the price wrapper.
   @param {boolean} [show_compare_at_price] - Whether to show a compare-at price with volume pricing when applicable. Defaults to false.
@@ -106,6 +107,10 @@
         <span class="price-item price-item--sale price-item--last">
           {{ money_price }}
         </span>
+        {%- if deal_tag -%}
+          {%- comment -%} Brutalforce: quiet grey "%" deal tag right after the sale price (product cards) {%- endcomment -%}
+          <span class="bf-deal-tag"><span aria-hidden="true">%</span><span class="visually-hidden">On sale</span></span>
+        {%- endif -%}
       </div>
       {%- if product.selected_or_first_available_variant.unit_price_measurement -%}
         {% render 'unit-price', price: product.selected_or_first_available_variant.unit_price, measurement: product.selected_or_first_available_variant.unit_price_measurement %}

@@ -64,34 +64,12 @@
   letter-spacing: 0.02rem;
 }
 
-/* product cards: quiet grey "%" tag beside the price (no number) */
-.bf-price-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 0.8rem;
-}
-
-.bf-price-row {
-  flex-wrap: nowrap;
-}
-
-/* the price takes only its own width, so the tag sits right beside it */
-.card-information > .bf-price-row > .price,
-.bf-price-row > .price {
-  flex: 0 1 auto;
-  width: auto;
-  margin: 0;
-}
-
-.bf-price-row > .bf-deal-tag {
-  align-self: flex-end;
-  margin-bottom: 0.3rem;
-}
-
-.bf-deal-tag {
+/* product cards: quiet grey "%" tag right after the sale price (no number) */
+.price .bf-deal-tag {
   display: inline-flex;
   flex: none;
+  margin-left: 0.6rem;
+  vertical-align: 0.1rem;
   align-items: center;
   justify-content: center;
   min-width: 2rem;

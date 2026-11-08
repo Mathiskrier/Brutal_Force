@@ -222,15 +222,9 @@
                   endcapture
                 endif
               -%}
-              {%- if bf_card_pct != blank -%}
-                {%- comment -%} Brutalforce: quiet grey "%" deal tag beside the price (no number) {%- endcomment -%}
-                <div class="bf-price-row">
-                  {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
-                  <span class="bf-deal-tag" title="On sale"><span aria-hidden="true">%</span><span class="visually-hidden">On sale</span></span>
-                </div>
-              {%- else -%}
-                {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
-              {%- endif -%}
+              {%- assign bf_show_tag = false -%}
+              {%- if bf_card_pct != blank -%}{%- assign bf_show_tag = true -%}{%- endif -%}
+              {% render 'price', product: card_product, price_class: '', show_compare_at_price: true, deal_tag: bf_show_tag %}
               {%- if card_product.quantity_price_breaks_configured? -%}
                 {% if card_product.variants_count == 1 and quick_add == 'bulk' %}
                   {% liquid
