@@ -1,0 +1,317 @@
+{%- comment -%}
+  Brutalforce: gift call-to-action banner (home page).
+  Split layout on a soft brand-yellow background: text + button, and a real photo.
+  Phones: photo on top (short crop), then title, text, promo line, button.
+  The promo line only shows while the free shipping promo is on
+  (snippets/bf-free-shipping-active.liquid), so it disappears with the promo.
+  Photo: editor image if picked, otherwise a pre-compressed theme asset set
+  ("<asset>-400.webp / -800.webp / -1200.webp" + "<asset>-800.jpg"), lazy-loaded.
+{%- endcomment -%}
+{%- liquid
+  capture fs_on
+    render 'bf-free-shipping-active'
+  endcapture
+  assign show_promo = false
+  if section.settings.promo != blank
+    if section.settings.promo_only_when_active == false or fs_on == 'true'
+      assign show_promo = true
+    endif
+  endif
+  assign asset = section.settings.asset | strip
+  assign sizes = '(min-width: 750px) 460px, calc(100vw - 3rem)'
+-%}
+<div
+  class="bf-gift"
+  style="--bf-gift-pt: {{ section.settings.padding_top }}px; --bf-gift-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <div class="bf-gift__card">
+      <div class="bf-gift__media">
+        {%- if section.settings.image != blank -%}
+          {{
+            section.settings.image
+            | image_url: width: 1200
+            | image_tag:
+              loading: 'lazy',
+              decoding: 'async',
+              widths: '400, 600, 800, 1000, 1200',
+              sizes: sizes,
+              alt: section.settings.alt,
+              class: 'bf-gift__img'
+          }}
+        {%- elsif asset != blank -%}
+          <picture>
+            <source
+              type="image/webp"
+              srcset="{{ asset | append: '-400.webp' | asset_url }} 400w, {{ asset | append: '-800.webp' | asset_url }} 800w, {{ asset | append: '-1200.webp' | asset_url }} 1125w"
+              sizes="{{ sizes }}"
+            >
+            <img
+              src="{{ asset | append: '-800.jpg' | asset_url }}"
+              alt="{{ section.settings.alt | escape }}"
+              width="1125"
+              height="1500"
+              loading="lazy"
+              decoding="async"
+              class="bf-gift__img"
+            >
+          </picture>
+        {%- endif -%}
+      </div>
+
+      <div class="bf-gift__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="bf-gift__heading h1">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.text != blank -%}
+          <p class="bf-gift__text">{{ section.settings.text | escape }}</p>
+        {%- endif -%}
+        {%- if show_promo -%}
+          <p class="bf-gift__promo">{{ section.settings.promo | escape }}</p>
+        {%- endif -%}
+        {%- if section.settings.button_label != blank -%}
+          <a class="bf-gift__button" href="{{ section.settings.button_link | default: '/collections/drinkware' }}">
+            <span>{{ section.settings.button_label | escape }}</span>
+            <span class="bf-gift__arrow" aria-hidden="true">{{- 'icon-lucide-arrow-right.svg' | inline_asset_content -}}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .bf-gift {
+    padding-top: calc(var(--bf-gift-pt) * 0.7);
+    padding-bottom: calc(var(--bf-gift-pb) * 0.7);
+  }
+
+  .bf-gift__card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.6rem;
+    background: #fdf3c4; /* soft tint of the brand yellow */
+    color: rgb(18, 18, 18);
+  }
+
+  .bf-gift__media {
+    aspect-ratio: 16 / 10;
+    background: rgba(18, 18, 18, 0.06);
+  }
+
+  .bf-gift__media picture {
+    display: block;
+    height: 100%;
+  }
+
+  .bf-gift__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 55%;
+  }
+
+  .bf-gift__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2.8rem 2.4rem 3.2rem;
+  }
+
+  .bf-gift__heading {
+    margin: 0;
+    color: rgb(18, 18, 18);
+  }
+
+  .bf-gift__text {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-body-family);
+    font-size: 1.6rem;
+    line-height: 1.6;
+    color: rgba(18, 18, 18, 0.85);
+    max-width: 46rem;
+  }
+
+  /* the promo: supporting, smaller and quieter than the gift message */
+  .bf-gift__promo {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-body-family);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: rgba(18, 18, 18, 0.62);
+    max-width: 46rem;
+  }
+
+  .bf-gift__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 2.4rem;
+    min-height: 5rem;
+    padding: 0 3.2rem;
+    border-radius: var(--buttons-radius-outset, 0.4rem);
+    background: rgb(17, 17, 17);
+    color: #fff;
+    font-family: var(--font-body-family);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.02rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .bf-gift__button:hover {
+    background: rgb(51, 51, 51);
+  }
+
+  .bf-gift__arrow {
+    display: inline-flex;
+    width: 1.8rem;
+    height: 1.8rem;
+    transition: transform 0.15s ease;
+  }
+
+  .bf-gift__arrow svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .bf-gift__button:hover .bf-gift__arrow {
+    transform: translateX(0.3rem);
+  }
+
+  @media screen and (max-width: 749px) {
+    .bf-gift__button {
+      align-self: stretch;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .bf-gift {
+      padding-top: var(--bf-gift-pt);
+      padding-bottom: var(--bf-gift-pb);
+    }
+
+    .bf-gift__card {
+      flex-direction: row-reverse;
+      align-items: stretch;
+      max-width: 112rem;
+      margin: 0 auto;
+    }
+
+    .bf-gift__media {
+      flex: 0 0 42%;
+      aspect-ratio: auto;
+      min-height: 42rem;
+    }
+
+    .bf-gift__content {
+      flex: 1 1 auto;
+      justify-content: center;
+      padding: 5.6rem 6.4rem;
+    }
+
+    .bf-gift__text {
+      font-size: 1.7rem;
+    }
+
+    .bf-gift__promo {
+      font-size: 1.4rem;
+    }
+
+    .bf-gift__button {
+      margin-top: 3.2rem;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Gift banner",
+  "tag": "section",
+  "class": "section bf-gift-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Gift season is here"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text"
+    },
+    {
+      "type": "textarea",
+      "id": "promo",
+      "label": "Promo line (smaller)",
+      "info": "Time-limited offer wording."
+    },
+    {
+      "type": "checkbox",
+      "id": "promo_only_when_active",
+      "label": "Show the promo line only while the free shipping promo is on",
+      "info": "Theme settings > Free shipping. Switch the promo off and this line disappears.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Get the perfect gift"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Photo",
+      "info": "Optional. Without a photo, the built-in photo below is used."
+    },
+    {
+      "type": "text",
+      "id": "asset",
+      "label": "Built-in photo (asset name)",
+      "info": "Advanced: name of a pre-compressed photo set, e.g. wild-04.",
+      "default": "wild-04"
+    },
+    {
+      "type": "text",
+      "id": "alt",
+      "label": "Photo description (alt text)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Space above",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Space below",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift banner"
+    }
+  ]
+}
+{% endschema %}
