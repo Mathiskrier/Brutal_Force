@@ -162,7 +162,7 @@
                     {%- assign lazy_load = true -%}
                   {%- endif -%}
                   <li
-                    class="grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+                    class="grid__item{% if section.settings.extra_product != blank and product.id == section.settings.extra_product.id %} bf-grid__item--set{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
                     {% if settings.animations_reveal_on_scroll %}
                       data-cascade
                       style="--animation-order: {{ forloop.index }};"
@@ -221,7 +221,8 @@
                   endfor
                 -%}
                 {%- if bf_show_extra -%}
-                  <li class="grid__item">
+                  {%- comment -%} Brutalforce: the set card - yellow frame, full width on phones (assets/bf-badges.css) {%- endcomment -%}
+                  <li class="grid__item bf-grid__item--set">
                     {% render 'card-product',
                       card_product: bf_extra,
                       custom_badge: bf_badge,
