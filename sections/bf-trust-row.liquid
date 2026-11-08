@@ -1,7 +1,7 @@
 {%- comment -%}
   Brutalforce: "Why riders trust us" - three trust points with thin outline icons (Lucide, the same
   set as the product page bullets, cart and footer). Title in the brand heading font, point titles
-  in the brand font, descriptions in the body font. Phones: one column, icon left of the text (email kept on one line).
+  in semibold body font, descriptions in the body font. Phones: one column, icon left of the text (email kept on one line).
 {%- endcomment -%}
 <div
   class="bf-trow color-{{ section.settings.color_scheme }} gradient"
@@ -85,14 +85,15 @@
     padding-top: 0.2rem;
   }
 
+  /* point titles: semibold body font (calmer than the bold italic section heading) */
   .bf-trow__title {
     margin: 0;
-    font-family: var(--font-heading-family);
-    font-style: var(--font-heading-style);
-    font-weight: var(--font-heading-weight);
-    font-size: 1.8rem;
+    font-family: var(--font-body-family);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.7rem;
     line-height: 1.3;
-    letter-spacing: calc(var(--font-heading-scale) * 0.06rem);
+    letter-spacing: -0.005em;
     color: rgb(var(--color-foreground));
   }
 
@@ -161,7 +162,7 @@
     }
 
     .bf-trow__title {
-      font-size: 2rem;
+      font-size: 1.8rem;
     }
 
     .bf-trow__text {

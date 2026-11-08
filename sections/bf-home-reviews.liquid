@@ -1,6 +1,6 @@
 {%- comment -%}
   Brutalforce: home page reviews - trust headline, one featured review, 3 supporting reviews.
-  1. Rating headline: live shop-wide Judge.me rating + count (shop metafields
+  1. Rating line (under the featured review): live shop-wide Judge.me rating + count (shop metafields
      judgeme.all_reviews_rating / all_reviews_count; fallback: weighted average of the products'
      review metafields - same logic as snippets/bf-cart-trust.liquid).
   2. Featured review (settings): photo, stars, quote, name.
@@ -42,27 +42,6 @@
       <h2 class="bf-hrev__heading h1">{{ section.settings.heading | escape }}</h2>
     {%- endif -%}
 
-    {%- if review_count > 0 -%}
-      <div class="bf-hrev__summary">
-        <div
-          class="bf-hrev__stars bf-hrev__stars--lg"
-          style="--bf-fill: {{ fill_pct }}%;"
-          role="img"
-          aria-label="Rated {{ review_rating }} out of 5"
-        >
-          <span class="bf-hrev__stars-base">{%- for i in (1..5) -%}{{ star_svg }}{%- endfor -%}</span>
-          <span class="bf-hrev__stars-fill">{%- for i in (1..5) -%}{{ star_svg }}{%- endfor -%}</span>
-        </div>
-        <p class="bf-hrev__score">
-          <span class="bf-hrev__avg">{{ review_rating }}</span>
-          <span class="bf-hrev__out">out of 5 · from {{ review_count }} reviews</span>
-        </p>
-        <p class="bf-hrev__source">
-          Reviews collected by <span class="bf-hrev__source-brand">Judge.me</span>
-        </p>
-      </div>
-    {%- endif -%}
-
     {%- if section.settings.featured_quote != blank -%}
       <figure class="bf-hrev__featured">
         {%- if section.settings.featured_image != blank -%}
@@ -88,6 +67,24 @@
           <figcaption class="bf-hrev__name">{{ section.settings.featured_name | escape }}</figcaption>
         </div>
       </figure>
+    {%- endif -%}
+
+    {%- if review_count > 0 -%}
+      <div class="bf-hrev__rating">
+        <div
+          class="bf-hrev__stars bf-hrev__stars--sm"
+          style="--bf-fill: {{ fill_pct }}%;"
+          role="img"
+          aria-label="Rated {{ review_rating }} out of 5"
+        >
+          <span class="bf-hrev__stars-base">{%- for i in (1..5) -%}{{ star_svg }}{%- endfor -%}</span>
+          <span class="bf-hrev__stars-fill">{%- for i in (1..5) -%}{{ star_svg }}{%- endfor -%}</span>
+        </div>
+        <p class="bf-hrev__rating-text">
+          <strong>{{ review_rating }} out of 5</strong> · from {{ review_count }} reviews
+          <span class="bf-hrev__rating-source">· Reviews collected by Judge.me</span>
+        </p>
+      </div>
     {%- endif -%}
 
     {%- comment -%}
@@ -362,49 +359,41 @@
     fill: #fcc419;
   }
 
-  .bf-hrev__stars--lg { --bf-star: 2.8rem; }
   .bf-hrev__stars--md { --bf-star: 2.2rem; }
   .bf-hrev__stars--sm { --bf-star: 1.7rem; }
 
-  /* 1. trust headline */
-  .bf-hrev__summary {
+  /* rating line under the featured review: calm, one line, the number in semibold */
+  .bf-hrev__rating {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    gap: 0.6rem 1rem;
+    margin-top: 2.4rem;
     text-align: center;
   }
 
-  .bf-hrev__score {
+  .bf-hrev__rating-text {
     margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: center;
-    gap: 0.2rem 0.8rem;
+    font-family: var(--font-body-family);
+    font-size: 1.45rem;
+    line-height: 1.5;
+    color: rgba(var(--color-foreground), 0.65);
   }
 
-  .bf-hrev__avg {
-    font-family: var(--font-heading-family);
-    font-style: var(--font-heading-style);
-    font-weight: var(--font-heading-weight);
-    font-size: 2.6rem;
-    line-height: 1;
-    letter-spacing: 0.02em;
+  .bf-hrev__rating-text strong {
+    font-weight: 600;
     color: rgb(var(--color-foreground));
   }
 
-  .bf-hrev__out {
-    font-family: var(--font-body-family);
-    font-size: 1.5rem;
-    color: rgba(var(--color-foreground), 0.7);
+  .bf-hrev__rating-source {
+    white-space: nowrap;
   }
 
   /* 2. featured review */
   .bf-hrev__featured {
     width: 100%;
-    max-width: 88rem;
-    margin: 3.2rem 0 0;
+    margin: 0;
     padding: 2.4rem 2rem 2.8rem;
     display: flex;
     flex-direction: column;
@@ -464,23 +453,10 @@
     color: rgb(var(--color-foreground));
   }
 
-  .bf-hrev__source {
-    margin: 0;
-    font-size: 1.3rem;
-    color: rgba(var(--color-foreground), 0.55);
-  }
-
-  .bf-hrev__source-brand {
-    font-weight: 600;
-    color: rgba(var(--color-foreground), 0.8);
-    text-decoration: none;
-  }
-
   /* 3. review slider (swipe on phones, arrows on desktop, next card peeks in) */
   .bf-hrev__slider {
     display: block;
     width: 100%;
-    max-width: 112rem;
     margin-top: 3.2rem;
   }
 
@@ -678,22 +654,20 @@
       padding-bottom: var(--bf-hrev-pb);
     }
 
-    .bf-hrev__stars--lg { --bf-star: 3.2rem; }
-
-    .bf-hrev__avg {
-      font-size: 3.2rem;
+    .bf-hrev__rating {
+      margin-top: 2.8rem;
     }
 
-    .bf-hrev__out {
-      font-size: 1.6rem;
+    .bf-hrev__rating-text {
+      font-size: 1.5rem;
     }
 
     .bf-hrev__featured {
       flex-direction: row;
       align-items: center;
-      gap: 4rem;
-      margin-top: 4rem;
-      padding: 3.2rem 4.8rem 3.2rem 3.2rem;
+      gap: 4.8rem;
+      margin-top: 0;
+      padding: 3.2rem 6.4rem 3.2rem 3.2rem;
       text-align: left;
     }
 
@@ -715,7 +689,7 @@
     }
 
     .bf-hrev__slider {
-      margin-top: 4rem;
+      margin-top: 3.2rem;
     }
 
     .bf-hrev__arrows {
