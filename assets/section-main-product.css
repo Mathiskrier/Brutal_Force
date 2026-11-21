@@ -1811,6 +1811,19 @@ a.product__text {
   color: #ffffff;
 }
 
+/* phones: a slightly more compact pill so even "Lightwind Mug" + pill fit on one line (from ~360px wide) */
+@media screen and (max-width: 749px) {
+  .product__title--knots {
+    column-gap: 0.8rem;
+  }
+
+  .product__title .bf-knots-pill {
+    padding: 0.4rem 1.1rem;
+    font-size: 1.35rem;
+    letter-spacing: 0.02rem;
+  }
+}
+
 @media screen and (min-width: 750px) {
   .product__title .bf-knots-pill {
     font-size: 1.6rem;
