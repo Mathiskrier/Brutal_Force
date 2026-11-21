@@ -4,7 +4,7 @@
     Price          €45,00 (struck)  €43,50        (muted)
     Shipping       €4,99 (struck)  FREE          (muted)
     ------------
-    You save       −€6,49                        (the one green number; only when shipping is FREE)
+    You save       €6,49                         (the one green number; only when shipping is FREE)
 
   - Compare-at total = sum of each line's compare-at price (or its regular price if it has none) x qty
   - Real total       = cart.total_price (what the products cost)
@@ -71,7 +71,7 @@
     {%- if ships_free and total_savings > 0 -%}
       <div class="bf-summary__row bf-summary__row--save">
         <dt>You save</dt>
-        <dd>−{{ total_savings | money }}</dd>
+        <dd>{{ total_savings | money }}</dd>
       </div>
     {%- endif -%}
   </dl>
