@@ -218,8 +218,27 @@
   gap: 0.1rem;
 }
 
+/* The name is a link to the mug's page (only the text itself, not the whole column):
+   a thin, light underline hints it can be opened; darker on hover */
 .fs-upsell__name {
+  align-self: flex-start;
   font-weight: 500;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 0.1rem;
+  text-decoration-color: rgba(var(--color-foreground), 0.3);
+  text-underline-offset: 0.3rem;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.fs-upsell__name:hover {
+  text-decoration-color: rgb(var(--color-foreground));
+}
+
+.fs-upsell__name:focus-visible {
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
+  outline-offset: 0.2rem;
+  border-radius: 0.2rem;
 }
 
 .fs-upsell__detail {

@@ -3,6 +3,7 @@
   The text is STATIC (block settings: heading + subtext) and never depends on the cart.
   No free shipping calculation happens here; the live status lives in the cart bar
   (snippets/free-shipping-bar.liquid).
+  Clicking the mug NAME opens that mug's product page; clicking anywhere else on the row ticks it.
   Ticking a row adds NOTHING to the cart. Ticked mugs are added together with the viewed
   product when the main Add to cart button is pressed (see assets/product-form.js).
 
@@ -77,7 +78,8 @@
           endif
         -%}
         <span class="fs-upsell__title">
-          <span class="fs-upsell__name">{{ title_name | escape }}</span>
+          {%- comment -%} Only the name opens the mug's page; a link inside the label does not tick the box. Anywhere else on the row ticks it. {%- endcomment -%}
+          <a class="fs-upsell__name" href="{{ upsell_product.url }}">{{ title_name | escape }}</a>
           {%- if title_detail != blank -%}
             <span class="fs-upsell__detail">{{ title_detail | escape }}</span>
           {%- endif -%}
