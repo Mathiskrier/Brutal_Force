@@ -26,14 +26,18 @@
           alt: alt_text
       }}
     {%- else -%}
+      {%- comment -%} phones get the 500/800px versions, desktop the full 1254px one {%- endcomment -%}
       <img
         class="bf-story__img"
         src="{{ 'born-in-tarifa.webp' | asset_url }}"
+        srcset="{{ 'born-in-tarifa-500.webp' | asset_url }} 500w, {{ 'born-in-tarifa-800.webp' | asset_url }} 800w, {{ 'born-in-tarifa.webp' | asset_url }} 1254w"
+        sizes="100vw"
         alt="{{ alt_text | escape }}"
         width="1254"
         height="1254"
         loading="lazy"
         decoding="async"
+        fetchpriority="low"
       >
     {%- endif -%}
     <span class="bf-story__overlay" aria-hidden="true"></span>

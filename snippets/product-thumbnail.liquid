@@ -24,6 +24,11 @@
   unless lazy_load == false
     assign lazy = 'lazy'
   endunless
+  # Brutalforce: the first (not lazy) product photo is the page's main image - ask the browser to fetch it first
+  assign fetch_priority = 'auto'
+  if lazy_load == false
+    assign fetch_priority = 'high'
+  endif
 
   assign desktop_columns = 1
   if desktop_layout == 'columns' and media_count > 1
@@ -79,6 +84,7 @@
         | image_tag:
           class: image_class,
           loading: lazy,
+          fetchpriority: fetch_priority,
           sizes: sizes,
           widths: '246, 493, 600, 713, 823, 990, 1100, 1206, 1346, 1426, 1646, 1946'
       }}

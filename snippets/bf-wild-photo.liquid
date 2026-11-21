@@ -2,7 +2,7 @@
   Brutalforce: one photo of the "Out in the wild" section (sections/bf-real-photos.liquid).
   Params: block (photo block), sizes (sizes attribute), class (extra class on the <li>)
   Uses the editor image if set, otherwise the pre-compressed theme asset set
-  "<asset>-400.webp / -800.webp / -1200.webp" + "<asset>-800.jpg" fallback. Always lazy-loaded.
+  "<asset>-200 / -400 / -600 / -800 / -1200.webp" + "<asset>-800.jpg" fallback. Always lazy-loaded.
 {%- endcomment -%}
 {%- liquid
   assign alt = block.settings.alt | default: 'A Brutal Force forecast mug in real life'
@@ -26,7 +26,9 @@
   {%- liquid
     assign w = block.settings.width | default: 1200
     assign h = block.settings.height | default: 1500
+    assign webp_200 = name | append: '-200.webp' | asset_url
     assign webp_400 = name | append: '-400.webp' | asset_url
+    assign webp_600 = name | append: '-600.webp' | asset_url
     assign webp_800 = name | append: '-800.webp' | asset_url
     assign webp_max = name | append: '-1200.webp' | asset_url
     assign jpg_800 = name | append: '-800.jpg' | asset_url
@@ -35,7 +37,7 @@
     <picture>
       <source
         type="image/webp"
-        srcset="{{ webp_400 }} 400w, {{ webp_800 }} 800w, {{ webp_max }} {{ w }}w"
+        srcset="{{ webp_200 }} 200w, {{ webp_400 }} 400w, {{ webp_600 }} 600w, {{ webp_800 }} 800w, {{ webp_max }} {{ w }}w"
         sizes="{{ sizes }}"
       >
       <img
