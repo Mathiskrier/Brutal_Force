@@ -128,7 +128,7 @@
                   {%- endif -%}
                 {%- when 'title' -%}
                   {%- comment -%}
-                    Brutalforce: display only - "Storm Mug - 30+ knots" shows as "Storm Mug" + a "30+ knots" pill.
+                    Brutalforce: display only - "Storm Mug - 30+ knots" shows as "Storm Mug" + a "30+ knots" pill right after it (same line).
                     Split on " - " or " – "; the pill only appears when the second part contains "knots"
                     (e.g. "Wind Mug – Premium Enamel" and the 3-Pack keep their full title). The product name
                     itself is unchanged; the knots stay in the H1 for screen readers and search engines.
@@ -150,7 +150,7 @@
                       endif
                     endif
                   -%}
-                  <div class="product__title" {{ block.shopify_attributes }}>
+                  <div class="product__title{% if bf_title_knots != blank %} product__title--knots{% endif %}" {{ block.shopify_attributes }}>
                     <h1>
                       {{- bf_title_name | escape -}}
                       {%- if bf_title_knots != blank -%}
