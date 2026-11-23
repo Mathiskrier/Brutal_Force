@@ -208,12 +208,12 @@
         }
       },
       "block_order": [
+        "faq_damaged",
         "faq_gift",
         "faq_shipping_time",
         "faq_ships_from",
         "faq_free_shipping",
         "faq_tracking",
-        "faq_damaged",
         "faq_custom_spot"
       ],
       "name": "t:sections.collapsible_content.presets.name",
