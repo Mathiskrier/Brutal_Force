@@ -30,6 +30,29 @@
   box-shadow: inset 0 0 0 0.1rem #111111;
 }
 
+/* green = NEW (Theme settings > New badge), brand green */
+.card__badge .bf-badge--green {
+  background: #02e65d;
+  color: #111111;
+}
+
+/* product page: NEW badge above the title, same look as the card badge */
+.bf-new-badge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.4rem;
+  background: #02e65d;
+  color: #111111;
+  font-family: var(--font-body-family);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
 .card__badge .bf-badge--charcoal {
   background: #4a4e54;
   color: #f2f2f2;

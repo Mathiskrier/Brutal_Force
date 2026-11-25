@@ -1419,6 +1419,27 @@
     ]
   },
   {
+    "name": "New badge",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "A green NEW badge on these products: on their product cards (collection pages, mug rows) and above the title on their product page. Remove a product here to remove its badge."
+      },
+      {
+        "type": "product_list",
+        "id": "new_badge_products",
+        "label": "Products with a NEW badge",
+        "limit": 10
+      },
+      {
+        "type": "text",
+        "id": "new_badge_label",
+        "label": "Badge text",
+        "default": "New"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.brand_information.name",
     "settings": [
       {
