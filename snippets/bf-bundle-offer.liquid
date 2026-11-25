@@ -25,10 +25,11 @@
     if reference_collection == blank
       assign reference_collection = collections['ceramic-mugs']
     endif
-    assign reference_price = 0
-    for item in reference_collection.products limit: 10
-      assign reference_price = reference_price | plus: item.first_available_variant.price
-    endfor
+    # "bought separately" = the mugs in the 3-Pack (Theme settings > 3-Pack), not every mug in the shop
+    capture reference_price
+      render 'bf-set-reference-price', reference_collection: reference_collection
+    endcapture
+    assign reference_price = reference_price | strip | plus: 0
 
     assign saving = reference_price | minus: bundle_price
     assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100

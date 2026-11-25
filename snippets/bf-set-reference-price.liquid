@@ -1,0 +1,21 @@
+{%- doc -%}
+  Brutalforce: "bought separately" price of the 3-Pack, in cents (outputs only the number).
+  = the prices of the mugs listed in Theme settings > 3-Pack > "Mugs in the 3-Pack", added up.
+  Fallback (list empty): the first 3 products of the reference collection.
+  A new mug in the shop does not change the set's price math.
+
+  @param {collection} [reference_collection] - Fallback when the theme setting is empty
+{%- enddoc -%}
+{%- liquid
+  assign ref_cents = 0
+  if settings.set_items != blank and settings.set_items.count > 0
+    for item in settings.set_items
+      assign ref_cents = ref_cents | plus: item.first_available_variant.price
+    endfor
+  elsif reference_collection != blank
+    for item in reference_collection.products limit: 3
+      assign ref_cents = ref_cents | plus: item.first_available_variant.price
+    endfor
+  endif
+  echo ref_cents
+-%}

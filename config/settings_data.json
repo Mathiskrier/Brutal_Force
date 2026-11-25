@@ -286,7 +286,12 @@
           "shadow": "#121212"
         }
       }
-    }
+    },
+    "set_items": [
+      "breeze-ceramic-mug-11-oz",
+      "wind-ceramic-mug-11oz",
+      "storm-ceramic-mug"
+    ]
   },
   "presets": {
     "Spotlight": {

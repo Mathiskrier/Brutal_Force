@@ -173,10 +173,11 @@
     {%- if bundle != blank and bundle.available and bundle.id != product.id -%}
       {%- liquid
         assign bundle_price = bundle.selected_or_first_available_variant.price
-        assign reference_price = 0
-        for item in upsell_collection.products limit: 10
-          assign reference_price = reference_price | plus: item.first_available_variant.price
-        endfor
+        # "bought separately" = the mugs in the 3-Pack (Theme settings > 3-Pack), not every mug in the shop
+        capture reference_price
+          render 'bf-set-reference-price', reference_collection: upsell_collection
+        endcapture
+        assign reference_price = reference_price | strip | plus: 0
         assign bundle_saving = reference_price | minus: bundle_price
         assign bundle_compare_html = reference_price | money_without_trailing_zeros | prepend: '<s class="fs-upsell__set-compare">' | append: '</s>'
         assign bundle_price_html = bundle_price | money_without_trailing_zeros | prepend: '<strong class="fs-upsell__set-price">' | append: '</strong>'

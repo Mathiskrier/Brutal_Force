@@ -1404,6 +1404,21 @@
     ]
   },
   {
+    "name": "3-Pack",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The mugs inside the 3-Pack. Their prices added up give the 'bought separately' price and the 'save €…' amount (3-Pack page, the 'Want all three?' line, the set offer). Adding a new mug to the shop does NOT change this list."
+      },
+      {
+        "type": "product_list",
+        "id": "set_items",
+        "label": "Mugs in the 3-Pack",
+        "limit": 6
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.brand_information.name",
     "settings": [
       {
