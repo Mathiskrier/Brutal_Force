@@ -9,7 +9,7 @@
  */
 {
   "sections": {
-    "founder_quote": {"type": "bf-founder-quote", "settings": {"quote": "Emails. Traffic. Meetings. Life gets loud. This mug is your daily reminder that <strong>the next brutal session</strong> is coming.", "alt": "Mathis, founder of Brutal Force, kitesurfing", "name": "Mathis", "role": "Founder, Brutal Force", "color_scheme": "scheme-1", "padding_top": 40, "padding_bottom": 24}},
+    "founder_quote": {"type": "bf-founder-quote", "settings": {"quote": "Emails. Traffic. Meetings. Life gets loud. This mug is your daily reminder that <strong>the next (brutal) session</strong> is coming.", "alt": "Mathis, founder of Brutal Force, kitesurfing", "name": "Mathis", "role": "Founder, Brutal Force", "color_scheme": "scheme-1", "padding_top": 40, "padding_bottom": 24}},
     "brand_story_tarifa": {
       "type": "brand-story-banner",
       "disabled": true,
