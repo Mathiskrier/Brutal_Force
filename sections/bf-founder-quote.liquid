@@ -83,9 +83,22 @@
     max-width: 76rem;
   }
 
+  /* Brutalforce: the body font in Medium (500), loaded for the quote only - the theme loads 400/600/700,
+     so 500 used to fall back to regular. A separate family name keeps every other "500" text unchanged. */
+  {%- assign bf_quote_font = settings.type_body_font | font_modify: 'weight', '500' -%}
+  {%- if bf_quote_font -%}
+  @font-face {
+    font-family: 'bf-quote-medium';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('{{ bf_quote_font | font_url }}') format('woff2');
+  }
+  {%- endif %}
+
   .bf-founder__quote p {
     margin: 0;
-    font-family: var(--font-body-family);
+    font-family: 'bf-quote-medium', var(--font-body-family);
     font-style: normal;
     font-weight: 500;
     font-size: 2.2rem;
