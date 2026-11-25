@@ -9,8 +9,10 @@
  */
 {
   "sections": {
+    "founder_quote": {"type": "bf-founder-quote", "settings": {"quote": "Emails. Traffic. Meetings. Life gets loud. This mug is your daily reminder that <strong>the next (brutal) session</strong> is coming.", "alt": "Mathis, founder of Brutal Force, kitesurfing", "name": "Mathis", "role": "Founder, Brutal Force", "color_scheme": "scheme-1", "padding_top": 40, "padding_bottom": 24}},
     "brand_story_tarifa": {
       "type": "brand-story-banner",
+      "disabled": true,
       "settings": {
         "heading": "Born in Tarifa",
         "text": "<p>Just a few friends in the wind capital of Europe, forever refreshing Windguru for the next session. Over 700 mugs later, we're still at it.</p>",
@@ -413,7 +415,7 @@
       "settings": {
         "button_label": "Add to cart",
         "color_scheme": "scheme-1",
-        "show_from": "[id$='__collapsible_content_9b89xV']"
+        "show_from": "[id$='__founder_quote']"
       }
     },
     "set_reviews": {
@@ -436,6 +438,7 @@
   },
   "order": [
     "main",
+    "founder_quote",
     "collapsible_content_9b89xV",
     "more_mugs",
     "out_in_the_wild",
