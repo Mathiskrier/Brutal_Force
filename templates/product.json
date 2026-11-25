@@ -418,7 +418,7 @@
       "settings": {
         "button_label": "Add to cart",
         "color_scheme": "scheme-1",
-        "show_from": ".bf-story"
+        "show_from": "[id$='__collapsible_content_9b89xV']"
       }
     },
     "set_reviews": {
@@ -441,11 +441,11 @@
   },
   "order": [
     "main",
-    "brand_story_tarifa",
     "collapsible_content_9b89xV",
     "out_in_the_wild",
     "17478606947302e352",
     "set_reviews",
+    "brand_story_tarifa",
     "more_mugs",
     "sticky_atc"
   ]
