@@ -9,9 +9,10 @@
  */
 {
   "sections": {
-    "founder_quote": {"type": "bf-founder-quote", "settings": {"quote": "This isn’t just another mug. It’s made to <strong>put a smile on your face</strong> and bring a piece of our passion into everyday life. For the mornings when life gets in the way and the water feels far away.", "alt": "Mathis, founder of Brutal Force, kitesurfing", "name": "Mathis", "role": "Founder, Brutal Force", "color_scheme": "scheme-1", "padding_top": 40, "padding_bottom": 24}},
+    "founder_quote": {"type": "bf-founder-quote", "settings": {"quote": "Emails. Traffic. Meetings. Life gets loud. This mug is your daily reminder that <strong>the next brutal session</strong> is coming.", "alt": "Mathis, founder of Brutal Force, kitesurfing", "name": "Mathis", "role": "Founder, Brutal Force", "color_scheme": "scheme-1", "padding_top": 40, "padding_bottom": 24}},
     "brand_story_tarifa": {
       "type": "brand-story-banner",
+      "disabled": true,
       "settings": {
         "heading": "Born in Tarifa",
         "text": "<p>Just a few friends in the wind capital of Europe, forever refreshing Windguru for the next session. Over 700 mugs later, we're still at it.</p>",

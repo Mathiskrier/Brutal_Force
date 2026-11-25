@@ -2,6 +2,7 @@
   "sections": {
     "brand_story_tarifa": {
       "type": "brand-story-banner",
+      "disabled": true,
       "settings": {
         "heading": "Born in Tarifa",
         "text": "<p>Just a few friends in the wind capital of Europe, forever refreshing Windguru for the next session. 700+ riders later, we’re still at it.</p>",
