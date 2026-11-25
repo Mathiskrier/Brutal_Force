@@ -1,7 +1,7 @@
 {%- doc -%}
   Brutalforce: price area of a set's own product page (e.g. the 3-Pack), rendered instead of the
   normal price block (see sections/main-product.liquid, bf_bundle_page).
-  Reference price = sum of the products in the reference collection (3 x single mug), so the
+  Reference price = sum of the mugs in the set (Theme settings > 3-Pack), so the
   crossed-out price and the saving are always correct, whatever the set's compare-at price says.
 
   @param {product} product - The set product being viewed
@@ -9,10 +9,11 @@
 {%- enddoc -%}
 {%- liquid
   assign set_price = product.selected_or_first_available_variant.price
-  assign reference_price = 0
-  for item in reference_collection.products limit: 10
-    assign reference_price = reference_price | plus: item.first_available_variant.price
-  endfor
+  # "bought separately" = the mugs in the 3-Pack (Theme settings > 3-Pack), not every mug in the shop
+  capture reference_price
+    render 'bf-set-reference-price', reference_collection: reference_collection
+  endcapture
+  assign reference_price = reference_price | strip | plus: 0
   assign saving = reference_price | minus: set_price
   assign threshold_cents = settings.free_shipping_threshold | default: 30 | times: 100
   capture fs_on

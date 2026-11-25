@@ -206,16 +206,10 @@
       ],
       "settings": {
         "heading": "Prefer a mug?",
-        "products": [
-          "breeze-ceramic-mug-11-oz",
-          "wind-ceramic-mug-11oz",
-          "storm-ceramic-mug",
-          "brutal-force-mug",
-          "happiness-mug-pack"
-        ],
+        "products": ["breeze-ceramic-mug-11-oz", "wind-ceramic-mug-11oz", "storm-ceramic-mug", "nuclear-mug", "brutal-force-mug", "happiness-mug-pack"],
         "set_product": "happiness-mug-pack",
         "set_badge": "Best value",
-        "max_columns": 5,
+        "max_columns": 6,
         "button_label": "See all products",
         "button_link": "shopify://collections/all",
         "button_style": "solid",
@@ -229,10 +223,10 @@
   },
   "order": [
     "main",
-    "brand_story_tarifa",
     "more_mugs",
     "related-products",
     "rich_text_fhnJ7R",
-    "17478606947302e352"
+    "17478606947302e352",
+    "brand_story_tarifa"
   ]
 }

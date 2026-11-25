@@ -374,14 +374,9 @@
     "more_mugs": {
       "type": "bf-more-mugs",
       "settings": {
+            "max_columns": 5,
         "heading": "Didn't find your mug yet?",
-        "products": [
-          "wind-ceramic-mug-11oz",
-          "storm-ceramic-mug",
-          "breeze-ceramic-mug-11-oz",
-          "brutal-force-mug",
-          "happiness-mug-pack"
-        ],
+        "products": ["wind-ceramic-mug-11oz", "storm-ceramic-mug", "nuclear-mug", "breeze-ceramic-mug-11-oz", "brutal-force-mug", "happiness-mug-pack"],
         "set_product": "happiness-mug-pack",
         "set_badge": "Best value",
         "show_rating": true,
@@ -418,7 +413,7 @@
       "settings": {
         "button_label": "Add to cart",
         "color_scheme": "scheme-1",
-        "show_from": ".bf-story"
+        "show_from": "[id$='__collapsible_content_9b89xV']"
       }
     },
     "set_reviews": {
@@ -441,12 +436,12 @@
   },
   "order": [
     "main",
-    "brand_story_tarifa",
     "collapsible_content_9b89xV",
+    "more_mugs",
     "out_in_the_wild",
     "17478606947302e352",
     "set_reviews",
-    "more_mugs",
+    "brand_story_tarifa",
     "sticky_atc"
   ]
 }

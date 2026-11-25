@@ -150,6 +150,12 @@
                       endif
                     endif
                   -%}
+                  {%- comment -%} Brutalforce: green NEW badge above the title (Theme settings > New badge) {%- endcomment -%}
+                  {%- for bf_new_item in settings.new_badge_products -%}
+                    {%- if bf_new_item.id == product.id -%}
+                      <p class="bf-new-badge">{{ settings.new_badge_label | default: 'New' | escape }}</p>
+                    {%- endif -%}
+                  {%- endfor -%}
                   <div class="product__title{% if bf_title_knots != blank %} product__title--knots{% endif %}" {{ block.shopify_attributes }}>
                     <h1>
                       {{- bf_title_name | escape -}}

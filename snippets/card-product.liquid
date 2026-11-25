@@ -36,6 +36,16 @@
 {%- endunless -%}
 {%- if card_product and card_product != empty -%}
   {%- liquid
+    # Brutalforce: green NEW badge (Theme settings > New badge) - only when no other badge was passed
+    if custom_badge == blank and settings.new_badge_products != blank
+      for bf_new_item in settings.new_badge_products
+        if bf_new_item.id == card_product.id
+          assign custom_badge = settings.new_badge_label | default: 'New'
+          assign custom_badge_style = 'green'
+          assign custom_badge_sub = ''
+        endif
+      endfor
+    endif
     assign ratio = 1
     if card_product.featured_media and media_aspect_ratio == 'portrait'
       assign ratio = 0.8
